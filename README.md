@@ -1,8 +1,11 @@
-# React + Vite
+# Aircraft Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Getting started
 
-Currently, two official plugins are available:
+1. Clone repo
+2. Install node packages
+3. Make a .env file using the .env.example file as a template
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+   - populate the .env with the correct values
+
+4. Create database by running: `npm run db:create`
