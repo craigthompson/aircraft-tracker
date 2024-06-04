@@ -15,6 +15,7 @@ Aircraft.init(
   {
     aircraftId: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     icao24: {

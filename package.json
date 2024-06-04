@@ -7,7 +7,9 @@
     "dev:backend": "nodemon server/index.js -w server -w src",
     "dev": "vite",
     "build": "vite build",
-    "db:create": "createdb aircraft_tracker && node database/model.js",
+    "db:create": "createdb aircraft_tracker && npm run db:sync",
+    "db:sync": "node database/model.js",
+    "db:seed": "node database/seed.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
