@@ -7,7 +7,6 @@ console.log("Seeding DB...");
 
 const aircraftInDB = await Promise.all(
   aircraftData.states.map(async (aircraft) => {
-    // const { title, overview, posterPath } = movie;
     const icao24 = aircraft[0];
     const callsign = aircraft[1];
     const originCountry = aircraft[2];

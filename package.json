@@ -10,6 +10,7 @@
     "db:create": "createdb aircraft_tracker && npm run db:sync",
     "db:sync": "node database/model.js",
     "db:seed": "node database/seed.js",
+    "db:drop": "./confirmDbDrop.sh",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
