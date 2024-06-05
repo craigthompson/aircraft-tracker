@@ -8,7 +8,7 @@ async function connectToDB(dbURI) {
     logging: console.log,
     logging: false, // set logging: false to disable outputting SQL queries to console
     define: {
-      timestamps: false, // don't want created_at or updated_at columns
+      timestamps: true, // want created_at or updated_at columns
       underscored: true, // use snake_case rather than camelCase column names
     },
     password: config.DB_PASSWORD,

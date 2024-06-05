@@ -2,8 +2,9 @@ import { DataTypes, Model } from "sequelize";
 import util from "util";
 import url from "url";
 import connectToDB from "./db.js";
+import config from "../config/config.js";
 
-const db = await connectToDB(`postgresql:///aircraft_tracker`);
+const db = await connectToDB(`postgresql:///${config.DB_NAME}`);
 
 export class Aircraft extends Model {
   [util.inspect.custom]() {
@@ -95,7 +96,7 @@ Aircraft.init(
 
 // Only execute if this file is run directly
 if (process.argv[1] === url.fileURLToPath(import.meta.url)) {
-  console.log("Syncing database...");
+  console.log(`Syncing ${config.DB_NAME} database...`);
   await db.sync();
   console.log("Finished syncing database!");
 }
