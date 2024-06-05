@@ -26,6 +26,7 @@ export const parseAircraftData = (aircraft) => {
     squawk: aircraft[14],
     spi: aircraft[15],
     positionSource: aircraft[16],
+    vehicleCategory: aircraft[17] || 0,
   };
 };
 
