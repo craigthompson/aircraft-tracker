@@ -26,6 +26,7 @@ Aircraft.init(
     icao24: {
       type: DataTypes.STRING(12),
       allowNull: false,
+      unique: true,
     },
     // Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
     callsign: {

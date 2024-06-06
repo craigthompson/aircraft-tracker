@@ -9,3 +9,5 @@
    - populate the .env with the correct values
 
 4. Create database by running: `npm run db:create`
+
+   - If you want to seed the database run: `npm run db:seed`

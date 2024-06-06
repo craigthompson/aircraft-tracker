@@ -1,4 +1,7 @@
 import axios from "axios";
+import "dotenv/config";
+
+const openskyUrl = "https://opensky-network.org";
 
 /**
  * Takes a single aircraft array object (from the /states/all API endpoint)
@@ -26,13 +29,18 @@ export const parseAircraftData = (aircraft) => {
     squawk: aircraft[14],
     spi: aircraft[15],
     positionSource: aircraft[16],
-    vehicleCategory: aircraft[17] || 0,
+    vehicleCategory: aircraft[17] || null,
   };
 };
 
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
-  const params = {
+  const response = await axios.get(`${openskyUrl}/api/states/all`, {
+    auth: {
+      username: process.env.OPENSKY_USERNAME,
+      password: process.env.OPENSKY_PASSWORD,
+    },
     params: {
+      // TODO: remove these test values
       // lamin: 39.429927,
       // lomin: -112.879124,
       // lamax: 41.114634,
@@ -43,10 +51,13 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
       lamax: latMax,
       lomax: lonMax,
     },
-  };
-
-  const { data } = await axios.get(
-    "https://opensky-network.org/api/states/all"
+  });
+  console.log(
+    "Rate limit remaining:",
+    response.headers["x-rate-limit-remaining"]
   );
-  setLaunchesData(data);
+  console.log("Response.data:", response.data);
+  // setLaunchesData(data);
 };
+
+// getAircraft(39.429927, -112.879124, 41.114634, -110.308323);
