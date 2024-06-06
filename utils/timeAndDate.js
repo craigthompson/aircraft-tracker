@@ -1,4 +1,4 @@
-const unixSecondsToLocal = (unixSec) => {
+export const unixSecondsToLocal = (unixSec) => {
   // Convert the unixSec from seconds to milliseconds
   const date = new Date(unixSec * 1000);
 

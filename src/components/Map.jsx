@@ -26,6 +26,9 @@ function Map() {
 
   const allAircraftInstances = allAircraft.map((plane) => (
     <Aircraft
+      icao24={plane.icao24}
+      callsign={plane.callsign}
+      lastContact={plane.lastContact}
       lat={plane.latitude}
       lon={plane.longitude}
       key={plane.aircraftId}

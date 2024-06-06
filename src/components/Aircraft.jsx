@@ -1,4 +1,5 @@
 import { Marker, Popup } from "react-leaflet";
+import { unixSecondsToLocal } from "../../utils/timeAndDate";
 
 /**
  * Aircraft map marker at the given geographical coordinates.
@@ -7,11 +8,15 @@ import { Marker, Popup } from "react-leaflet";
  * @param {float} lon - longitude of the aircraft's location
  * @component
  */
-const Aircraft = ({ lat, lon }) => {
+const Aircraft = ({ icao24, callsign, lastContact, lat, lon }) => {
   // console.log("*** Aircraft component:", lat, lon); // TODO: remove later
   return (
     <Marker position={[lat, lon]}>
-      <Popup>A pretty popup</Popup>
+      <Popup>
+        ICAO24: {icao24.toUpperCase()} <br />
+        Callsign: {callsign.toUpperCase()} <br />
+        Last Contact: {unixSecondsToLocal(lastContact)}
+      </Popup>
     </Marker>
   );
 };
