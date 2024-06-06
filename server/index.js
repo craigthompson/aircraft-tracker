@@ -5,7 +5,7 @@ import express from "express";
 import ViteExpress from "vite-express";
 import config from "../config/config.js";
 import "dotenv/config";
-// import handlerFunctions from "./controller.js"; // TODO: add handler functions to controller.js
+import handlerFunctions from "./controller.js";
 
 //////////////////////////////////////////////
 //  Express instance and Middleware
@@ -19,6 +19,10 @@ app.use(express.json());
 //////////////////////////////////////////////
 //  Endpoints
 //////////////////////////////////////////////
+// TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky).
+const { getAllAircraft } = handlerFunctions;
+
+app.get("/api/aircraft/all", getAllAircraft);
 
 //////////////////////////////////////////////
 //  Config server on port
