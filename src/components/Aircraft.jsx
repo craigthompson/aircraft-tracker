@@ -8,6 +8,7 @@ import { Marker, Popup } from "react-leaflet";
  * @component
  */
 const Aircraft = ({ lat, lon }) => {
+  // console.log("*** Aircraft component:", lat, lon); // TODO: remove later
   return (
     <Marker position={[lat, lon]}>
       <Popup>A pretty popup</Popup>
