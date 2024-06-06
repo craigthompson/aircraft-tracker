@@ -1,5 +1,8 @@
 import axios from "axios";
+import { upsertAircraft } from "../database/aircraft.js";
 import "dotenv/config";
+
+const debug = true; // Set true to enable console log debugging of this file
 
 const openskyUrl = "https://opensky-network.org";
 
@@ -52,11 +55,19 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
       lomax: lonMax,
     },
   });
-  console.log(
-    "Rate limit remaining:",
-    response.headers["x-rate-limit-remaining"]
+  debug &&
+    console.log(
+      "Rate limit remaining:",
+      response.headers["x-rate-limit-remaining"]
+    );
+  debug && console.log("Response.data:", response.data);
+
+  const aircraftInDB = await Promise.all(
+    response.data.states.map(async (aircraft) => {
+      const aircraftObj = parseAircraftData(aircraft);
+      return upsertAircraft(aircraftObj);
+    })
   );
-  console.log("Response.data:", response.data);
   // setLaunchesData(data);
 };
 

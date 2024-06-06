@@ -1,10 +1,10 @@
-import db, { Aircraft } from "./model.js";
+import db from "./model.js";
 import { parseAircraftData } from "../server/opensky.js";
 import aircraftData from "./aircraft.json" assert { type: "json" };
 import { upsertAircraft } from "./aircraft.js";
 
 console.log("Syncing DB...");
-// await db.sync({ force: true });
+
 /**
  * sync with "alter:true" checks what is the current state of the table in the
  *   database (which columns it has, what are their data types, etc), and then
@@ -20,5 +20,5 @@ const aircraftInDB = await Promise.all(
   })
 );
 
-await db.close();
+// await db.close();
 console.log("Finished seeding DB.");
