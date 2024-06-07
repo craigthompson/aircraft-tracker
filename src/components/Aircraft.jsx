@@ -28,8 +28,9 @@ const Aircraft = ({
   verticalRate,
   geoAltitude,
 }) => {
+  const altitudeFeet = metersToFeet(baroAltitude);
+
   const iconColor = () => {
-    const altitudeFeet = metersToFeet(baroAltitude);
     if (onGround) {
       return "text-gray-500";
     } else if (altitudeFeet < 5000) {
@@ -47,6 +48,106 @@ const Aircraft = ({
     }
   };
 
+  // const dropShadowDistance = 15;
+  // const dropShadow = `drop-shadow-6md`;
+  // const dropShadow = `drop-shadow-${dropShadowDistance}md`;
+  // const dropShadowDistance = Math.floor(altitudeFeet / 1000);
+  let dropShadow;
+  switch (Math.floor(altitudeFeet / 1000)) {
+    case 0:
+      dropShadow = "drop-shadow-0md";
+      break;
+    case 1:
+      dropShadow = "drop-shadow-1md";
+      break;
+    case 2:
+      dropShadow = "drop-shadow-2md";
+      break;
+    case 3:
+      dropShadow = "drop-shadow-3md";
+      break;
+    case 4:
+      dropShadow = "drop-shadow-4md";
+      break;
+    case 5:
+      dropShadow = "drop-shadow-5md";
+      break;
+    case 6:
+      dropShadow = "drop-shadow-6md";
+      break;
+    case 7:
+      dropShadow = "drop-shadow-7md";
+      break;
+    case 8:
+      dropShadow = "drop-shadow-8md";
+      break;
+    case 9:
+      dropShadow = "drop-shadow-9md";
+      break;
+    case 10:
+      dropShadow = "drop-shadow-10md";
+      break;
+    case 11:
+      dropShadow = "drop-shadow-11md";
+      break;
+    case 12:
+      dropShadow = "drop-shadow-12md";
+      break;
+    case 13:
+      dropShadow = "drop-shadow-13md";
+      break;
+    case 14:
+      dropShadow = "drop-shadow-14md";
+      break;
+    case 15:
+      dropShadow = "drop-shadow-15md";
+      break;
+    case 16:
+      dropShadow = "drop-shadow-16md";
+      break;
+    case 17:
+      dropShadow = "drop-shadow-17md";
+      break;
+    case 18:
+      dropShadow = "drop-shadow-18md";
+      break;
+    case 19:
+      dropShadow = "drop-shadow-19md";
+      break;
+    case 20:
+      dropShadow = "drop-shadow-20md";
+      break;
+    case 21:
+      dropShadow = "drop-shadow-21md";
+      break;
+    case 22:
+      dropShadow = "drop-shadow-22md";
+      break;
+    case 23:
+      dropShadow = "drop-shadow-23md";
+      break;
+    case 24:
+      dropShadow = "drop-shadow-24md";
+      break;
+    case 25:
+      dropShadow = "drop-shadow-25md";
+      break;
+    case 26:
+      dropShadow = "drop-shadow-26md";
+      break;
+    case 27:
+      dropShadow = "drop-shadow-27md";
+      break;
+    case 28:
+      dropShadow = "drop-shadow-28md";
+      break;
+    case 29:
+      dropShadow = "drop-shadow-29md";
+      break;
+    default:
+      dropShadow = "drop-shadow-30md";
+  }
+
   const aircraftIcon = () =>
     L.divIcon({
       html: ReactDOMServer.renderToString(
@@ -55,8 +156,9 @@ const Aircraft = ({
           style={{ transform: `rotate(${trueTrack}deg)` }}
         />
       ),
-      className: "", // Ensure no additional classes affect the styling
-      iconSize: [24, 24], // Size of the icon (adjust as needed)
+      // className: ``, // Ensures no additional classes affect the styling
+      className: dropShadow, // Ensures no additional classes affect the styling
+      iconSize: [24, 24], // Size of the icon
       iconAnchor: [12, 24], // Point of the icon which will correspond to marker's location
     });
 
