@@ -29,8 +29,11 @@ function Map() {
       icao24={plane.icao24}
       callsign={plane.callsign}
       lastContact={plane.lastContact}
-      lat={plane.latitude}
-      lon={plane.longitude}
+      latitude={plane.latitude}
+      longitude={plane.longitude}
+      baroAltitude={plane.baroAltitude}
+      velocity={plane.velocity}
+      verticalRate={plane.verticalRate}
       key={plane.aircraftId}
     />
   ));

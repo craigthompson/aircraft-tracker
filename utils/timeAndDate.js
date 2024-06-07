@@ -23,5 +23,3 @@ export const unixSecondsToLocal = (unixSec) => {
   // Construct the formatted date string
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}${timezone}`;
 };
-
-console.log(unixSecondsToLocal(1717448875)); // 2024-06-05 14:20:22.185-06
