@@ -1,7 +1,7 @@
-import db from "./model.js";
-import { parseAircraftData } from "../server/opensky.js";
+import db from "../model.js";
+import { parseAircraftData } from "../../server/opensky.js";
 import aircraftData from "./aircraft.json" assert { type: "json" };
-import { upsertAircraft } from "./aircraft.js";
+import { upsertAircraft } from "../aircraft.js";
 
 console.log("Syncing DB...");
 
