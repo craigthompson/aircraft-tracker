@@ -12,14 +12,14 @@ import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
 import axios from "axios";
 
-// Fix for missing marker icons in Webpack
-import icon from "leaflet/dist/images/marker-icon.png";
-import iconShadow from "leaflet/dist/images/marker-shadow.png";
+// // Fix for missing marker icons in Webpack
+// import icon from "leaflet/dist/images/marker-icon.png";
+// import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
-let DefaultIcon = Leaflet.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-});
+// let DefaultIcon = Leaflet.icon({
+//   iconUrl: icon,
+//   shadowUrl: iconShadow,
+// });
 
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
@@ -32,7 +32,9 @@ function Map() {
       latitude={plane.latitude}
       longitude={plane.longitude}
       baroAltitude={plane.baroAltitude}
+      onGround={plane.onGround}
       velocity={plane.velocity}
+      trueTrack={plane.trueTrack}
       verticalRate={plane.verticalRate}
       key={plane.aircraftId}
     />
