@@ -29,14 +29,29 @@ const Aircraft = ({
   geoAltitude,
 }) => {
   const iconColor = () => {
-    return onGround ? `text-gray-500` : `text-sky-700`;
+    const altitudeFeet = metersToFeet(baroAltitude);
+    if (onGround) {
+      return "text-gray-500";
+    } else if (altitudeFeet < 5000) {
+      return `text-sky-900`;
+    } else if (altitudeFeet < 10000) {
+      return `text-sky-700`;
+    } else if (altitudeFeet < 15000) {
+      return `text-sky-600`;
+    } else if (altitudeFeet < 20000) {
+      return `text-sky-500`;
+    } else if (altitudeFeet < 25000) {
+      return `text-sky-400`;
+    } else {
+      return `text-cyan-400`;
+    }
   };
 
   const aircraftIcon = () =>
     L.divIcon({
       html: ReactDOMServer.renderToString(
         <IoMdAirplane
-          className={`${iconColor()} text-3xl`}
+          className={`${iconColor()} text-4xl`}
           style={{ transform: `rotate(${trueTrack}deg)` }}
         />
       ),
