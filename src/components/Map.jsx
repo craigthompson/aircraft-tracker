@@ -12,6 +12,8 @@ import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
 import axios from "axios";
 
+import { socket } from "../socket.js";
+
 // // Fix for missing marker icons in Webpack
 // import icon from "leaflet/dist/images/marker-icon.png";
 // import iconShadow from "leaflet/dist/images/marker-shadow.png";
@@ -41,7 +43,16 @@ function Map() {
   ));
 
   useEffect(() => {
-    getData();
+    // getData();
+
+    socket.on("all_aircraft", (planes) => {
+      console.log("Message from server:", planes);
+      setAllAircraft(planes);
+    });
+
+    return () => {
+      socket.off("all_aircraft");
+    };
   }, []);
 
   const getData = async () => {
