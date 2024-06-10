@@ -6,6 +6,7 @@ import ViteExpress from "vite-express";
 import config from "../config/config.js";
 import "dotenv/config";
 import handlerFunctions from "./controller.js";
+import socketHandlerFunctions from "./socketController.js";
 import chalk from "chalk";
 
 import http from "http";
@@ -30,11 +31,12 @@ const socketIo = new Server(server);
 //  Endpoints
 //////////////////////////////////////////////
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
+const { getAllAircraft } = handlerFunctions;
+
 const {
-  getAllAircraft,
   emitAllAircraftForNewlyConnectedSocket: getAllAircraftForNewlyConnectedClient,
   emitAllAircraftForAllSockets: getAllAircraftForSocket,
-} = handlerFunctions;
+} = socketHandlerFunctions;
 
 app.get("/api/aircraft/all", getAllAircraft);
 
