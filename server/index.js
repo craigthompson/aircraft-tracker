@@ -6,12 +6,10 @@ import ViteExpress from "vite-express";
 import config from "../config/config.js";
 import "dotenv/config";
 import handlerFunctions from "./controller.js";
+import chalk from "chalk";
 
 import http from "http";
-import { createServer as createViteServer } from "vite";
 import { Server } from "socket.io";
-
-import { queryAllAircraft } from "../database/queries.js";
 
 //////////////////////////////////////////////
 //  Express instance and Middleware
@@ -32,7 +30,11 @@ const socketIo = new Server(server);
 //  Endpoints
 //////////////////////////////////////////////
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
-const { getAllAircraft, getAllAircraftForSocket } = handlerFunctions;
+const {
+  getAllAircraft,
+  emitAllAircraftForNewlyConnectedSocket: getAllAircraftForNewlyConnectedClient,
+  emitAllAircraftForAllSockets: getAllAircraftForSocket,
+} = handlerFunctions;
 
 app.get("/api/aircraft/all", getAllAircraft);
 
@@ -41,13 +43,19 @@ app.get("/api/aircraft/all", getAllAircraft);
 //////////////////////////////////////////////
 // Handle WebSocket connections
 socketIo.on("connection", (socket) => {
-  console.log("A user connected. Socket ID:", socket.id);
-  // console.log("Sending all aircraft through socket");
-  // socket.emit;
-  // getAllAircraftForSocket();
+  console.log(
+    chalk.cyan("[Socket Event]"),
+    "A user connected. Socket ID:",
+    socket.id
+  );
+  getAllAircraftForNewlyConnectedClient(socket);
 
   socket.on("disconnect", () => {
-    console.log("User disconnected. Socket ID:", socket.id);
+    console.log(
+      chalk.cyan("[Socket Event]"),
+      "User disconnected. Socket ID:",
+      socket.id
+    );
   });
 });
 
@@ -69,11 +77,12 @@ ViteExpress.bind(app, server);
 
 //
 //
+const delaySeconds = 5;
 setTimeout(async () => {
-  console.log("Delayed for 2 second.");
+  console.log(`Delayed for ${delaySeconds} seconds.`);
   // const allAircraft = await queryAllAircraft();
   getAllAircraftForSocket();
   // socketIo.emit("all_aircraft", allAircraft);
-}, "2000");
+}, delaySeconds * 1000);
 
 export default socketIo;
