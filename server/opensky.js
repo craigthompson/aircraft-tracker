@@ -60,7 +60,7 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
       "Rate limit remaining:",
       response.headers["x-rate-limit-remaining"]
     );
-  debug && console.log("Response.data:", response.data);
+  // debug && console.log("Response.data:", response.data);
 
   const aircraftInDB = await Promise.all(
     response.data.states.map(async (aircraft) => {

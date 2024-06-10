@@ -8,6 +8,8 @@ import "dotenv/config";
 import handlerFunctions from "./controller.js";
 import socketHandlerFunctions from "./socketController.js";
 import chalk from "chalk";
+import cron from "node-cron";
+import { getAircraft } from "./opensky.js";
 
 import http from "http";
 import { Server } from "socket.io";
@@ -33,10 +35,8 @@ const socketIo = new Server(server);
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
 const { getAllAircraft } = handlerFunctions;
 
-const {
-  emitAllAircraftForNewlyConnectedSocket: getAllAircraftForNewlyConnectedClient,
-  emitAllAircraftForAllSockets: getAllAircraftForSocket,
-} = socketHandlerFunctions;
+const { emitAllAircraftForNewlyConnectedSocket, emitAllAircraftForAllSockets } =
+  socketHandlerFunctions;
 
 app.get("/api/aircraft/all", getAllAircraft);
 
@@ -50,7 +50,7 @@ socketIo.on("connection", (socket) => {
     "A user connected. Socket ID:",
     socket.id
   );
-  getAllAircraftForNewlyConnectedClient(socket);
+  emitAllAircraftForNewlyConnectedSocket(socket);
 
   socket.on("disconnect", () => {
     console.log(
@@ -59,6 +59,26 @@ socketIo.on("connection", (socket) => {
       socket.id
     );
   });
+});
+
+//////////////////////////////////////////////
+//  Scheduled Cron Tasks
+//////////////////////////////////////////////
+// Schedule fetching Opensky aircraft data every 20 seconds
+// Schedule tasks using other intervals. Examples:
+// '0 * * * *'        - every hour
+// '0 0 * * *'        - every day at midnight
+// '0 0 * * 0'        - every Sunday at midnight
+// '0 0 1 * *'        - the first day of every month
+// '0 0 1 1 *'        - once a year, on January 1st
+cron.schedule("*/20 * * * * *", () => {
+  try {
+    console.log("Running scheduled task to get aircraft data.");
+    getAircraft(40.579247, -112.2624345, 40.8955744, -111.6382737);
+    emitAllAircraftForAllSockets();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
 });
 
 //////////////////////////////////////////////
@@ -83,7 +103,7 @@ const delaySeconds = 5;
 setTimeout(async () => {
   console.log(`Delayed for ${delaySeconds} seconds.`);
   // const allAircraft = await queryAllAircraft();
-  getAllAircraftForSocket();
+  emitAllAircraftForAllSockets();
   // socketIo.emit("all_aircraft", allAircraft);
 }, delaySeconds * 1000);
 
