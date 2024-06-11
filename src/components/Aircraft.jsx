@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import { unixSecondsToLocal } from "../../utils/timeAndDate";
 import {
   toMilesPerHour,
@@ -28,10 +28,18 @@ const Aircraft = ({
   verticalRate,
   geoAltitude,
   zIndex,
+  allAircraft,
 }) => {
+  const map = useMap();
+  const [grounded, setGrounded] = useState(onGround);
   const altitudeFeet = metersToFeet(baroAltitude);
-  const markerZIndex = React.useRef(zIndex);
-  // console.log("markerZIndex", markerZIndex);
+  // const [mapState, setMapState] = useState(useMap());
+  const [mapState, setMapState] = useState(useMap());
+  const [mapView, setMapView] = useState({
+    center: map.getCenter(),
+    zoom: map.getZoom(),
+  });
+  // const markerZIndex = React.useRef(zIndex);
 
   const iconColor = () => {
     if (onGround) {
@@ -51,10 +59,6 @@ const Aircraft = ({
     }
   };
 
-  // const dropShadowDistance = 15;
-  // const dropShadow = `drop-shadow-6md`;
-  // const dropShadow = `drop-shadow-${dropShadowDistance}md`;
-  // const dropShadowDistance = Math.floor(altitudeFeet / 1000);
   let dropShadow;
   switch (Math.floor(altitudeFeet / 1000)) {
     case 0:
@@ -165,13 +169,62 @@ const Aircraft = ({
       iconAnchor: [12, 24], // Point of the icon which will correspond to marker's location
     });
 
+  // TODO: Remove later
+  if (icao24.toUpperCase() === "AB39E9" || icao24.toUpperCase() === "AB9A32") {
+    console.log(
+      "Aircraft:",
+      icao24.toUpperCase(),
+      "altitude:",
+      altitudeFeet,
+      "latitude:",
+      latitude,
+      "z-index:",
+      zIndex,
+      "lat lon:"
+    );
+  }
+
+  useMapEvents({
+    moveend: () => {
+      setMapView({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      });
+    },
+    zoomend: () => {
+      setMapView({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      });
+    },
+  });
+
+  // const map = useMap();
+  let markerLayerPoint;
+  // let adjustedZOffset;
+  const [adjustedZOffset, setAdjustedZOffset] = useState(0);
+
+  useEffect(() => {
+    // Get the (x, y) pixel based coordinate of the marker's point on the map
+    markerLayerPoint = map.latLngToLayerPoint([latitude, longitude]);
+    // Calculates a value that when Leaflet calculates z-index will result in our intended z-index
+    // adjustedZOffset = zIndex - markerLayerPoint.y;
+    setAdjustedZOffset(zIndex - markerLayerPoint.y);
+
+    // TODO: Remove later
+    if (icao24.toUpperCase() === "A34E9D") {
+      console.log("latLngToLayerPoint:", markerLayerPoint);
+      console.log("Calculated z-offset:", adjustedZOffset);
+    }
+  }, [mapView, allAircraft]);
+
   // Lat and lon can be null, so only render if both truthy
   if (latitude && longitude) {
     return (
       <Marker
         position={[latitude, longitude]}
         icon={aircraftIcon()}
-        zIndexOffset={markerZIndex.current}
+        zIndexOffset={adjustedZOffset}
       >
         <Popup>
           <div>ICAO24: {icao24.toUpperCase()}</div>
