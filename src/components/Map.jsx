@@ -26,7 +26,7 @@ import { socket } from "../socket.js";
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
 
-  const allAircraftInstances = allAircraft.map((plane) => (
+  const allAircraftInstances = allAircraft.map((plane, index) => (
     <Aircraft
       icao24={plane.icao24}
       callsign={plane.callsign}
@@ -38,6 +38,7 @@ function Map() {
       velocity={plane.velocity}
       trueTrack={plane.trueTrack}
       verticalRate={plane.verticalRate}
+      zIndex={index}
       key={plane.aircraftId}
     />
   ));

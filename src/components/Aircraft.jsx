@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import { Marker, Popup } from "react-leaflet";
 import { unixSecondsToLocal } from "../../utils/timeAndDate";
@@ -27,8 +27,10 @@ const Aircraft = ({
   trueTrack,
   verticalRate,
   geoAltitude,
+  zIndex,
 }) => {
   const altitudeFeet = metersToFeet(baroAltitude);
+  const markerZIndex = React.useRef();
 
   const iconColor = () => {
     if (onGround) {
@@ -165,7 +167,11 @@ const Aircraft = ({
   // Lat and lon can be null, so only render if both truthy
   if (latitude && longitude) {
     return (
-      <Marker position={[latitude, longitude]} icon={aircraftIcon()}>
+      <Marker
+        position={[latitude, longitude]}
+        icon={aircraftIcon()}
+        zIndexOffset={markerZIndex}
+      >
         <Popup>
           <div>ICAO24: {icao24.toUpperCase()}</div>
           <div>{callsign != null && `Callsign: ${callsign.toUpperCase()}`}</div>
