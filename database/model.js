@@ -35,7 +35,7 @@ Aircraft.init(
     },
     // Country name inferred from the ICAO 24-bit address.
     originCountry: {
-      type: DataTypes.STRING(25),
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
     // Unix timestamp (seconds) for the last position update.
@@ -167,8 +167,9 @@ Aircraft.init(
 // Only execute if this file is run directly
 if (process.argv[1] === url.fileURLToPath(import.meta.url)) {
   console.log(`Syncing ${config.DB_NAME} database...`);
-  await db.sync();
+  await db.sync({ force: true });
   console.log("Finished syncing database!");
+  await db.close();
 }
 
 export default db;

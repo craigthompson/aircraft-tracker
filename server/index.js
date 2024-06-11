@@ -71,11 +71,12 @@ socketIo.on("connection", (socket) => {
 // '0 0 * * 0'        - every Sunday at midnight
 // '0 0 1 * *'        - the first day of every month
 // '0 0 1 1 *'        - once a year, on January 1st
-cron.schedule("*/20 * * * * *", () => {
+cron.schedule("*/20 * * * * *", async () => {
   try {
     console.log("Running scheduled task to get aircraft data.");
-    getAircraft(40.579247, -112.2624345, 40.8955744, -111.6382737);
-    emitAllAircraftForAllSockets();
+    // getAircraft(40.579247, -112.2624345, 40.8955744, -111.6382737);
+    await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
+    await emitAllAircraftForAllSockets();
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -99,12 +100,12 @@ ViteExpress.bind(app, server);
 
 //
 //
-const delaySeconds = 5;
-setTimeout(async () => {
-  console.log(`Delayed for ${delaySeconds} seconds.`);
-  // const allAircraft = await queryAllAircraft();
-  emitAllAircraftForAllSockets();
-  // socketIo.emit("all_aircraft", allAircraft);
-}, delaySeconds * 1000);
+// const delaySeconds = 5;
+// setTimeout(async () => {
+//   console.log(`Delayed for ${delaySeconds} seconds.`);
+//   // const allAircraft = await queryAllAircraft();
+//   emitAllAircraftForAllSockets();
+//   // socketIo.emit("all_aircraft", allAircraft);
+// }, delaySeconds * 1000);
 
 export default socketIo;

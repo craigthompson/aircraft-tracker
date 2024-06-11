@@ -30,7 +30,8 @@ const Aircraft = ({
   zIndex,
 }) => {
   const altitudeFeet = metersToFeet(baroAltitude);
-  const markerZIndex = React.useRef();
+  const markerZIndex = React.useRef(zIndex);
+  // console.log("markerZIndex", markerZIndex);
 
   const iconColor = () => {
     if (onGround) {
@@ -170,7 +171,7 @@ const Aircraft = ({
       <Marker
         position={[latitude, longitude]}
         icon={aircraftIcon()}
-        zIndexOffset={markerZIndex}
+        zIndexOffset={markerZIndex.current}
       >
         <Popup>
           <div>ICAO24: {icao24.toUpperCase()}</div>
