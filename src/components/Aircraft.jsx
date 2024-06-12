@@ -155,8 +155,8 @@ const Aircraft = ({
       dropShadow = "drop-shadow-30md";
   }
 
-  const aircraftIcon = () =>
-    L.divIcon({
+  const aircraftIcon = () => {
+    const thing = L.divIcon({
       html: ReactDOMServer.renderToString(
         <IoMdAirplane
           className={`${iconColor()} text-4xl`}
@@ -165,9 +165,12 @@ const Aircraft = ({
       ),
       // className: ``, // Ensures no additional classes affect the styling
       className: dropShadow, // Ensures no additional classes affect the styling
-      iconSize: [24, 24], // Size of the icon
-      iconAnchor: [12, 24], // Point of the icon which will correspond to marker's location
+      iconSize: [36, 36], // Size of the icon
+      iconAnchor: [18, 18], // Point of the icon which will correspond to marker's location
     });
+    console.log("Icon:", thing);
+    return thing;
+  };
 
   // TODO: Remove later
   if (icao24.toUpperCase() === "AB39E9" || icao24.toUpperCase() === "AB9A32") {
@@ -199,9 +202,7 @@ const Aircraft = ({
     },
   });
 
-  // const map = useMap();
   let markerLayerPoint;
-  // let adjustedZOffset;
   const [adjustedZOffset, setAdjustedZOffset] = useState(0);
 
   useEffect(() => {
