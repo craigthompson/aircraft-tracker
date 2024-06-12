@@ -199,12 +199,15 @@ const Aircraft = ({
             className={`${iconColor()} text-4xl ${iconOutline()}`}
             style={{
               transform: `rotate(${trueTrack}deg)`,
-              filter: `drop-shadow(0 0px 2px ${iconOutline()})`,
+              filter: `drop-shadow(0 0px 2px ${iconOutline()}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
             }}
           />
           <span
             className="p-0.5 rounded filter-none"
-            style={{ backgroundColor: `rgba(255, 255, 255, 0.55)` }}
+            style={{
+              backgroundColor: `rgba(255, 255, 255, 0.65)`,
+              boxShadow: `0 0 6px rgba(255, 255, 255, 0.8)`,
+            }}
           >
             {callsign}
           </span>
