@@ -7,11 +7,12 @@ const debug = true; // Set true to enable console log debugging of this file
 const openskyUrl = "https://opensky-network.org";
 
 /**
- * Takes a single aircraft array object (from the /states/all API endpoint)
- *   and parses out the different data elements.
+ * Takes a single aircraft array object (from the /states/all API
+ *   endpoint)and parses out the different data elements.
  *
  * @param {array} aircraft the array of data for a single aircraft
- * @returns {object} object containing the data for the given aircraft
+ * @returns {object} object containing the data for the given
+ *   aircraft
  */
 export const parseAircraftData = (aircraft) => {
   return {
@@ -36,6 +37,27 @@ export const parseAircraftData = (aircraft) => {
   };
 };
 
+/**
+ * Fetches the live aircraft in the given rectangular geographic
+ *   area from the OpenSky Network API, then upserts the received
+ *   aircraft data into the "aircraft" table of the database.
+ *
+ * The geographic area is defined by the minimum and maximum
+ *   latitude and longitude of the desired rectangular geographic
+ *   area.
+ *
+ * Upsert -- adds the data to DB if not already present, or
+ *   updates the data if already in DB.
+ *
+ * @param {float} latMin - minimum latitude of the desired area
+ *   (decimal degress)
+ * @param {float} lonMin - minimum longitude of the desired area
+ *   (decimal degress)
+ * @param {float} latMax - maximum latitude of the desired area
+ *   (decimal degress)
+ * @param {float} lonMax - maximum longitude of the desired area
+ *   (decimal degress)
+ */
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
   const response = await axios.get(`${openskyUrl}/api/states/all`, {
     auth: {
@@ -43,12 +65,6 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
       password: process.env.OPENSKY_PASSWORD,
     },
     params: {
-      // TODO: remove these test values
-      // lamin: 39.429927,
-      // lomin: -112.879124,
-      // lamax: 41.114634,
-      // lomax: -110.308323,
-
       lamin: latMin,
       lomin: lonMin,
       lamax: latMax,
@@ -68,7 +84,4 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
       return upsertAircraft(aircraftObj);
     })
   );
-  // setLaunchesData(data);
 };
-
-// getAircraft(39.429927, -112.879124, 41.114634, -110.308323);
