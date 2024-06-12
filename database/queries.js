@@ -4,7 +4,7 @@ import db, { Aircraft } from "./model.js";
 export const queryAllAircraft = async () => {
   const allAircraft = await Aircraft.findAll({
     order: [
-      // Order by on_ground descending
+      // Will order the aircraft by on_ground in descending order
       ["on_ground", "DESC"],
       // Conditional order: if on_ground is true, order by velocity ascending
       // If on_ground is false, this doesn't affect the order
@@ -12,15 +12,9 @@ export const queryAllAircraft = async () => {
         db.literal("CASE WHEN on_ground = true THEN velocity ELSE NULL END"),
         "ASC",
       ],
-      // Order by baro_altitude ascending for all rows
+      // Order the aircraft by altitude in ascending order
       ["baro_altitude", "ASC"],
     ],
-    // order: [
-    //   // Will order the aircraft by on_ground in ascending order
-    //   ["on_ground", "DESC"],
-    //   // Will then order the aircraft by altitude in ascending order
-    //   ["baro_altitude", "ASC"],
-    // ],
   });
   // console.log("All Aircraft:", allAircraft);
   return allAircraft;
