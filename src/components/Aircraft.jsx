@@ -45,7 +45,7 @@ const Aircraft = ({
 
   const iconColor = () => {
     if (onGround) {
-      return "text-gray-400";
+      return "text-gray-600 drop-shadow-md";
     } else if (altitudeFeet < 5000) {
       return `text-sky-900`;
     } else if (altitudeFeet < 10000) {
