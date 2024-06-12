@@ -194,13 +194,21 @@ const Aircraft = ({
   const aircraftIcon = () =>
     L.divIcon({
       html: ReactDOMServer.renderToString(
-        <IoMdAirplane
-          className={`${iconColor()} text-4xl ${iconOutline()}`}
-          style={{
-            transform: `rotate(${trueTrack}deg)`,
-            filter: `drop-shadow(0 0px 2px ${iconOutline()})`,
-          }}
-        />
+        <>
+          <IoMdAirplane
+            className={`${iconColor()} text-4xl ${iconOutline()}`}
+            style={{
+              transform: `rotate(${trueTrack}deg)`,
+              filter: `drop-shadow(0 0px 2px ${iconOutline()})`,
+            }}
+          />
+          <span
+            className="p-0.5 rounded filter-none"
+            style={{ backgroundColor: `rgba(255, 255, 255, 0.55)` }}
+          >
+            {callsign}
+          </span>
+        </>
       ),
       // className: ``, // Ensures no additional classes affect the styling
       className: dropShadow, // Ensures no additional classes affect the styling
