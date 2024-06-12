@@ -10,6 +10,7 @@ import socketHandlerFunctions from "./socketController.js";
 import chalk from "chalk";
 import cron from "node-cron";
 import { getAircraft } from "./opensky.js";
+import { getNumOfClients } from "./socketController.js";
 
 import http from "http";
 import { Server } from "socket.io";
@@ -35,14 +36,14 @@ const socketIo = new Server(server);
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
 const { getAllAircraft } = handlerFunctions;
 
-const { emitAllAircraftForNewlyConnectedSocket, emitAllAircraftForAllSockets } =
-  socketHandlerFunctions;
-
 app.get("/api/aircraft/all", getAllAircraft);
 
 //////////////////////////////////////////////
-//  Socket.io Events
+//  Socket.io
 //////////////////////////////////////////////
+const { emitAllAircraftToSingleSocket, emitAllAircraftForAllSockets } =
+  socketHandlerFunctions;
+
 // Handle WebSocket connections
 socketIo.on("connection", (socket) => {
   console.log(
@@ -50,7 +51,7 @@ socketIo.on("connection", (socket) => {
     "A user connected. Socket ID:",
     socket.id
   );
-  emitAllAircraftForNewlyConnectedSocket(socket);
+  emitAllAircraftToSingleSocket(socket);
 
   socket.on("disconnect", () => {
     console.log(
@@ -73,10 +74,16 @@ socketIo.on("connection", (socket) => {
 // '0 0 1 1 *'        - once a year, on January 1st
 cron.schedule("*/20 * * * * *", async () => {
   try {
-    console.log("Running scheduled task to get aircraft data.");
-    // getAircraft(40.579247, -112.2624345, 40.8955744, -111.6382737);
-    await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-    await emitAllAircraftForAllSockets();
+    if (getNumOfClients(socketIo) > 0) {
+      console.log("Running scheduled task to get aircraft data.");
+      // getAircraft(40.579247, -112.2624345, 40.8955744, -111.6382737);
+      await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
+      await emitAllAircraftForAllSockets();
+    } else {
+      console.log(
+        "Skipping scheduled task to get aircraft data, since no clients currently connected."
+      );
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
