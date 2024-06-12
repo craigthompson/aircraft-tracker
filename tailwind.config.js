@@ -1,19 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./utils/customIcon.js",
+  ],
   theme: {
     extend: {
       dropShadow: {
         "0md": "0px -0px 1.8px rgba(0, 0, 0, 0.45)",
-        "1md": "1px -1px 1.8px rgba(0, 0, 0, 0.25)",
-        "2md": "2px -2px 1.8px rgba(0, 0, 0, 0.25)",
-        "3md": "3px -3px 1.8px rgba(0, 0, 0, 0.25)",
-        "4md": "4px -4px 1.8px rgba(0, 0, 0, 0.25)",
-        "5md": "5px -5px 1.8px rgba(0, 0, 0, 0.25)",
-        "6md": "6px -6px 1.8px rgba(0, 0, 0, 0.25)",
-        "7md": "7px -7px 1.8px rgba(0, 0, 0, 0.25)",
-        "8md": "8px -8px 1.8px rgba(0, 0, 0, 0.25)",
-        "9md": "9px -9px 1.8px rgba(0, 0, 0, 0.25)",
+        "1md": "1px -1px 1.8px rgba(0, 0, 0, 0.4)",
+        "2md": "2px -2px 1.8px rgba(0, 0, 0, 0.4)",
+        "3md": "3px -3px 1.8px rgba(0, 0, 0, 0.4)",
+        "4md": "4px -4px 1.8px rgba(0, 0, 0, 0.4)",
+        "5md": "5px -5px 1.8px rgba(0, 0, 0, 0.4)",
+        "6md": "6px -6px 1.8px rgba(0, 0, 0, 0.4)",
+        "7md": "7px -7px 1.8px rgba(0, 0, 0, 0.4)",
+        "8md": "8px -8px 1.8px rgba(0, 0, 0, 0.4)",
+        "9md": "9px -9px 1.8px rgba(0, 0, 0, 0.4)",
         "11md": "11px -11px 2px rgba(0, 0, 0, 0.2)",
         "10md": "10px -10px 2px rgba(0, 0, 0, 0.2)",
         "12md": "12px -12px 2px rgba(0, 0, 0, 0.2)",
