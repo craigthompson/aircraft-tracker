@@ -1,6 +1,39 @@
 import db, { Aircraft } from "./model.js";
 
-// Get all aircraft from DB
+/**
+ * Queries all aircraft data from the aircraft table of the
+ * database and returns an array of the aircraft. See return info
+ * for details of the ordering of the returned array.
+ *
+ *
+ * @returns {Array.<{
+ *   aircraftId: Number,
+ *   icao24: String,
+ *   callsign: String,
+ *   originCountry: String,
+ *   timePosition: Integer,
+ *   lastContact: Integer,
+ *   longitude: Float,
+ *   latitude: Float,
+ *   baroAltitude: Float,
+ *   onGround: Boolean,
+ *   velocity: Float,
+ *   trueTrack: Float,
+ *   verticalRate: Float,
+ *   sensors: Integer,
+ *   geoAltitude: Float,
+ *   squawk: String,
+ *   spi: Boolean,
+ *   positionSource: Integer,
+ *   vehicleCategory: Integer
+ * }>} Array of aircraft objects ordered first
+ * by aircraft on the ground, aircraft on the ground are ordered
+ * by velocity (ascending), then aircraft not on the ground
+ * (flying) are ordered by altitude (ascending)
+ *
+ * @see {@link Aircraft} for more information about the Aircraft
+ * model (DB table)
+ */
 export const queryAllAircraft = async () => {
   const allAircraft = await Aircraft.findAll({
     order: [

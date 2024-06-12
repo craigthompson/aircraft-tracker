@@ -6,15 +6,17 @@ import config from "../config/config.js";
 
 const db = await connectToDB(`postgresql:///${config.DB_NAME}`);
 
+/**
+ * The aircraft table in the database.
+ *
+ * @see {@link https://openskynetwork.github.io/opensky-api/rest.html#response} OpenSky Network API documentation.
+ */
 export class Aircraft extends Model {
   [util.inspect.custom]() {
     return this.toJSON();
   }
 }
 
-/**
- * Doc: https://openskynetwork.github.io/opensky-api/rest.html#response
- */
 Aircraft.init(
   {
     aircraftId: {
