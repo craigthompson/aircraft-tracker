@@ -32,9 +32,10 @@ const Aircraft = ({
   allAircraft,
 }) => {
   const map = useMap();
-  const [grounded, setGrounded] = useState(onGround);
   const altitudeFeet = metersToFeet(baroAltitude);
-  // const [mapState, setMapState] = useState(useMap());
+  const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(2);
+
+  const [grounded, setGrounded] = useState(onGround);
   const [mapState, setMapState] = useState(useMap());
   const [mapView, setMapView] = useState({
     center: map.getCenter(),
@@ -58,6 +59,40 @@ const Aircraft = ({
     } else {
       return `text-cyan-400`;
     }
+  };
+
+  const iconOutline = () => {
+    const minClimbRateFactor = 50;
+
+    function mapValue(x, a, b, c, d) {
+      return c + ((x - a) * (d - c)) / (b - a);
+    }
+
+    // Define the original and new ranges
+    const originalMin = minClimbRateFactor;
+    const originalMax = 1500;
+    const newMin = 100;
+    const newMax = 255;
+
+    // Example usage
+    const climbRate = 1000; // This is the value you want to map
+    const mappedValue = mapValue(
+      Math.abs(climbRateFpm),
+      originalMin,
+      originalMax,
+      newMin,
+      newMax
+    );
+
+    const colorBrightness = Math.min(Math.round(mappedValue), 255);
+    if (climbRateFpm <= -minClimbRateFactor) {
+      // return "outline outline-offset-2 outline-red-400";
+      return `rgba(${colorBrightness}, 0, 0, 0.9)`;
+    } else if (climbRateFpm >= minClimbRateFactor) {
+      // return "outline outline-offset-2 outline-green-400";
+      return `rgba(0, ${colorBrightness}, 0, 0.9)`;
+    }
+    return "";
   };
 
   let dropShadow;
@@ -160,8 +195,11 @@ const Aircraft = ({
     L.divIcon({
       html: ReactDOMServer.renderToString(
         <IoMdAirplane
-          className={`${iconColor()} text-4xl`}
-          style={{ transform: `rotate(${trueTrack}deg)` }}
+          className={`${iconColor()} text-4xl ${iconOutline()}`}
+          style={{
+            transform: `rotate(${trueTrack}deg)`,
+            filter: `drop-shadow(0 0px 2px ${iconOutline()})`,
+          }}
         />
       ),
       // className: ``, // Ensures no additional classes affect the styling
@@ -245,10 +283,7 @@ const Aircraft = ({
           <div>
             {geoAltitude != null && `Altitude: ${geoAltitude.toFixed(2)} ft`}
           </div>
-          <div>
-            {verticalRate != null &&
-              `Climb rate: ${toFeetPerMinute(verticalRate).toFixed(2)} fpm`}
-          </div>
+          <div>{verticalRate != null && `Climb rate: ${climbRateFpm} fpm`}</div>
           <div>{trueTrack != null && `Track: ${trueTrack} deg`}</div>
           Last Contact: {unixSecondsToLocal(lastContact)}
         </Popup>
