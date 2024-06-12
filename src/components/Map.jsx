@@ -31,6 +31,7 @@ function Map() {
       verticalRate={plane.verticalRate}
       zIndex={index}
       key={plane.aircraftId}
+      totalAircraft={allAircraft.length}
       allAircraft={allAircraft}
     />
   ));

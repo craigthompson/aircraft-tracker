@@ -28,6 +28,7 @@ const Aircraft = ({
   verticalRate,
   geoAltitude,
   zIndex,
+  totalAircraft,
   allAircraft,
 }) => {
   const map = useMap();
@@ -155,8 +156,8 @@ const Aircraft = ({
       dropShadow = "drop-shadow-30md";
   }
 
-  const aircraftIcon = () => {
-    const thing = L.divIcon({
+  const aircraftIcon = () =>
+    L.divIcon({
       html: ReactDOMServer.renderToString(
         <IoMdAirplane
           className={`${iconColor()} text-4xl`}
@@ -168,9 +169,6 @@ const Aircraft = ({
       iconSize: [36, 36], // Size of the icon
       iconAnchor: [18, 18], // Point of the icon which will correspond to marker's location
     });
-    console.log("Icon:", thing);
-    return thing;
-  };
 
   // TODO: Remove later
   if (icao24.toUpperCase() === "AB39E9" || icao24.toUpperCase() === "AB9A32") {
@@ -226,6 +224,10 @@ const Aircraft = ({
         position={[latitude, longitude]}
         icon={aircraftIcon()}
         zIndexOffset={adjustedZOffset}
+        title={callsign.trim()}
+        riseOnHover={true}
+        // Make the z offset for a hovered plane higher than any other plane on the map
+        riseOffset={totalAircraft + 1}
       >
         <Popup>
           <div>ICAO24: {icao24.toUpperCase()}</div>
