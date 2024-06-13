@@ -100,7 +100,7 @@ Aircraft.init(
     // IDs of the receivers which contributed to this state vector.
     // Is null if no filtering for sensor was used in the request.
     sensors: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: true,
     },
     // Geometric altitude in meters.
