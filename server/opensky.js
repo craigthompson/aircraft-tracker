@@ -8,12 +8,19 @@ const debug = true; // Set true to enable console log debugging of this file
 const openskyUrl = "https://opensky-network.org";
 
 /**
+ * OpenSky API Documentation https://openskynetwork.github.io/opensky-api/rest.html#response
+ */
+
+/**
  * Takes a single aircraft array object (from the /states/all API
  *   endpoint)and parses out the different data elements.
  *
  * @param {array} aircraft the array of data for a single aircraft
  * @returns {object} object containing the data for the given
  *   aircraft
+ *
+ * @see {@link https://openskynetwork.github.io/opensky-api/rest.html#response}
+ *   OpenSky Network API documentation.
  */
 export const parseAircraftData = (aircraft) => {
   return {
@@ -58,6 +65,9 @@ export const parseAircraftData = (aircraft) => {
  *   (decimal degress)
  * @param {float} lonMax - maximum longitude of the desired area
  *   (decimal degress)
+ *
+ * @see {@link https://openskynetwork.github.io/opensky-api/rest.html#response}
+ *   OpenSky Network API documentation.
  */
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
   const response = await axios.get(`${openskyUrl}/api/states/all`, {
@@ -109,6 +119,9 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
  *   (decimal degress)
  * @param {float} lonMax - maximum longitude of the desired area
  *   (decimal degress)
+ *
+ * @see {@link https://openskynetwork.github.io/opensky-api/rest.html#response}
+ *   OpenSky Network API documentation.
  */
 export const getOwnReportedAircraft = async (
   latMin,
