@@ -15,6 +15,7 @@ import {
   aircraftIconDropShadow,
   iconSize,
 } from "../../utils/customIcon.js";
+import CallsignFlightDetailsLink from "./CallsignFlightDetailsLink.jsx";
 
 /**
  * Aircraft map marker at the given geographical coordinates
@@ -215,7 +216,7 @@ const Aircraft = ({
       >
         <Popup>
           <div>ICAO24: {icao24.toUpperCase()}</div>
-          <div>{callsign != null && `Callsign: ${callsign.toUpperCase()}`}</div>
+          <CallsignFlightDetailsLink callsign={callsign} />
           <div>
             {baroAltitude != null &&
               `Altitude: ${metersToFeet(baroAltitude).toFixed(2)} ft`}
@@ -231,6 +232,7 @@ const Aircraft = ({
           </div>
           <div>{verticalRate != null && `Climb rate: ${climbRateFpm} fpm`}</div>
           <div>{trueTrack != null && `Track: ${trueTrack} deg`}</div>
+          <div>{callsign != null && `Callsign: ${callsign.toUpperCase()}`}</div>
           Last Contact: {unixSecondsToLocal(lastContact)}
         </Popup>
       </Marker>
