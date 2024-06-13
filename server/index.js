@@ -9,7 +9,7 @@ import handlerFunctions from "./controller.js";
 import socketHandlerFunctions from "./socketController.js";
 import chalk from "chalk";
 import cron from "node-cron";
-import { getAircraft } from "./opensky.js";
+import { getAircraft, getOwnReportedAircraft } from "./opensky.js";
 import { getNumOfClients } from "./socketController.js";
 
 import http from "http";
@@ -75,13 +75,31 @@ socketIo.on("connection", (socket) => {
 cron.schedule("*/20 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
-      console.log("Running scheduled task to get aircraft data.");
-      // getAircraft(40.579247, -112.2624345, 40.8955744, -111.6382737);
-      await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      await emitAllAircraftForAllSockets();
+      // console.log("Running scheduled task to get aircraft data.");
+      // await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
+      // await emitAllAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+});
+
+// Schedule fetching own reported Opensky aircraft data every 3 seconds
+cron.schedule("*/3 * * * * *", async () => {
+  try {
+    if (getNumOfClients(socketIo) > 0) {
+      console.log(
+        "Running scheduled task to get my receiver reported aircraft data."
+      );
+      await getOwnReportedAircraft(38.7219, -114.2791, 42.3219, -109.5991);
+      await emitAllAircraftForAllSockets();
+    } else {
+      console.log(
+        "Skipping scheduled task to get my receiver reported aircraft data, since no clients currently connected."
       );
     }
   } catch (error) {

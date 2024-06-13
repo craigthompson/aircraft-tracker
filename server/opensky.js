@@ -60,10 +60,10 @@ export const parseAircraftData = (aircraft) => {
  */
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
   const response = await axios.get(`${openskyUrl}/api/states/all`, {
-    auth: {
-      username: process.env.OPENSKY_USERNAME,
-      password: process.env.OPENSKY_PASSWORD,
-    },
+    // auth: {
+    //   username: process.env.OPENSKY_USERNAME,
+    //   password: process.env.OPENSKY_PASSWORD,
+    // },
     params: {
       lamin: latMin,
       lomin: lonMin,
@@ -84,4 +84,57 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
       return upsertAircraft(aircraftObj);
     })
   );
+};
+
+/**
+ * Fetches the live aircraft reported from my own ADS-B receiver
+ *   to the OpenSky Network in the given rectangular geographic
+ *   area from the OpenSky Network API, then upserts the received
+ *   aircraft data into the "aircraft" table of the database.
+ *
+ * The geographic area is defined by the minimum and maximum
+ *   latitude and longitude of the desired rectangular geographic
+ *   area.
+ *
+ * Upsert -- adds the data to DB if not already present, or
+ *   updates the data if already in DB.
+ *
+ * @param {float} latMin - minimum latitude of the desired area
+ *   (decimal degress)
+ * @param {float} lonMin - minimum longitude of the desired area
+ *   (decimal degress)
+ * @param {float} latMax - maximum latitude of the desired area
+ *   (decimal degress)
+ * @param {float} lonMax - maximum longitude of the desired area
+ *   (decimal degress)
+ */
+export const getOwnReportedAircraft = async (
+  latMin,
+  lonMin,
+  latMax,
+  lonMax
+) => {
+  const response = await axios.get(`${openskyUrl}/api/states/own`, {
+    auth: {
+      username: process.env.OPENSKY_USERNAME,
+      password: process.env.OPENSKY_PASSWORD,
+    },
+    params: {
+      lamin: latMin,
+      lomin: lonMin,
+      lamax: latMax,
+      lomax: lonMax,
+    },
+  });
+
+  // debug && console.log("Response.data:", response.data);
+
+  if (response.data.states) {
+    const aircraftInDB = await Promise.all(
+      response.data.states.map(async (aircraft) => {
+        const aircraftObj = parseAircraftData(aircraft);
+        return upsertAircraft(aircraftObj);
+      })
+    );
+  }
 };
