@@ -66,8 +66,9 @@ const socketHandlerFunctions = {
     socket.emit("all_aircraft", allAircraft);
     console.log(
       chalk.cyan("[Socket Emit]"),
-      "Sent aircraft data to newly connected socket, socket id:",
-      socket.id
+      `Sent ${allAircraft.length} aircraft data to newly connected socket, socket id:`,
+      socket.id,
+      `\n`
     );
   },
 
@@ -81,13 +82,14 @@ const socketHandlerFunctions = {
     socketIo.emit("all_aircraft", allAircraft);
     console.log(
       chalk.blue("[Server Emit]"),
-      `Sent aircraft data to ${getNumOfClients(
+      `Sent ${allAircraft.length} aircraft data to ${getNumOfClients(
         socketIo
       )} clients, on ${getNumOfSockets(socketIo)} sockets:`,
       `\n\tClients:`,
       getIdsOfServerClients(socketIo),
       `\n\tSockets:`,
-      getIdsOfServerSockets(socketIo)
+      getIdsOfServerSockets(socketIo),
+      `\n`
     );
   },
 };

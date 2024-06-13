@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:backend": "nodemon server/index.js -w server -w src",
+    "dev:backend": "nodemon server/index.js -w server -w src -w database -w config -w utils",
     "dev": "vite",
     "build": "vite build",
     "db:create": "createdb aircraft_tracker && npm run db:sync",

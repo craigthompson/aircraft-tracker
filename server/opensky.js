@@ -1,6 +1,7 @@
 import axios from "axios";
 import { upsertAircraft } from "../database/aircraft.js";
 import "dotenv/config";
+import chalk from "chalk";
 
 const debug = true; // Set true to enable console log debugging of this file
 
@@ -60,10 +61,10 @@ export const parseAircraftData = (aircraft) => {
  */
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
   const response = await axios.get(`${openskyUrl}/api/states/all`, {
-    // auth: {
-    //   username: process.env.OPENSKY_USERNAME,
-    //   password: process.env.OPENSKY_PASSWORD,
-    // },
+    auth: {
+      username: process.env.OPENSKY_USERNAME,
+      password: process.env.OPENSKY_PASSWORD,
+    },
     params: {
       lamin: latMin,
       lomin: lonMin,
@@ -73,6 +74,7 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
   });
   debug &&
     console.log(
+      chalk.magentaBright("[OpenSky] "),
       "Rate limit remaining:",
       response.headers["x-rate-limit-remaining"]
     );

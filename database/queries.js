@@ -1,4 +1,5 @@
 import db, { Aircraft } from "./model.js";
+import { Op } from "sequelize";
 
 /**
  * Queries all aircraft data from the aircraft table of the
@@ -35,6 +36,10 @@ import db, { Aircraft } from "./model.js";
  * model (DB table)
  */
 export const queryAllAircraft = async () => {
+  await deleteOldAircraft().catch((err) => {
+    console.error("Error deleting old aircraft:", err);
+  });
+
   const allAircraft = await Aircraft.findAll({
     order: [
       // Will order the aircraft by on_ground in descending order
@@ -52,3 +57,36 @@ export const queryAllAircraft = async () => {
   // console.log("All Aircraft:", allAircraft);
   return allAircraft;
 };
+
+/**
+ * Deletes old aircraft from the aircraft table if the
+ * lastContact time was over 30 seconds ago for own reported
+ * aircraft, and 60 seconds for community reported aircraft.
+ */
+async function deleteOldAircraft() {
+  const currentTime = Math.floor(Date.now() / 1000); // Get the current time in UNIX timestamp (seconds)
+  const cutoffTimeForOwnReported = currentTime - 30; // Define the cutoff time (30 seconds ago)
+  const cutoffTimeForOpenSkyNetworkReported = currentTime - 60; // Define the cutoff time (60 seconds ago)
+
+  await Aircraft.destroy({
+    where: {
+      sensors: {
+        [Op.ne]: null,
+      },
+      lastContact: {
+        [Op.lt]: cutoffTimeForOwnReported,
+      },
+    },
+  });
+
+  await Aircraft.destroy({
+    where: {
+      sensors: {
+        [Op.eq]: null,
+      },
+      lastContact: {
+        [Op.lt]: cutoffTimeForOpenSkyNetworkReported,
+      },
+    },
+  });
+}

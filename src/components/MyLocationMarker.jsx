@@ -18,6 +18,7 @@ Leaflet.Marker.prototype.options.icon = DefaultIcon;
 
 function MyLocationMarker() {
   const [myPosition, setMyPosition] = useState(null);
+
   const map = useMapEvents({
     click() {
       map.locate();
