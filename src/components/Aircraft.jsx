@@ -232,7 +232,6 @@ const Aircraft = ({
           </div>
           <div>{verticalRate != null && `Climb rate: ${climbRateFpm} fpm`}</div>
           <div>{trueTrack != null && `Track: ${trueTrack} deg`}</div>
-          <div>{callsign != null && `Callsign: ${callsign.toUpperCase()}`}</div>
           Last Contact: {unixSecondsToLocal(lastContact)}
         </Popup>
       </Marker>
