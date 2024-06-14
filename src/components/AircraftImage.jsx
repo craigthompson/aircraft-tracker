@@ -42,9 +42,9 @@ function AircraftImage({ icao24 }) {
             onLoad={handleImageLoad}
           />
           {isImageLoaded && (
-            <div className="absolute inset-x-0 bottom-0 h-5 bg-slate-900/30 ">
+            <div className="absolute inset-x-0 bottom-0 flex flex-row h-5 bg-gradient-to-r from-slate-900/25 from-70%">
               <span
-                className="absolute left-1.5 bottom-0.5 text-slate-50 text-xs"
+                className="ml-2 basis-5/6 text-slate-50 text-xs content-center"
                 style={{
                   filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
                     drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
@@ -53,14 +53,16 @@ function AircraftImage({ icao24 }) {
               >
                 {`© ${photographer}`}
               </span>
-              <FaExternalLinkAlt
-                className="absolute right-1.5 bottom-1 text-slate-50 text-xs"
-                style={{
-                  filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
-                  drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
-                  drop-shadow(-1px -1px 1px rgb(0 0 0 / 0.25))`,
-                }}
-              />
+              <div className="basis-1/6 flex justify-end items-center">
+                <FaExternalLinkAlt
+                  className="mr-2 mb-0.5 text-slate-50 text-xs"
+                  style={{
+                    filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
+                      drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
+                      drop-shadow(-1px -1px 1px rgb(0 0 0 / 0.25))`,
+                  }}
+                />
+              </div>
             </div>
           )}
         </a>
