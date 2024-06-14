@@ -47,8 +47,9 @@ function AircraftImage({ icao24 }) {
             <span
               className="absolute bottom-1.5 left-2 text-slate-50 text-xs"
               style={{
-                filter: `drop-shadow(1px 2px 2px rgb(0 0 0 / 0.35)) 
-                  drop-shadow(0px 1px 1px rgb(0 0 0 / 0.25))`,
+                filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
+                  drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
+                  drop-shadow(-1px -1px 1px rgb(0 0 0 / 0.25))`,
               }}
             >
               {`© ${photographer}`}
@@ -58,8 +59,9 @@ function AircraftImage({ icao24 }) {
             <FaExternalLinkAlt
               className="absolute bottom-2 right-2 text-slate-50 text-xs"
               style={{
-                filter: `drop-shadow(1px 2px 2px rgb(0 0 0 / 0.35)) 
-                  drop-shadow(0px 1px 1px rgb(0 0 0 / 0.25))`,
+                filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
+                  drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
+                  drop-shadow(-1px -1px 1px rgb(0 0 0 / 0.25))`,
               }}
             />
           )}
