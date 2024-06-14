@@ -256,7 +256,9 @@ const Aircraft = ({
               )}
             </tbody>
           </table>
-          Last Contact: {unixSecondsToLocal(lastContact)}
+          <div className="mt-2 text-gray-400 text-xs">
+            Last Contact: {unixSecondsToLocal(lastContact)}
+          </div>
         </Popup>
       </Marker>
     );

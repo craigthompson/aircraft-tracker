@@ -38,7 +38,7 @@ function AircraftImage({ icao24 }) {
           <img
             className={`drop-shadow-md ${isImageLoaded ? "" : "hidden"}`}
             src={imgUrl}
-            alt={`Photo of `} // TODO: change alt text
+            alt={`Photo of ${icao24.toUpperCase()}`}
             onLoad={handleImageLoad}
           />
           {isImageLoaded && (
