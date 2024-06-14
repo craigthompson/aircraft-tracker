@@ -216,6 +216,7 @@ const Aircraft = ({
         riseOffset={totalAircraft + 1}
       >
         <Popup>
+          <AircraftImage icao24={icao24} />
           <div>ICAO24: {icao24.toUpperCase()}</div>
           <CallsignFlightDetailsLink callsign={callsign} />
           <div>
@@ -233,7 +234,6 @@ const Aircraft = ({
           </div>
           <div>{verticalRate != null && `Climb rate: ${climbRateFpm} fpm`}</div>
           <div>{trueTrack != null && `Track: ${trueTrack} deg`}</div>
-          <AircraftImage icao24={icao24} />
           Last Contact: {unixSecondsToLocal(lastContact)}
         </Popup>
       </Marker>
