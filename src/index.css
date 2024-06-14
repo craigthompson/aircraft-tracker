@@ -10,3 +10,7 @@ body,
   margin: 0;
   padding: 0;
 }
+
+.leaflet-popup-content {
+  margin: 13px 20px 13px 20px;
+}
