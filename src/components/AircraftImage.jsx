@@ -23,7 +23,11 @@ function AircraftImage({ icao24 }) {
     getUrl();
   }, []);
 
-  return <img src={imgUrl} alt={"Temporary Filler"} />; // TODO: change alt text
+  if (imgUrl) {
+    return <img src={imgUrl} alt={"Temporary Filler"} />; // TODO: change alt text
+  } else {
+    return <></>;
+  }
 }
 
 export default AircraftImage;
