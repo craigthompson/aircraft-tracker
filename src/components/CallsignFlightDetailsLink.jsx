@@ -1,15 +1,17 @@
 function CallsignFlightDetailsLink({ callsign }) {
   return (
     callsign != null && (
-      <div>
-        {`Callsign: `}
-        <a
-          href={`https://www.flightaware.com/live/flight/${callsign.toUpperCase()}`}
-          target="_blank"
-        >
-          {callsign.toUpperCase()}
-        </a>
-      </div>
+      <>
+        <td>{`Callsign: `}</td>
+        <td className="pl-2">
+          <a
+            href={`https://www.flightaware.com/live/flight/${callsign.toUpperCase()}`}
+            target="_blank"
+          >
+            {callsign.toUpperCase()}
+          </a>
+        </td>
+      </>
     )
   );
 }

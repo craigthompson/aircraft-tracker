@@ -217,23 +217,45 @@ const Aircraft = ({
       >
         <Popup>
           <AircraftImage icao24={icao24} />
-          <div>ICAO24: {icao24.toUpperCase()}</div>
-          <CallsignFlightDetailsLink callsign={callsign} />
-          <div>
-            {baroAltitude != null &&
-              `Altitude: ${metersToFeet(baroAltitude).toFixed(2)} ft`}
-          </div>
-          <div>
-            {velocity != null &&
-              `Speed: ${toMilesPerHour(velocity).toFixed(2)} mph (${toKnots(
-                toMilesPerHour(velocity)
-              ).toFixed(2)} kts)`}
-          </div>
-          <div>
-            {geoAltitude != null && `Altitude: ${geoAltitude.toFixed(2)} ft`}
-          </div>
-          <div>{verticalRate != null && `Climb rate: ${climbRateFpm} fpm`}</div>
-          <div>{trueTrack != null && `Track: ${trueTrack} deg`}</div>
+          <table className="mt-2 table-auto">
+            <tbody>
+              <tr>
+                <td>ICAO24:</td>
+                <td className="pl-2">{icao24.toUpperCase()}</td>
+              </tr>
+              <CallsignFlightDetailsLink callsign={callsign} />
+              {baroAltitude != null && (
+                <tr>
+                  <td>{`Altitude:`}</td>
+                  <td className="pl-2">{`${metersToFeet(baroAltitude).toFixed(
+                    2
+                  )} ft`}</td>
+                </tr>
+              )}
+              {velocity != null && (
+                <tr>
+                  <td>{`Speed:`}</td>
+                  <td className="pl-2">
+                    {`${toMilesPerHour(velocity).toFixed(2)} mph (${toKnots(
+                      toMilesPerHour(velocity)
+                    ).toFixed(2)} kts)`}
+                  </td>
+                </tr>
+              )}
+              {verticalRate != null && (
+                <tr>
+                  <td>{`Climb rate:`}</td>
+                  <td className="pl-2">{`${climbRateFpm} fpm`}</td>
+                </tr>
+              )}
+              {trueTrack != null && (
+                <tr>
+                  <td>{`Track:`}</td>
+                  <td className="pl-2">{`${trueTrack} deg`}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
           Last Contact: {unixSecondsToLocal(lastContact)}
         </Popup>
       </Marker>
