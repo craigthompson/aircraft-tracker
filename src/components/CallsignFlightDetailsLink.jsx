@@ -2,7 +2,8 @@ import { FaExternalLinkAlt } from "react-icons/fa";
 
 function CallsignFlightDetailsLink({ callsign }) {
   return (
-    callsign != null && (
+    callsign != null &&
+    callsign != "" && (
       <>
         <td>{`Callsign: `}</td>
         <td className="pl-2">
