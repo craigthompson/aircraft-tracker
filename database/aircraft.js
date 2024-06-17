@@ -10,33 +10,39 @@ import { Aircraft } from "./model.js";
  * @returns {Aircraft} Aircraft model that was added or updated.
  */
 export const upsertAircraft = async (aircraft) => {
-  const newAircraft = await Aircraft.upsert(
-    {
-      icao24: aircraft.icao24,
-      callsign: aircraft.callsign,
-      originCountry: aircraft.originCountry,
-      timePosition: aircraft.timePosition,
-      lastContact: aircraft.lastContact,
-      longitude: aircraft.longitude,
-      latitude: aircraft.latitude,
-      baroAltitude: aircraft.baroAltitude,
-      onGround: aircraft.onGround,
-      velocity: aircraft.velocity,
-      trueTrack: aircraft.trueTrack,
-      verticalRate: aircraft.verticalRate,
-      sensors: aircraft.sensors,
-      geoAltitude: aircraft.geoAltitude,
-      squawk: aircraft.squawk,
-      spi: aircraft.spi,
-      positionSource: aircraft.positionSource,
-      vehicleCategory: aircraft.vehicleCategory,
-    },
-    {
-      conflict: {
-        target: ["icao24"],
-      },
-    }
-  );
+  try {
+    if (aircraft.callsign) {
+      const newAircraft = await Aircraft.upsert(
+        {
+          callsign: aircraft.callsign,
+          icao24: aircraft.icao24,
+          originCountry: aircraft.originCountry,
+          timePosition: aircraft.timePosition,
+          lastContact: aircraft.lastContact,
+          longitude: aircraft.longitude,
+          latitude: aircraft.latitude,
+          baroAltitude: aircraft.baroAltitude,
+          onGround: aircraft.onGround,
+          velocity: aircraft.velocity,
+          trueTrack: aircraft.trueTrack,
+          verticalRate: aircraft.verticalRate,
+          sensors: aircraft.sensors,
+          geoAltitude: aircraft.geoAltitude,
+          squawk: aircraft.squawk,
+          spi: aircraft.spi,
+          positionSource: aircraft.positionSource,
+          vehicleCategory: aircraft.vehicleCategory,
+        },
+        {
+          conflict: {
+            target: ["icao24"],
+          },
+        }
+      );
 
-  return newAircraft;
+      return newAircraft;
+    }
+  } catch (error) {
+    console.error("Error during upsert:", error);
+  }
 };
