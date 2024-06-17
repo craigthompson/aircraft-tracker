@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:backend": "nodemon server/index.js -w server -w src -w database -w config -w utils",
+    "dev:backend": "export NODE_ENV=development && nodemon server/index.js -w server -w src -w database -w config -w utils ",
     "dev": "vite",
     "build": "vite build",
     "db:create": "createdb aircraft_tracker && npm run db:sync",
@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "chalk": "^5.3.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "leaflet": "^1.9.4",
