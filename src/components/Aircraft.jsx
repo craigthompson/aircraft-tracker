@@ -114,97 +114,100 @@ const Aircraft = ({
   totalAircraft,
   allAircraft,
 }) => {
-  const map = useMap();
-  const altitudeFeet = metersToFeet(baroAltitude);
-  const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(2);
-
-  const [mapView, setMapView] = useState({
-    center: map.getCenter(),
-    zoom: map.getZoom(),
-  });
-
-  const iconDivSize = iconSize(map.getZoom()).pixelSize;
-  const iconClassSize = iconSize(map.getZoom()).cssSize;
-  const aircraftIcon = () =>
-    L.divIcon({
-      html: ReactDOMServer.renderToString(
-        <>
-          <IoMdAirplane
-            className={`${iconColor(altitudeFeet)} ${iconClassSize}`}
-            style={{
-              transform: `rotate(${trueTrack}deg)`,
-              filter: `drop-shadow(0 0px 2px ${iconOutline(
-                climbRateFpm
-              )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
-            }}
-          />
-          <span
-            className="p-0.5 rounded filter-none"
-            style={{
-              backgroundColor: `rgba(255, 255, 255, 0.65)`,
-              boxShadow: `0 0 6px rgba(255, 255, 255, 0.8)`,
-            }}
-          >
-            {callsign}
-          </span>
-        </>
-      ),
-      // className: ``, // Ensures no additional classes affect the styling
-      className: aircraftIconDropShadow(altitudeFeet), // Ensures no additional classes affect the styling
-      iconSize: [iconDivSize, iconDivSize], // Size of the icon
-      iconAnchor: [iconDivSize / 2, iconDivSize / 2], // Point of the icon which will correspond to marker's location
-    });
-
-  // TODO: Remove later
-  if (icao24.toUpperCase() === "AB39E9" || icao24.toUpperCase() === "AB9A32") {
-    console.log(
-      "Aircraft:",
-      icao24.toUpperCase(),
-      "altitude:",
-      altitudeFeet,
-      "latitude:",
-      latitude,
-      "z-index:",
-      zIndex,
-      "lat lon:"
-    );
-  }
-
-  useMapEvents({
-    moveend: () => {
-      setMapView({
-        center: map.getCenter(),
-        zoom: map.getZoom(),
-      });
-    },
-    zoomend: () => {
-      setMapView({
-        center: map.getCenter(),
-        zoom: map.getZoom(),
-      });
-      console.log("Map zoom:", map.getZoom());
-    },
-  });
-
-  let markerLayerPoint;
-  const [adjustedZOffset, setAdjustedZOffset] = useState(0);
-
-  useEffect(() => {
-    // Get the (x, y) pixel based coordinate of the marker's point on the map
-    markerLayerPoint = map.latLngToLayerPoint([latitude, longitude]);
-    // Calculates a value that when Leaflet calculates z-index will result in our intended z-index
-    // adjustedZOffset = zIndex - markerLayerPoint.y;
-    setAdjustedZOffset(zIndex - markerLayerPoint.y);
-
-    // TODO: Remove later
-    if (icao24.toUpperCase() === "A34E9D") {
-      console.log("latLngToLayerPoint:", markerLayerPoint);
-      console.log("Calculated z-offset:", adjustedZOffset);
-    }
-  }, [mapView, allAircraft]);
-
   // Lat and lon can be null, so only render if both truthy
   if (latitude && longitude) {
+    const map = useMap();
+    const altitudeFeet = metersToFeet(baroAltitude);
+    const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(2);
+
+    const [mapView, setMapView] = useState({
+      center: map.getCenter(),
+      zoom: map.getZoom(),
+    });
+
+    const iconDivSize = iconSize(map.getZoom()).pixelSize;
+    const iconClassSize = iconSize(map.getZoom()).cssSize;
+    const aircraftIcon = () =>
+      L.divIcon({
+        html: ReactDOMServer.renderToString(
+          <>
+            <IoMdAirplane
+              className={`${iconColor(altitudeFeet)} ${iconClassSize}`}
+              style={{
+                transform: `rotate(${trueTrack}deg)`,
+                filter: `drop-shadow(0 0px 2px ${iconOutline(
+                  climbRateFpm
+                )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
+              }}
+            />
+            <span
+              className="p-0.5 rounded filter-none"
+              style={{
+                backgroundColor: `rgba(255, 255, 255, 0.65)`,
+                boxShadow: `0 0 6px rgba(255, 255, 255, 0.8)`,
+              }}
+            >
+              {callsign}
+            </span>
+          </>
+        ),
+        // className: ``, // Ensures no additional classes affect the styling
+        className: aircraftIconDropShadow(altitudeFeet), // Ensures no additional classes affect the styling
+        iconSize: [iconDivSize, iconDivSize], // Size of the icon
+        iconAnchor: [iconDivSize / 2, iconDivSize / 2], // Point of the icon which will correspond to marker's location
+      });
+
+    // TODO: Remove later
+    if (
+      icao24.toUpperCase() === "AB39E9" ||
+      icao24.toUpperCase() === "AB9A32"
+    ) {
+      console.log(
+        "Aircraft:",
+        icao24.toUpperCase(),
+        "altitude:",
+        altitudeFeet,
+        "latitude:",
+        latitude,
+        "z-index:",
+        zIndex,
+        "lat lon:"
+      );
+    }
+
+    useMapEvents({
+      moveend: () => {
+        setMapView({
+          center: map.getCenter(),
+          zoom: map.getZoom(),
+        });
+      },
+      zoomend: () => {
+        setMapView({
+          center: map.getCenter(),
+          zoom: map.getZoom(),
+        });
+        console.log("Map zoom:", map.getZoom());
+      },
+    });
+
+    let markerLayerPoint;
+    const [adjustedZOffset, setAdjustedZOffset] = useState(0);
+
+    useEffect(() => {
+      // Get the (x, y) pixel based coordinate of the marker's point on the map
+      markerLayerPoint = map.latLngToLayerPoint([latitude, longitude]);
+      // Calculates a value that when Leaflet calculates z-index will result in our intended z-index
+      // adjustedZOffset = zIndex - markerLayerPoint.y;
+      setAdjustedZOffset(zIndex - markerLayerPoint.y);
+
+      // TODO: Remove later
+      if (icao24.toUpperCase() === "A34E9D") {
+        console.log("latLngToLayerPoint:", markerLayerPoint);
+        console.log("Calculated z-offset:", adjustedZOffset);
+      }
+    }, [mapView, allAircraft]);
+
     return (
       <Marker
         position={[latitude, longitude]}

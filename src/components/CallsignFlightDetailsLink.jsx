@@ -4,7 +4,7 @@ function CallsignFlightDetailsLink({ callsign }) {
   return (
     callsign != null &&
     callsign != "" && (
-      <>
+      <tr>
         <td>{`Callsign: `}</td>
         <td className="pl-2">
           <a
@@ -16,7 +16,7 @@ function CallsignFlightDetailsLink({ callsign }) {
             <FaExternalLinkAlt className="ml-1 text-xs" />
           </a>
         </td>
-      </>
+      </tr>
     )
   );
 }
