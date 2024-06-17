@@ -1,7 +1,9 @@
 import db from "../model.js";
 import { parseAircraftData } from "../../server/opensky.js";
 import aircraftData from "./aircraft.json" assert { type: "json" };
+import watchedAircraftData from "./watchedAircraft.json" assert { type: "json" };
 import { upsertAircraft } from "../aircraft.js";
+import { upsertWatchedAircraft } from "../watchedAircraft.js";
 
 console.log("Syncing DB...");
 
@@ -17,6 +19,12 @@ const aircraftInDB = await Promise.all(
   aircraftData.states.map(async (aircraft) => {
     const aircraftObj = parseAircraftData(aircraft);
     return upsertAircraft(aircraftObj);
+  })
+);
+
+const watchedAircraftInDB = await Promise.all(
+  watchedAircraftData.map(async (aircraft) => {
+    return upsertWatchedAircraft(aircraft);
   })
 );
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import WatchedFlight from "./WatchedFlight";
 
 function WatchList() {
   const [watchListData, setWatchListData] = useState([]);
@@ -20,10 +21,18 @@ function WatchList() {
     <div className="min-h-screen w-2/12 bg-gray-200 border-l-2 border-gray-500">
       Watch List
       <table className="w-full">
+        <tbody>
+          <WatchedFlight />
+        </tbody>
         <tfoot>
-          <tr>
-            <td className=" bg-gray-600 rounded">
-              <button onClick={addWatchFlight}>Add Flight</button>
+          <tr className="">
+            <td className="px-1">
+              <button
+                className="w-full bg-gray-600 rounded"
+                onClick={addWatchFlight}
+              >
+                Add Flight
+              </button>
             </td>
           </tr>
         </tfoot>

@@ -182,7 +182,7 @@ WatchedAircraft.init(
     // Callsign of the flight or vehicle registration (8 chars). Can be null if no callsign has been received.
     callsign: {
       type: DataTypes.STRING(8),
-      allowNull: true,
+      allowNull: false,
     },
     flightStatus: {
       type: DataTypes.TEXT,
