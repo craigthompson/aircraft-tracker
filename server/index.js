@@ -145,7 +145,7 @@ cron.schedule("*/3 * * * * *", async () => {
 // );
 
 server.listen(socketConfig.SOCKET_PORT, () => {
-  console.log(`Server running at ${socketUrl}`);
+  console.log(`Server running at`, chalk.blue(socketUrl));
 });
 
 ViteExpress.bind(app, server);
