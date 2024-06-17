@@ -31,7 +31,7 @@ function AircraftImage({ icao24 }) {
 
   if (imgUrl) {
     return (
-      <div class="relative rounded-xl overflow-hidden">
+      <div className="relative rounded-xl overflow-hidden">
         {/*loading indicator */}
         <a href={planespotterLinkUrl}>
           {!isImageLoaded && <div>Loading...</div>}
