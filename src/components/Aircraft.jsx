@@ -24,12 +24,9 @@ import AircraftImage from "./AircraftImage.jsx";
  *
  * @component
  * @param {Object} props - The component given properties
- * @param {Number} props.aircraftId - The unique primary key of the aircraft
- *   in the database.
+ * @param {String} props.callsign - Callsign of the vehicle (8 chars).
  * @param {String} props.icao24 - Unique ICAO 24-bit address of the
  *   transponder in hex string representation. (up to 12 chars)
- * @param {String} props.callsign - Callsign of the vehicle (8 chars). Can be
- *   null if no callsign has been received.
  * @param {String} props.originCountry - Country name inferred from the ICAO
  *   24-bit address. (up to 100 chars)
  * @param {Integer} props.timePosition - Unix timestamp (seconds) for the

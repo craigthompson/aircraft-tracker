@@ -8,9 +8,8 @@ import { Op } from "sequelize";
  *
  *
  * @returns {Array.<{
- *   aircraftId: Number,
- *   icao24: String,
  *   callsign: String,
+ *   icao24: String,
  *   originCountry: String,
  *   timePosition: Integer,
  *   lastContact: Integer,
