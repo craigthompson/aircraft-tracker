@@ -4,6 +4,7 @@
 import express from "express";
 import ViteExpress from "vite-express";
 import config from "../config/config.js";
+import socketConfig from "../config/socket.config.js";
 import "dotenv/config";
 import handlerFunctions from "./controller.js";
 import socketHandlerFunctions from "./socketController.js";
@@ -11,6 +12,7 @@ import chalk from "chalk";
 import cron from "node-cron";
 import { getAircraft, getOwnReportedAircraft } from "./opensky.js";
 import { getNumOfClients } from "./socketController.js";
+import cors from "cors";
 
 import http from "http";
 import { Server } from "socket.io";
@@ -24,8 +26,25 @@ const app = express();
 // HTTP server for socket.io
 const server = http.createServer(app);
 
+app.use(cors());
+
+// Get URL for server socket
+const socketUrl = (() => {
+  console.log("Node environment:", process.env.NODE_ENV);
+  if (process.env.NODE_ENV === "development") {
+    return `${socketConfig.SOCKET_DEV_URL_DOMAIN}:${socketConfig.SOCKET_PORT}`;
+  } else {
+    return `${socketConfig.SOCKET_PROD_URL_DOMAIN}:${socketConfig.SOCKET_PORT}`;
+  }
+})();
+
 // Initialize Socket.IO
-const socketIo = new Server(server);
+const socketIo = new Server(server, {
+  cors: {
+    origin: socketUrl,
+    credentials: true,
+  },
+});
 
 // Set up middleware
 // app.use(express.json());
@@ -95,6 +114,12 @@ cron.schedule("*/20 * * * * *", async () => {
 cron.schedule("*/3 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
+      // console.log(
+      //   chalk.yellow("[TESTING]"),
+      //   "Server:",
+      //   socketIo.sockets,
+      //   socketIo.eio
+      // );
       console.log(
         chalk.greenBright(`[Own Reported] `),
         "Running scheduled task to get my receiver reported aircraft data."
@@ -119,10 +144,8 @@ cron.schedule("*/3 * * * * *", async () => {
 //   console.log(`Server running, view at http://localhost:${config.SERVER_PORT}`)
 // );
 
-server.listen(config.SOCKET_PORT, () => {
-  console.log(
-    `Socket server running at http://localhost:${config.SOCKET_PORT}`
-  );
+server.listen(socketConfig.SOCKET_PORT, () => {
+  console.log(`Server running at ${socketUrl}`);
 });
 
 ViteExpress.bind(app, server);
