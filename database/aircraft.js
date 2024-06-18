@@ -34,9 +34,7 @@ export const upsertAircraft = async (aircraft) => {
           vehicleCategory: aircraft.vehicleCategory,
         },
         {
-          conflict: {
-            target: ["icao24"],
-          },
+          conflictFields: ["icao24"],
         }
       );
 
