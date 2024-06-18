@@ -116,12 +116,12 @@ cron.schedule("*/20 * * * * *", async () => {
 cron.schedule("*/3 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
-      // console.log(
-      //   chalk.greenBright(`[Own Reported] `),
-      //   "Running scheduled task to get my receiver reported aircraft data."
-      // );
-      // await getOwnReportedAircraft(38.7219, -114.2791, 42.3219, -109.5991);
-      // await emitAllAircraftForAllSockets();
+      console.log(
+        chalk.greenBright(`[Own Reported] `),
+        "Running scheduled task to get my receiver reported aircraft data."
+      );
+      await getOwnReportedAircraft(38.7219, -114.2791, 42.3219, -109.5991);
+      await emitAllAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to get my receiver reported aircraft data, since no clients currently connected."
