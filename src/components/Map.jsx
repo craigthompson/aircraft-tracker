@@ -31,7 +31,7 @@ function Map() {
       trueTrack={plane.trueTrack}
       verticalRate={plane.verticalRate}
       zIndex={index}
-      key={plane.aircraftId}
+      key={plane.icao24}
       totalAircraft={allAircraft.length}
       allAircraft={allAircraft}
     />
@@ -60,12 +60,12 @@ function Map() {
   const openAipClientId = import.meta.env.VITE_OPENAIP_CLIENT_ID;
 
   return (
-    <div id="map" className="h-lvh w-screen">
+    <div id="map" className="h-lvh w-10/12">
       <MapContainer
         center={[40.7909957, -111.9851671]}
         zoom={12}
         scrollWheelZoom={true}
-        style={{ height: "100vh", width: "100vw" }}
+        style={{ height: "100vh" }}
       >
         <LayersControl>
           <BaseLayer name="ArcGIS Esri Topo">

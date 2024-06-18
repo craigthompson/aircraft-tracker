@@ -19,18 +19,13 @@ export class Aircraft extends Model {
 
 Aircraft.init(
   {
-    aircraftId: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
     // Unique ICAO 24-bit address of the transponder in hex string representation.
     icao24: {
       type: DataTypes.STRING(12),
-      allowNull: false,
+      primaryKey: true,
       unique: true,
     },
-    // Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
+    // Callsign of the flight or vehicle registration (8 chars).
     callsign: {
       type: DataTypes.STRING(8),
       allowNull: true,
@@ -166,7 +161,48 @@ Aircraft.init(
   }
 );
 
-// Only execute if this file is run directly
+export class WatchedAircraft extends Model {
+  [util.inspect.custom]() {
+    return this.toJSON();
+  }
+}
+
+WatchedAircraft.init(
+  {
+    watchId: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    // Callsign of the flight or vehicle registration (8 chars).
+    callsign: {
+      type: DataTypes.STRING(8),
+      allowNull: false,
+    },
+    flightStatus: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    departureAirport: {
+      type: DataTypes.STRING(6),
+      allowNull: true,
+    },
+    arrivalAirport: {
+      type: DataTypes.STRING(6),
+      allowNull: true,
+    },
+  },
+  {
+    modelName: "WatchedAircraft",
+    sequelize: db,
+  }
+);
+
+// Model Relationships
+Aircraft.hasMany(WatchedAircraft, { foreignKey: "icao24" });
+WatchedAircraft.belongsTo(Aircraft, { foreignKey: "icao24" });
+
+// Only executes if this file is run directly
 if (process.argv[1] === url.fileURLToPath(import.meta.url)) {
   console.log(`Syncing ${config.DB_NAME} database...`);
   await db.sync({ force: true });
