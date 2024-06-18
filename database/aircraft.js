@@ -11,11 +11,11 @@ import { Aircraft } from "./model.js";
  */
 export const upsertAircraft = async (aircraft) => {
   try {
-    if (aircraft.callsign) {
+    if (aircraft.icao24) {
       const newAircraft = await Aircraft.upsert(
         {
-          callsign: aircraft.callsign,
           icao24: aircraft.icao24,
+          callsign: aircraft.callsign,
           originCountry: aircraft.originCountry,
           timePosition: aircraft.timePosition,
           lastContact: aircraft.lastContact,
