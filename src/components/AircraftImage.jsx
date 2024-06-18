@@ -33,7 +33,7 @@ function AircraftImage({ icao24 }) {
     return (
       <div className="relative rounded-xl overflow-hidden">
         {/*loading indicator */}
-        <a href={planespotterLinkUrl}>
+        <a href={planespotterLinkUrl} target="_blank">
           {!isImageLoaded && <div>Loading...</div>}
           <img
             className={`drop-shadow-md ${isImageLoaded ? "" : "hidden"}`}
