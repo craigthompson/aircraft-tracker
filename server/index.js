@@ -96,12 +96,12 @@ socketIo.on("connection", (socket) => {
 cron.schedule("*/20 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
-      // console.log(
-      //   chalk.magentaBright("[OpenSky] "),
-      //   "Running scheduled task to get aircraft data."
-      // );
-      // await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      // await emitAllAircraftForAllSockets();
+      console.log(
+        chalk.magentaBright("[OpenSky] "),
+        "Running scheduled task to get aircraft data."
+      );
+      await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
+      await emitAllAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."
