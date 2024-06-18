@@ -43,12 +43,12 @@ const WatchList = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-2/12 bg-gray-200 border-l-2 border-gray-500">
-      Watch List
+    <div className="min-h-screen w-2/12 bg-gray-200 border-l-2 border-gray-300">
+      <div className="text-xl">Watch List</div>
       <table className="w-full">
         <tbody>{allWatchedAircraftInstances}</tbody>
         <tfoot>
-          <tr className="">
+          <tr>
             <td className="px-1">
               <button
                 className="w-full bg-gray-600 rounded"

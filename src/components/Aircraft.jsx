@@ -210,7 +210,7 @@ const Aircraft = ({
         position={[latitude, longitude]}
         icon={aircraftIcon()}
         zIndexOffset={adjustedZOffset}
-        title={callsign.trim()}
+        title={callsign ? callsign.trim() : ""}
         riseOnHover={true}
         // Make the z offset for a hovered plane higher than any other plane on the map
         riseOffset={totalAircraft + 1}

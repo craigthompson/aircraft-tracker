@@ -31,7 +31,7 @@ function Map() {
       trueTrack={plane.trueTrack}
       verticalRate={plane.verticalRate}
       zIndex={index}
-      key={plane.callsign}
+      key={plane.icao24}
       totalAircraft={allAircraft.length}
       allAircraft={allAircraft}
     />
