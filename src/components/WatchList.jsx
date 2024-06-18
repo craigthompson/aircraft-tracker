@@ -51,10 +51,10 @@ const WatchList = () => {
           <tr>
             <td className="px-1">
               <button
-                className="w-full bg-gray-600 rounded"
+                className="w-full bg-gray-400 rounded"
                 onClick={addWatchFlight}
               >
-                Add Flight
+                + Add Flight
               </button>
             </td>
           </tr>
