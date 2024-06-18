@@ -43,13 +43,13 @@ const WatchList = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-2/12 bg-gray-200 border-l-2 border-gray-300">
+    <div className="flex flex-col h-screen w-2/12 bg-gray-200 border-l-2 border-gray-300 ">
       <div className="text-xl">Watch List</div>
-      <table className="w-full">
+      <table className="flex flex-col w-full h-full overflow-y-auto">
         <tbody>{allWatchedAircraftInstances}</tbody>
-        <tfoot>
-          <tr>
-            <td className="px-1">
+        <tfoot className="flex flex-col">
+          <tr className="flex">
+            <td className="w-full px-1">
               <button
                 className="w-full bg-gray-400 rounded"
                 onClick={addWatchFlight}
