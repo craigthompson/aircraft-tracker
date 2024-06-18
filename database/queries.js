@@ -1,6 +1,9 @@
-import db, { Aircraft } from "./model.js";
+import db, { Aircraft, WatchedAircraft } from "./model.js";
 import { Op } from "sequelize";
 
+//////////////////////////////////////////////
+//  Aircraft Table Queries
+//////////////////////////////////////////////
 /**
  * Queries all aircraft data from the aircraft table of the
  * database and returns an array of the aircraft. See return info
@@ -89,3 +92,11 @@ async function deleteOldAircraft() {
     },
   });
 }
+
+//////////////////////////////////////////////
+//  Watched Aircraft Table Queries
+//////////////////////////////////////////////
+export const queryWatchedAircraft = async () => {
+  const watchedAircraft = await WatchedAircraft.findAll({});
+  return watchedAircraft;
+};
