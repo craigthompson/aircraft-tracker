@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 
-async function scrapeFlightData(flightNumber) {
+async function scrapeFlightData(flightNumber, debugScreenshot = false) {
   const url = `https://www.radarbox.com/data/flights/${flightNumber}`;
 
   // Launch the browser
@@ -27,26 +27,35 @@ async function scrapeFlightData(flightNumber) {
   // The flight status element selector
   const flightStatusSelector = "#top > div.FlightStatus";
 
-  // Navigate to the page and wait for selector to be present in DOM (page loaded)
-  await page.goto(url);
-  await page.waitForSelector(airportSelector, { timeout: 15000 });
-  console.log("Found airport selector, so page has loaded");
+  // Navigate to the page and wait for it to finish loading
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
 
   // Capture a screenshot for debugging
-  await page.screenshot({
-    path: "./server/webScraper/screenshots/debug_screenshot.png",
-  });
+  if (debugScreenshot) {
+    await page.screenshot({
+      path: "./server/webScraper/screenshots/debug_screenshot.png",
+    });
+  }
 
-  // Extract the departure and arrival airport details
-  const flightData = await page.evaluate((selector) => {
-    const airports = document.querySelectorAll(selector);
-    console.log("Airports:", airports);
-    const departureAirport = airports[0]?.textContent.trim() ?? null;
-    console.log("Dep airports:", departureAirport);
-    const arrivalAirport = airports[1]?.textContent.trim() ?? null;
-    console.log("Arr airports:", arrivalAirport);
-    return { departureAirport, arrivalAirport };
-  }, airportSelector);
+  let flightData = {};
+
+  try {
+    await page.waitForSelector(airportSelector, { timeout: 2000 });
+    console.log("Found airport selector, so page has loaded");
+
+    // Extract the departure and arrival airport details
+    flightData = await page.evaluate((selector) => {
+      const airports = document.querySelectorAll(selector);
+      console.log("Airports:", airports);
+      const departureAirport = airports[0]?.textContent.trim() ?? null;
+      console.log("Dep airports:", departureAirport);
+      const arrivalAirport = airports[1]?.textContent.trim() ?? null;
+      console.log("Arr airports:", arrivalAirport);
+      return { departureAirport, arrivalAirport };
+    }, airportSelector);
+  } catch {
+    flightData = { departureAirport: null, arrivalAirport: null };
+  }
 
   // Get the airline name
   try {
@@ -82,9 +91,9 @@ async function scrapeFlightData(flightNumber) {
   return flightData;
 }
 
-// URL to scrape
-const flightNumber = "SKW3453";
-// const flightNumber = "N230DC";
+// Flight to go scrape details for
+// const flightNumber = "SKW3453";
+const flightNumber = "N103KF";
 
 // Run the scrape function
 scrapeFlightData(flightNumber)
