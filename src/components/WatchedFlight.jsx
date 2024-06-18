@@ -1,9 +1,15 @@
 import { useState } from "react";
 
-function WatchedFlight() {
+function WatchedFlight({
+  icao24,
+  callsign,
+  flightStatus,
+  departureAirport,
+  arrivalAirport,
+}) {
   return (
     <tr>
-      <td className="px-1">Flight</td>
+      <td className="px-1">{callsign}</td>
     </tr>
   );
 }
