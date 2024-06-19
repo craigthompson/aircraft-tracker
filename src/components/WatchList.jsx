@@ -14,6 +14,7 @@ const WatchList = () => {
         flightStatus={watchedFlight.flightStatus}
         departureAirport={watchedFlight.departureAirport}
         arrivalAirport={watchedFlight.arrivalAirport}
+        airlineLogoUrl={watchedFlight.airlineLogoUrl}
         key={watchedFlight.watchId}
       />
     )
@@ -43,7 +44,7 @@ const WatchList = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-2/12 bg-gray-200 border-l-2 border-gray-300 ">
+    <div className="flex flex-col h-screen w-2/12 bg-gray-50 border-l-2 border-gray-300 ">
       <div className="text-xl">Watch List</div>
       <table className="flex flex-col w-full h-full overflow-y-auto">
         <tbody>{allWatchedAircraftInstances}</tbody>
