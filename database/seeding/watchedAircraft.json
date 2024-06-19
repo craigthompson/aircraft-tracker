@@ -4,13 +4,23 @@
     "callsign": "SKW3798 ",
     "flightStatus": null,
     "departureAirport": null,
-    "arrivalAirport": null
+    "arrivalAirport": null,
+    "airlineLogoUrl": null
   },
   {
     "icao24": "a37aa3",
     "callsign": "DAL1195 ",
     "flightStatus": null,
     "departureAirport": null,
-    "arrivalAirport": null
+    "arrivalAirport": null,
+    "airlineLogoUrl": null
+  },
+  {
+    "icao24": "acdbee",
+    "callsign": "AAL2433 ",
+    "flightStatus": null,
+    "departureAirport": null,
+    "arrivalAirport": null,
+    "airlineLogoUrl": null
   }
 ]

@@ -178,17 +178,22 @@ WatchedAircraft.init(
     callsign: {
       type: DataTypes.STRING(8),
       allowNull: false,
+      unique: true,
     },
     flightStatus: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
     departureAirport: {
-      type: DataTypes.STRING(6),
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     arrivalAirport: {
-      type: DataTypes.STRING(6),
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    airlineLogoUrl: {
+      type: DataTypes.TEXT,
       allowNull: true,
     },
   },

@@ -28,5 +28,4 @@ const watchedAircraftInDB = await Promise.all(
   })
 );
 
-// await db.close();
 console.log("Finished seeding DB.");
