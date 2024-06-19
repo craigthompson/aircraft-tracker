@@ -1,10 +1,14 @@
 import puppeteer from "puppeteer";
 
-async function scrapeFlightData(flightNumber, debugScreenshot = false) {
+async function scrapeFlightData(
+  flightNumber,
+  debugLog = false,
+  debugScreenshot = false
+) {
   const url = `https://www.radarbox.com/data/flights/${flightNumber}`;
 
   // Launch the browser
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   // Set a viewport to emulate typical browser behavior
@@ -26,22 +30,18 @@ async function scrapeFlightData(flightNumber, debugScreenshot = false) {
   const airlineSelector = "#value > a[href*='/data/airlines']";
   // The flight status element selector
   const flightStatusSelector = "#top > div.FlightStatus";
+  // The airline logo image element selector
+  const airlineLogoSelector = "#main > img.AirlineLogo";
 
   // Navigate to the page and wait for it to finish loading
-  await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
-
-  // Capture a screenshot for debugging
-  if (debugScreenshot) {
-    await page.screenshot({
-      path: "./server/webScraper/screenshots/debug_screenshot.png",
-    });
-  }
+  // await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+  await page.goto(url);
 
   let flightData = {};
 
   try {
-    await page.waitForSelector(airportSelector, { timeout: 2000 });
-    console.log("Found airport selector, so page has loaded");
+    await page.waitForSelector(airportSelector, { timeout: 15000 });
+    if (debugLog) console.log("Found airport selector, so page has loaded");
 
     // Extract the departure and arrival airport details
     flightData = await page.evaluate((selector) => {
@@ -53,14 +53,21 @@ async function scrapeFlightData(flightNumber, debugScreenshot = false) {
       console.log("Arr airports:", arrivalAirport);
       return { departureAirport, arrivalAirport };
     }, airportSelector);
-  } catch {
+  } catch (error) {
     flightData = { departureAirport: null, arrivalAirport: null };
+  }
+
+  // Capture a screenshot for debugging
+  if (debugScreenshot) {
+    await page.screenshot({
+      path: "./server/webScraper/screenshots/debug_screenshot.png",
+    });
   }
 
   // Get the airline name
   try {
-    await page.waitForSelector(airlineSelector, { timeout: 2000 });
-    console.log("Found airline selector");
+    await page.waitForSelector(airlineSelector, { timeout: 15000 });
+    if (debugLog) console.log("Found airline selector");
 
     // Extract the departure and arrival airport details
     flightData["airline"] = await page.evaluate((selector) => {
@@ -73,16 +80,30 @@ async function scrapeFlightData(flightNumber, debugScreenshot = false) {
 
   // Get the flight status
   try {
-    await page.waitForSelector(flightStatusSelector, { timeout: 2000 });
-    console.log("Found flight status selector");
+    await page.waitForSelector(flightStatusSelector, { timeout: 15000 });
+    if (debugLog) console.log("Found flight status selector");
 
     // Extract the departure and arrival airport details
-    flightData["status"] = await page.evaluate((selector) => {
+    flightData["flightStatus"] = await page.evaluate((selector) => {
       const status = document.querySelector(selector)?.textContent.trim();
       return status;
     }, flightStatusSelector);
   } catch {
-    flightData["status"] = null;
+    flightData["flightStatus"] = null;
+  }
+
+  // Get the flight airline logo
+  try {
+    await page.waitForSelector(airlineLogoSelector, { timeout: 15000 });
+    if (debugLog) console.log("Found flight airline logo selector");
+
+    // Extract the departure and arrival airport details
+    flightData["airlineLogoUrl"] = await page.evaluate((selector) => {
+      const logo = document.querySelector(selector)?.src;
+      return logo;
+    }, airlineLogoSelector);
+  } catch {
+    flightData["airlineLogoUrl"] = null;
   }
 
   // Close the browser
@@ -93,15 +114,16 @@ async function scrapeFlightData(flightNumber, debugScreenshot = false) {
 
 // Flight to go scrape details for
 // const flightNumber = "SKW3453";
-const flightNumber = "N103KF";
+// const flightNumber = "CXK276"; // Owner has flight private from FlightAware
+// const flightNumber = "N430HJ";
 
-// Run the scrape function
-scrapeFlightData(flightNumber)
-  .then((flightData) => {
-    console.log("Flight Data:", flightData);
-  })
-  .catch((error) => {
-    console.error("Error scraping flight data:", error);
-  });
+// // Run the scrape function
+// scrapeFlightData(flightNumber)
+//   .then((flightData) => {
+//     console.log("Flight Data:", flightData);
+//   })
+//   .catch((error) => {
+//     console.error("Error scraping flight data:", error);
+//   });
 
 export default scrapeFlightData;
