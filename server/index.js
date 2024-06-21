@@ -47,17 +47,19 @@ const socketIo = new Server(server, {
 });
 
 // Set up middleware
-// app.use(express.json());
+app.use(express.json());
 
 //////////////////////////////////////////////
 //  Endpoints
 //////////////////////////////////////////////
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
-const { getAllAircraft, getWatchedAircraft } = handlerFunctions;
+const { getAllAircraft, getWatchedAircraft, addWatchedAircraft } =
+  handlerFunctions;
 
 app.get("/api/aircraft/all", getAllAircraft);
 
-app.get("/api/watched/aircraft/all", getWatchedAircraft);
+app.get("/api/watched/aircraft", getWatchedAircraft);
+app.post("/api/watched/aircraft", addWatchedAircraft);
 
 //////////////////////////////////////////////
 //  Socket.io
@@ -96,12 +98,12 @@ socketIo.on("connection", (socket) => {
 cron.schedule("*/20 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
-      console.log(
-        chalk.magentaBright("[OpenSky] "),
-        "Running scheduled task to get aircraft data."
-      );
-      await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      await emitAllAircraftForAllSockets();
+      // console.log(
+      //   chalk.magentaBright("[OpenSky] "),
+      //   "Running scheduled task to get aircraft data."
+      // );
+      // await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
+      // await emitAllAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."

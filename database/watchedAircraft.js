@@ -19,16 +19,23 @@ export const upsertWatchedAircraft = async (aircraft) => {
 export const scrapeWatchedFlightsStatus = async () => {
   const watchedFlights = await queryWatchedAircraft();
   for (const flight of watchedFlights) {
-    console.log("Flight:", flight);
-    const flightDetails = await scrapeFlightData(flight.callsign);
-    flightDetails["callsign"] = flight.callsign;
-    flightDetails["watchId"] = flight.watchId;
-    console.log("Flight details: ", flightDetails);
-    console.log("Upserting flight details into watched aircraft table...");
-    await upsertWatchedAircraftFlightDetails(flightDetails);
-    console.log("Done upserting flight details.");
+    const scrapedFlight = await scrapeGivenWatchedFlightStatus(flight);
   }
   await db.close();
+};
+
+export const scrapeGivenWatchedFlightStatus = async (flight) => {
+  console.log("Flight:", flight);
+  const flightDetails = await scrapeFlightData(flight.callsign);
+  flightDetails["callsign"] = flight.callsign;
+  flightDetails["watchId"] = flight.watchId;
+  console.log("Flight details: ", flightDetails);
+  console.log("Upserting flight details into watched aircraft table...");
+  const upsertedWatchedFlight = await upsertWatchedAircraftFlightDetails(
+    flightDetails
+  );
+  console.log("Done upserting flight details.");
+  return upsertedWatchedFlight;
 };
 
 export const upsertWatchedAircraftFlightDetails = async (flight) => {
@@ -41,6 +48,22 @@ export const upsertWatchedAircraftFlightDetails = async (flight) => {
   });
 
   return newWatchedAircraftFlightDetails;
+};
+
+export const createWatchedAircraft = async (callsign) => {
+  const watchedAircraft = {
+    callsign: callsign,
+    flightStatus: null,
+    departureAirport: null,
+    arrivalAirport: null,
+    airlineLogoUrl: null,
+  };
+  const newWatchedAircraft = await scrapeGivenWatchedFlightStatus(
+    watchedAircraft
+  );
+  // const watchedAircraft = await WatchedAircraft.findAll({});
+  console.log("New watched aircraft:", newWatchedAircraft);
+  return newWatchedAircraft;
 };
 
 // await scrapeWatchedFlightsStatus(); // TODO: remove after dev

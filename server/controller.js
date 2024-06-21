@@ -1,5 +1,7 @@
 import { queryAllAircraft, queryWatchedAircraft } from "../database/queries.js";
 
+import { createWatchedAircraft } from "../database/watchedAircraft.js";
+
 //////////////////////////////////////////////
 //  Handler Functions
 //////////////////////////////////////////////
@@ -12,6 +14,12 @@ const handlerFunctions = {
 
   getWatchedAircraft: async (req, res) => {
     const watchedAircraft = await queryWatchedAircraft();
+    res.status(200).send(watchedAircraft);
+  },
+
+  addWatchedAircraft: async (req, res) => {
+    console.log("req.body:", req.body);
+    const watchedAircraft = await createWatchedAircraft(req.body.callsign);
     res.status(200).send(watchedAircraft);
   },
 };
