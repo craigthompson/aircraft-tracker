@@ -21,20 +21,23 @@ const WatchList = () => {
   );
 
   const addWatchFlight = async () => {
-    // const newWatchFlight = {
-    //   // TODO: change to correct data for watch list flights
-    //   mission: "",
-    //   vehicle: "",
-    //   location: "",
-    //   days_till_launch: 0,
-    //   isEditing: true,
-    // };
-    // const { data } = await axios.post("/api/launches", newWatchFlight); // TODO: change to new endpoint
-    // setAllWatchedAircraft(data);
+    const newWatchFlight = {
+      callsign: "SWA578", // TODO: Get the user entered callsign value
+      isEditing: true,
+    };
+    try {
+      const { data } = await axios.post(
+        "/api/watched/aircraft",
+        newWatchFlight
+      );
+      setAllWatchedAircraft(data);
+    } catch (error) {
+      console.error("Error adding watch flight:", error);
+    }
   };
 
   const getData = async () => {
-    const { data } = await axios.get("api/watched/aircraft/all");
+    const { data } = await axios.get("api/watched/aircraft");
     console.log("Received:", data);
     setAllWatchedAircraft(data);
   };
