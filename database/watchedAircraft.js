@@ -47,7 +47,7 @@ export const upsertWatchedAircraftFlightDetails = async (flight) => {
     airlineLogoUrl: flight.airlineLogoUrl,
   });
 
-  return newWatchedAircraftFlightDetails;
+  return newWatchedAircraftFlightDetails[0];
 };
 
 export const createWatchedAircraft = async (callsign) => {
@@ -63,7 +63,8 @@ export const createWatchedAircraft = async (callsign) => {
   );
   // const watchedAircraft = await WatchedAircraft.findAll({});
   console.log("New watched aircraft:", newWatchedAircraft);
-  return newWatchedAircraft;
+  const watchedFlights = await queryWatchedAircraft();
+  return watchedFlights;
 };
 
 // await scrapeWatchedFlightsStatus(); // TODO: remove after dev
