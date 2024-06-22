@@ -38,7 +38,6 @@ const WatchList = () => {
       );
       setAllWatchedAircraft(data);
       setIsAddingFlight(false);
-      console.log("Input:", inputValue);
     } catch (error) {
       console.error("Error adding watch flight:", error);
     }
