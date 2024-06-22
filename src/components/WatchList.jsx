@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import WatchedFlight from "./WatchedFlight";
+import AddWatchFlightButton from "./AddWatchFlightButton";
+import InputWatchFlight from "./InputWatchFlight";
 import axios from "axios";
 
 const WatchList = () => {
   // const [watchListData, setWatchListData] = useState([]);
   const [allWatchedAircraft, setAllWatchedAircraft] = useState([]);
+  const [isAddingFlight, setIsAddingFlight] = useState(false);
 
   const allWatchedAircraftInstances = allWatchedAircraft.map(
     (watchedFlight, index) => (
@@ -20,17 +23,22 @@ const WatchList = () => {
     )
   );
 
-  const addWatchFlight = async () => {
+  const setAddingFlightTrue = () => setIsAddingFlight(true);
+
+  const addWatchFlight = async (inputValue) => {
     const newWatchFlight = {
-      callsign: "SWA578", // TODO: Get the user entered callsign value
+      callsign: inputValue,
       isEditing: true,
     };
+
     try {
       const { data } = await axios.post(
         "/api/watched/aircraft",
         newWatchFlight
       );
       setAllWatchedAircraft(data);
+      setIsAddingFlight(false);
+      console.log("Input:", inputValue);
     } catch (error) {
       console.error("Error adding watch flight:", error);
     }
@@ -53,14 +61,15 @@ const WatchList = () => {
         <tbody>{allWatchedAircraftInstances}</tbody>
         <tfoot className="flex flex-col">
           <tr className="flex">
-            <td className="w-full px-1">
-              <button
-                className="w-full bg-gray-400 rounded"
-                onClick={addWatchFlight}
-              >
-                + Add Flight
-              </button>
-            </td>
+            {isAddingFlight ? (
+              <InputWatchFlight
+                addWatchFlight={addWatchFlight}
+                isAddingFlight={isAddingFlight}
+                setIsAddingFlight={setIsAddingFlight}
+              />
+            ) : (
+              <AddWatchFlightButton clickedButton={setAddingFlightTrue} />
+            )}
           </tr>
         </tfoot>
       </table>
