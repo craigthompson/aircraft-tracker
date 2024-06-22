@@ -19,7 +19,9 @@ const handlerFunctions = {
 
   addWatchedAircraft: async (req, res) => {
     console.log("req.body:", req.body);
-    const watchedAircraft = await createWatchedAircraft(req.body.callsign);
+    const watchedAircraft = await createWatchedAircraft(
+      req.body.callsign.toUpperCase()
+    );
     res.status(200).send(watchedAircraft);
   },
 };

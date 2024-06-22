@@ -97,6 +97,11 @@ async function deleteOldAircraft() {
 //  Watched Aircraft Table Queries
 //////////////////////////////////////////////
 export const queryWatchedAircraft = async () => {
-  const watchedAircraft = await WatchedAircraft.findAll({});
+  const watchedAircraft = await WatchedAircraft.findAll({
+    order: [
+      // Will order the watched flight by order they were added in ascending order
+      ["watch_id", "ASC"],
+    ],
+  });
   return watchedAircraft;
 };
