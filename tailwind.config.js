@@ -42,6 +42,30 @@ export default {
         "31md": "31px -31px 4px rgba(0, 0, 0, 0.18)",
         "32md": "32px -32px 4px rgba(0, 0, 0, 0.18)",
       },
+      keyframes: {
+        spinFastToFaster: {
+          "0%": {
+            transform: "rotate(0deg)",
+            animationTimingFunction: "ease-in",
+          },
+          "50%": {
+            transform: "rotate(180deg)",
+            animationTimingFunction: "linear",
+          },
+          "100%": {
+            transform: "rotate(360deg)",
+            animationTimingFunction: "linear",
+          },
+        },
+        spinFaster: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(864deg)" }, // 2.4 rotations per second
+        },
+      },
+      animation: {
+        spinFastToFaster:
+          "spinFastToFaster 1.2s ease-in-out, spinFaster 0.8s linear 0.4s infinite",
+      },
     },
   },
   plugins: [],
