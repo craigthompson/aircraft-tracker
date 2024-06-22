@@ -42,7 +42,7 @@ function InputWatchFlight({
   return (
     <td className="w-full px-1 flex justify-center items-center">
       {isScrapingFlight ? (
-        <BsFan className="animate-spinFastToFaster text-gray-700 text-2xl" />
+        <BsFan className="animate-spinFastToFaster text-gray-600 text-4xl" />
       ) : (
         <input
           ref={inputRef}

@@ -58,7 +58,7 @@ const WatchList = () => {
       <div className="text-xl">Watch List</div>
       <table className="flex flex-col w-full h-full overflow-y-auto">
         <tbody>{allWatchedAircraftInstances}</tbody>
-        <tfoot className="flex flex-col">
+        <tfoot className="flex flex-col mb-4">
           <tr className="flex">
             {isAddingFlight ? (
               <InputWatchFlight

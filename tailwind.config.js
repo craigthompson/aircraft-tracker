@@ -59,12 +59,12 @@ export default {
         },
         spinFaster: {
           "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(864deg)" }, // 2.4 rotations per second
+          "100%": { transform: "rotate(2160deg)" }, // 2.4 rotations per second
         },
       },
       animation: {
         spinFastToFaster:
-          "spinFastToFaster 1.2s ease-in-out, spinFaster 0.8s linear 0.4s infinite",
+          "spinFastToFaster 2s ease-in-out, spinFaster 2s linear 0.4s infinite",
       },
     },
   },

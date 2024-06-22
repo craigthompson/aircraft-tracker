@@ -95,15 +95,18 @@ socketIo.on("connection", (socket) => {
 // '0 0 * * 0'        - every Sunday at midnight
 // '0 0 1 * *'        - the first day of every month
 // '0 0 1 1 *'        - once a year, on January 1st
-cron.schedule("*/20 * * * * *", async () => {
+// 20 second polling is a total of 4320 requests a day.
+// 15 second polling is a total of 5760 requests a day.
+// 12 second polling is a total of 7200 requests a day.
+cron.schedule("*/12 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
-      // console.log(
-      //   chalk.magentaBright("[OpenSky] "),
-      //   "Running scheduled task to get aircraft data."
-      // );
-      // await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      // await emitAllAircraftForAllSockets();
+      console.log(
+        chalk.magentaBright("[OpenSky] "),
+        "Running scheduled task to get aircraft data."
+      );
+      await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
+      await emitAllAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."
