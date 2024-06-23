@@ -13,6 +13,7 @@ import cron from "node-cron";
 import { getAircraft, getOwnReportedAircraft } from "./opensky.js";
 import { getNumOfClients } from "./socketController.js";
 import cors from "cors";
+import { scrapeWatchedFlightsStatus } from "../database/watchedAircraft.js";
 
 import http from "http";
 import { Server } from "socket.io";
@@ -134,6 +135,29 @@ cron.schedule("*/3 * * * * *", async () => {
     }
   } catch (error) {
     console.error("Error fetching data:", error);
+  }
+});
+
+// Schedule scraping data for watch list every 2 minutes
+cron.schedule("*/5 * * * *", async () => {
+  try {
+    if (getNumOfClients(socketIo) > 0) {
+      console.log(
+        chalk.green(`[Scraper Bot] `),
+        "Running scraper to get data for watch list."
+      );
+      await scrapeWatchedFlightsStatus();
+      console.log(
+        chalk.green(`[Scraper Bot] `),
+        "Completed scraping data for watch list."
+      );
+    } else {
+      console.log(
+        "Skipping scheduled task to scrape data for watch list, since no clients currently connected."
+      );
+    }
+  } catch (error) {
+    console.error("Error scraping data:", error);
   }
 });
 
