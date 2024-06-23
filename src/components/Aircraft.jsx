@@ -111,6 +111,11 @@ const Aircraft = ({
   totalAircraft,
   allAircraft,
 }) => {
+  const currentTime = new Date().getTime() / 1000; // current time in seconds
+  if (currentTime - lastContact > 180) {
+    return null;
+  }
+
   if (!latitude || !longitude) {
     return null;
   }
