@@ -12,30 +12,37 @@ export const upsertWatchedAircraft = async (aircraft) => {
     airlineLogoUrl: aircraft.airlineLogoUrl,
   });
 
-  await db.close();
+  // await db.close();  // TODO: remove if not needed
   return newWatchedAircraft;
 };
 
 export const scrapeWatchedFlightsStatus = async () => {
   const watchedFlights = await queryWatchedAircraft();
-  for (const flight of watchedFlights) {
-    const scrapedFlight = await scrapeGivenWatchedFlightStatus(flight);
-  }
-  await db.close();
+  await Promise.all(
+    watchedFlights.map(async (flight) => {
+      const scrapedFlight = await scrapeGivenWatchedFlightStatus(flight);
+    })
+  );
+  // await db.close();  // TODO: remove if not needed
+  return watchedFlights;
 };
 
 export const scrapeGivenWatchedFlightStatus = async (flight) => {
-  console.log("Flight:", flight);
-  const flightDetails = await scrapeFlightData(flight.callsign);
-  flightDetails["callsign"] = flight.callsign;
-  flightDetails["watchId"] = flight.watchId;
-  console.log("Flight details: ", flightDetails);
-  console.log("Upserting flight details into watched aircraft table...");
-  const upsertedWatchedFlight = await upsertWatchedAircraftFlightDetails(
-    flightDetails
-  );
-  console.log("Done upserting flight details.");
-  return upsertedWatchedFlight;
+  try {
+    console.log("Flight:", flight);
+    const flightDetails = await scrapeFlightData(flight.callsign);
+    flightDetails["callsign"] = flight.callsign;
+    flightDetails["watchId"] = flight.watchId;
+    console.log("Flight details: ", flightDetails);
+    console.log("Upserting flight details into watched aircraft table...");
+    const upsertedWatchedFlight = await upsertWatchedAircraftFlightDetails(
+      flightDetails
+    );
+    console.log("Done upserting flight details.");
+    return upsertedWatchedFlight;
+  } catch (error) {
+    console.error("Error during scraping for flight:", flight.callsign, error);
+  }
 };
 
 export const upsertWatchedAircraftFlightDetails = async (flight) => {
