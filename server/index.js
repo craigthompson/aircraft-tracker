@@ -88,7 +88,7 @@ socketIo.on("connection", (socket) => {
 //////////////////////////////////////////////
 //  Scheduled Cron Tasks
 //////////////////////////////////////////////
-// Schedule fetching Opensky aircraft data every 20 seconds
+// Schedule fetching Opensky aircraft data
 // Schedule tasks using other intervals. Examples:
 // '0 * * * *'        - every hour
 // '0 0 * * *'        - every day at midnight
@@ -98,7 +98,7 @@ socketIo.on("connection", (socket) => {
 // 20 second polling is a total of 4320 requests a day.
 // 15 second polling is a total of 5760 requests a day.
 // 12 second polling is a total of 7200 requests a day.
-cron.schedule("*/12 * * * * *", async () => {
+cron.schedule("*/13 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
       console.log(
@@ -106,7 +106,7 @@ cron.schedule("*/12 * * * * *", async () => {
         "Running scheduled task to get aircraft data."
       );
       await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      await emitAllAircraftForAllSockets();
+      // await emitAllAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."
@@ -117,7 +117,7 @@ cron.schedule("*/12 * * * * *", async () => {
   }
 });
 
-// Schedule fetching own reported Opensky aircraft data every 3 seconds
+// Schedule fetching own reported Opensky aircraft data
 cron.schedule("*/3 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {

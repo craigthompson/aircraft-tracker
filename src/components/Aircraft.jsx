@@ -111,159 +111,187 @@ const Aircraft = ({
   totalAircraft,
   allAircraft,
 }) => {
-  // Lat and lon can be null, so only render if both truthy
-  if (latitude && longitude) {
-    const map = useMap();
-    const altitudeFeet = metersToFeet(baroAltitude);
-    const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(2);
-
-    const [mapView, setMapView] = useState({
-      center: map.getCenter(),
-      zoom: map.getZoom(),
-    });
-
-    const iconDivSize = iconSize(map.getZoom()).pixelSize;
-    const iconClassSize = iconSize(map.getZoom()).cssSize;
-    const aircraftIcon = () =>
-      L.divIcon({
-        html: ReactDOMServer.renderToString(
-          <>
-            <IoMdAirplane
-              className={`${iconColor(altitudeFeet)} ${iconClassSize}`}
-              style={{
-                transform: `rotate(${trueTrack}deg)`,
-                filter: `drop-shadow(0 0px 2px ${iconOutline(
-                  climbRateFpm
-                )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
-              }}
-            />
-            <span
-              className="p-0.5 rounded filter-none"
-              style={{
-                backgroundColor: `rgba(255, 255, 255, 0.65)`,
-                boxShadow: `0 0 6px rgba(255, 255, 255, 0.8)`,
-              }}
-            >
-              {callsign}
-            </span>
-          </>
-        ),
-        // className: ``, // Ensures no additional classes affect the styling
-        className: aircraftIconDropShadow(altitudeFeet), // Ensures no additional classes affect the styling
-        iconSize: [iconDivSize, iconDivSize], // Size of the icon
-        iconAnchor: [iconDivSize / 2, iconDivSize / 2], // Point of the icon which will correspond to marker's location
-      });
-
-    // TODO: Remove later
-    if (
-      icao24.toUpperCase() === "AB39E9" ||
-      icao24.toUpperCase() === "AB9A32"
-    ) {
-      console.log(
-        "Aircraft:",
-        icao24.toUpperCase(),
-        "altitude:",
-        altitudeFeet,
-        "latitude:",
-        latitude,
-        "z-index:",
-        zIndex,
-        "lat lon:"
-      );
-    }
-
-    useMapEvents({
-      moveend: () => {
-        setMapView({
-          center: map.getCenter(),
-          zoom: map.getZoom(),
-        });
-      },
-      zoomend: () => {
-        setMapView({
-          center: map.getCenter(),
-          zoom: map.getZoom(),
-        });
-        console.log("Map zoom:", map.getZoom());
-      },
-    });
-
-    let markerLayerPoint;
-    const [adjustedZOffset, setAdjustedZOffset] = useState(0);
-
-    useEffect(() => {
-      // Get the (x, y) pixel based coordinate of the marker's point on the map
-      markerLayerPoint = map.latLngToLayerPoint([latitude, longitude]);
-      // Calculates a value that when Leaflet calculates z-index will result in our intended z-index
-      // adjustedZOffset = zIndex - markerLayerPoint.y;
-      setAdjustedZOffset(zIndex - markerLayerPoint.y);
-
-      // TODO: Remove later
-      if (icao24.toUpperCase() === "A34E9D") {
-        console.log("latLngToLayerPoint:", markerLayerPoint);
-        console.log("Calculated z-offset:", adjustedZOffset);
-      }
-    }, [mapView, allAircraft]);
-
-    return (
-      <Marker
-        position={[latitude, longitude]}
-        icon={aircraftIcon()}
-        zIndexOffset={adjustedZOffset}
-        title={callsign ? callsign.trim() : ""}
-        riseOnHover={true}
-        riseOffset={totalAircraft + 1}
-      >
-        <Popup>
-          <AircraftImage icao24={icao24} />
-          <table className="mt-2 table-auto">
-            <tbody>
-              <tr>
-                <td>ICAO24:</td>
-                <td className="pl-2">{icao24.toUpperCase()}</td>
-              </tr>
-              <CallsignFlightDetailsLink callsign={callsign} />
-              {baroAltitude != null && (
-                <tr>
-                  <td>{`Altitude:`}</td>
-                  <td className="pl-2">{`${metersToFeet(baroAltitude).toFixed(
-                    2
-                  )} ft`}</td>
-                </tr>
-              )}
-              {velocity != null && (
-                <tr>
-                  <td>{`Speed:`}</td>
-                  <td className="pl-2">
-                    {`${toMilesPerHour(velocity).toFixed(2)} mph (${toKnots(
-                      toMilesPerHour(velocity)
-                    ).toFixed(2)} kts)`}
-                  </td>
-                </tr>
-              )}
-              {verticalRate != null && (
-                <tr>
-                  <td>{`Climb rate:`}</td>
-                  <td className="pl-2">{`${climbRateFpm} fpm`}</td>
-                </tr>
-              )}
-              {trueTrack != null && (
-                <tr>
-                  <td>{`Track:`}</td>
-                  <td className="pl-2">{`${trueTrack} deg`}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <div className="mt-2 text-gray-400 text-xs">
-            Last Contact: {unixSecondsToLocal(lastContact)}
-          </div>
-        </Popup>
-      </Marker>
-    );
-  } else {
+  const currentTime = new Date().getTime() / 1000; // current time in seconds
+  if (currentTime - lastContact > 180) {
     return null;
   }
+
+  if (!latitude || !longitude) {
+    return null;
+  }
+
+  const map = useMap();
+  const altitudeFeet = metersToFeet(baroAltitude);
+  const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(2);
+
+  const [currentPosition, setCurrentPosition] = useState({
+    lat: latitude,
+    lon: longitude,
+  });
+  const [currentAltitude, setCurrentAltitude] = useState(baroAltitude);
+  const [lastUpdateTime, setLastUpdateTime] = useState(new Date().getTime());
+  const [mapView, setMapView] = useState({
+    center: map.getCenter(),
+    zoom: map.getZoom(),
+  });
+
+  useEffect(() => {
+    setCurrentPosition({ lat: latitude, lon: longitude });
+    setCurrentAltitude(baroAltitude);
+    setLastUpdateTime(new Date().getTime());
+  }, [latitude, longitude, baroAltitude]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const elapsedTime = (currentTime - lastUpdateTime) / 1000; // Elapsed time in seconds
+
+      if (elapsedTime > 0) {
+        const distancePerStep = velocity * elapsedTime; // Distance to move in meters
+        const altitudeChangePerStep = verticalRate * elapsedTime; // Altitude change in meters
+
+        const newLat =
+          currentPosition.lat +
+          (distancePerStep * Math.cos(trueTrack * (Math.PI / 180))) / 111320;
+        const newLon =
+          currentPosition.lon +
+          (distancePerStep * Math.sin(trueTrack * (Math.PI / 180))) /
+            (111320 * Math.cos(currentPosition.lat * (Math.PI / 180)));
+
+        setCurrentPosition({ lat: newLat, lon: newLon });
+        setCurrentAltitude(
+          (prevAltitude) => prevAltitude + altitudeChangePerStep
+        );
+        setLastUpdateTime(currentTime);
+      }
+    }, 250); // Update every 250 milliseconds
+
+    return () => clearInterval(intervalId);
+  }, [velocity, trueTrack, verticalRate, lastUpdateTime]);
+
+  useEffect(() => {
+    if (lastContact > lastUpdateTime / 1000) {
+      setCurrentPosition({ lat: latitude, lon: longitude });
+      setCurrentAltitude(baroAltitude);
+      setLastUpdateTime(new Date().getTime());
+    }
+  }, [lastContact]);
+
+  useMapEvents({
+    moveend: () => {
+      setMapView({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      });
+    },
+    zoomend: () => {
+      setMapView({
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      });
+    },
+  });
+
+  let markerLayerPoint;
+  const [adjustedZOffset, setAdjustedZOffset] = useState(0);
+
+  useEffect(() => {
+    markerLayerPoint = map.latLngToLayerPoint([
+      currentPosition.lat,
+      currentPosition.lon,
+    ]);
+    setAdjustedZOffset(zIndex - markerLayerPoint.y);
+  }, [currentPosition, mapView, allAircraft]);
+
+  const iconDivSize = iconSize(map.getZoom()).pixelSize;
+  const iconClassSize = iconSize(map.getZoom()).cssSize;
+  const aircraftIcon = () =>
+    L.divIcon({
+      html: ReactDOMServer.renderToString(
+        <>
+          <IoMdAirplane
+            className={`${iconColor(
+              metersToFeet(currentAltitude)
+            )} ${iconClassSize}`}
+            style={{
+              transform: `rotate(${trueTrack}deg)`,
+              filter: `drop-shadow(0 0px 2px ${iconOutline(
+                climbRateFpm
+              )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
+            }}
+          />
+          <span
+            className="p-0.5 rounded filter-none"
+            style={{
+              backgroundColor: `rgba(255, 255, 255, 0.65)`,
+              boxShadow: `0 0 6px rgba(255, 255, 255, 0.8)`,
+            }}
+          >
+            {callsign}
+          </span>
+        </>
+      ),
+      className: aircraftIconDropShadow(metersToFeet(currentAltitude)),
+      iconSize: [iconDivSize, iconDivSize],
+      iconAnchor: [iconDivSize / 2, iconDivSize / 2],
+    });
+
+  return (
+    <Marker
+      position={[currentPosition.lat, currentPosition.lon]}
+      icon={aircraftIcon()}
+      zIndexOffset={adjustedZOffset}
+      title={callsign ? callsign.trim() : ""}
+      riseOnHover={true}
+      riseOffset={totalAircraft + 1}
+    >
+      <Popup>
+        <AircraftImage icao24={icao24} />
+        <table className="mt-2 table-auto">
+          <tbody>
+            <tr>
+              <td>ICAO24:</td>
+              <td className="pl-2">{icao24.toUpperCase()}</td>
+            </tr>
+            <CallsignFlightDetailsLink callsign={callsign} />
+            {currentAltitude != null && (
+              <tr>
+                <td>{`Altitude:`}</td>
+                <td className="pl-2">{`${metersToFeet(currentAltitude).toFixed(
+                  2
+                )} ft`}</td>
+              </tr>
+            )}
+            {velocity != null && (
+              <tr>
+                <td>{`Speed:`}</td>
+                <td className="pl-2">{`${toMilesPerHour(velocity).toFixed(
+                  2
+                )} mph (${toKnots(toMilesPerHour(velocity)).toFixed(
+                  2
+                )} kts)`}</td>
+              </tr>
+            )}
+            {verticalRate != null && (
+              <tr>
+                <td>{`Climb rate:`}</td>
+                <td className="pl-2">{`${climbRateFpm} fpm`}</td>
+              </tr>
+            )}
+            {trueTrack != null && (
+              <tr>
+                <td>{`Track:`}</td>
+                <td className="pl-2">{`${trueTrack.toFixed(2)} deg`}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <div className="mt-2 text-gray-400 text-xs">
+          Last Contact: {unixSecondsToLocal(lastContact)}
+        </div>
+      </Popup>
+    </Marker>
+  );
 };
 
 export default Aircraft;
