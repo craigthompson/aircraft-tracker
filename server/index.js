@@ -138,17 +138,16 @@ cron.schedule("*/3 * * * * *", async () => {
   }
 });
 
-// Schedule scraping data for watch list every 2 minutes
 cron.schedule("*/5 * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
       console.log(
-        chalk.green(`[Scraper Bot] `),
+        chalk.cyanBright(`[Scraper Bot] `),
         "Running scraper to get data for watch list."
       );
       await scrapeWatchedFlightsStatus();
       console.log(
-        chalk.green(`[Scraper Bot] `),
+        chalk.cyanBright(`[Scraper Bot] `),
         "Completed scraping data for watch list."
       );
     } else {
