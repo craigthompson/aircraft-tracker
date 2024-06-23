@@ -1,6 +1,7 @@
 import db, { WatchedAircraft } from "./model.js";
 import scrapeFlightData from "../server/webScraper/flightStatusScraper.js";
 import { queryWatchedAircraft } from "./queries.js";
+import chalk from "chalk";
 
 export const upsertWatchedAircraft = async (aircraft) => {
   const newWatchedAircraft = await WatchedAircraft.upsert({
@@ -29,16 +30,26 @@ export const scrapeWatchedFlightsStatus = async () => {
 
 export const scrapeGivenWatchedFlightStatus = async (flight) => {
   try {
-    console.log("Flight:", flight);
+    console.log(chalk.cyanBright(`[Scraper Bot] `), "Flight:", flight);
     const flightDetails = await scrapeFlightData(flight.callsign);
     flightDetails["callsign"] = flight.callsign;
     flightDetails["watchId"] = flight.watchId;
-    console.log("Flight details: ", flightDetails);
-    console.log("Upserting flight details into watched aircraft table...");
+    console.log(
+      chalk.cyanBright(`[Scraper Bot] `),
+      "Flight details: ",
+      flightDetails
+    );
+    console.log(
+      chalk.cyanBright(`[Scraper Bot] `),
+      "Upserting flight details into watched aircraft table..."
+    );
     const upsertedWatchedFlight = await upsertWatchedAircraftFlightDetails(
       flightDetails
     );
-    console.log("Done upserting flight details.");
+    console.log(
+      chalk.cyanBright(`[Scraper Bot] `),
+      "Done upserting flight details."
+    );
     return upsertedWatchedFlight;
   } catch (error) {
     console.error("Error during scraping for flight:", flight.callsign, error);
