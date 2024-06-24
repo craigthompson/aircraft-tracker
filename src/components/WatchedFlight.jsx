@@ -1,5 +1,5 @@
 import { MdArrowRightAlt } from "react-icons/md";
-import WatchFlightButtons from "./WatchFlightButtons";
+import WatchFlightDeleteButton from "./WatchFlightDeleteButton";
 
 function WatchedFlight({
   icao24,
@@ -8,8 +8,9 @@ function WatchedFlight({
   departureAirport,
   arrivalAirport,
   airlineLogoUrl,
+  deleteWatchFlight,
 }) {
-  const currentlyTracking = icao24 ? "true" : "false";
+  const currentlyTracking = icao24 ? "true" : "false"; // TODO: remove if not using again
 
   return (
     <tr className="flex w-full my-2 text-gray-600">
@@ -43,7 +44,7 @@ function WatchedFlight({
               </span>
             </div>
           </div>
-          <WatchFlightButtons />
+          <WatchFlightDeleteButton clickedDeleteButton={deleteWatchFlight} />
         </div>
       </td>
     </tr>
