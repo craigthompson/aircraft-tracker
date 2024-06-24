@@ -68,7 +68,7 @@ function Map() {
         style={{ height: "100vh" }}
       >
         <LayersControl>
-          <BaseLayer name="ArcGIS Esri Topo">
+          <BaseLayer checked name="ArcGIS Esri Topo">
             <TileLayer
               attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
@@ -102,7 +102,7 @@ function Map() {
               maxNativeZoom={18}
             />
           </BaseLayer>
-          <BaseLayer checked name="Alidade Smooth">
+          <BaseLayer name="Alidade Smooth">
             <TileLayer
               attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
