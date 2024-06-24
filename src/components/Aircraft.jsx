@@ -150,9 +150,41 @@ const Aircraft = ({
         const distancePerStep = velocity * elapsedTime; // Distance to move in meters
         const altitudeChangePerStep = verticalRate * elapsedTime; // Altitude change in meters
 
+        /**
+         *  Calculates a predicted next latitude point in degrees.
+         *    - currentPosition.lat is the current latitude of the aircraft.
+         *    - trueTrack is the aircraft's track angle in degrees, which is
+         *      converted to radians by multiplying with (Math.PI / 180).
+         *    - Math.cos(trueTrack * (Math.PI / 180)) gives the cosine of the
+         *      track angle, representing the horizontal component of the distance.
+         *    - The product of distance and Math.cos(trueTrack * (Math.PI / 180))
+         *      gives the north-south distance component in meters, which is then
+         *      converted to degrees by dividing by 111320.
+         *        * 111320 is the number of meters per degree of latitude.
+         *          I use this value to convert the distance from meters to degrees.
+         *    - Adding to currentPosition.lat gives the new latitude.
+         */
         const newLat =
           currentPosition.lat +
           (distancePerStep * Math.cos(trueTrack * (Math.PI / 180))) / 111320;
+
+        /**
+         *  Calculates a predicted next longitude point in degrees.
+         *    - currentPosition.lon is the current longitude of the aircraft.
+         *    - Math.sin(trueTrack * (Math.PI / 180)) gives the sine of the track angle, representing the
+         *      east-west component of the distance.
+         *    - 111320 * Math.cos(currentPosition.lat * (Math.PI / 180)) adjusts the meters per degree of
+         *      longitude, accounting for the latitude. This factor accounts for the fact that the distance
+         *      represented by one degree of longitude varies with latitude.
+         *        * 111320 is the number of meters per degree of longitude.
+         *          I use this value to convert the distance from meters to degrees.
+         *    - The product of distance and Math.sin(trueTrack * (Math.PI / 180)) gives the east-west distance
+         *      component in meters.
+         *        * I convert the product mentioned above to degrees by dividing by 111320 * Math.cos
+         *          (currentPosition.lat * (Math.PI / 180)).
+         *            ~ 111320 is the number of meters per degree of longitude.
+         *    - Adding to currentPosition.lon gives the new longitude.
+         */
         const newLon =
           currentPosition.lon +
           (distancePerStep * Math.sin(trueTrack * (Math.PI / 180))) /
