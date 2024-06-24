@@ -54,13 +54,18 @@ app.use(express.json());
 //  Endpoints
 //////////////////////////////////////////////
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
-const { getAllAircraft, getWatchedAircraft, addWatchedAircraft } =
-  handlerFunctions;
+const {
+  getAllAircraft,
+  getWatchedAircraft,
+  addWatchedAircraft,
+  deleteWatchedAircraft,
+} = handlerFunctions;
 
 app.get("/api/aircraft/all", getAllAircraft);
 
 app.get("/api/watched/aircraft", getWatchedAircraft);
 app.post("/api/watched/aircraft", addWatchedAircraft);
+app.delete("/api/watched/aircraft/:id", deleteWatchedAircraft);
 
 //////////////////////////////////////////////
 //  Socket.io
