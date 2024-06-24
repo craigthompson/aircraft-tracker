@@ -19,6 +19,7 @@ const WatchList = () => {
         arrivalAirport={watchedFlight.arrivalAirport}
         airlineLogoUrl={watchedFlight.airlineLogoUrl}
         key={watchedFlight.watchId}
+        deleteWatchFlight={() => deleteWatchFlight(watchedFlight.watchId)}
       />
     )
   );
@@ -46,6 +47,11 @@ const WatchList = () => {
   const getData = async () => {
     const { data } = await axios.get("api/watched/aircraft");
     console.log("Received:", data);
+    setAllWatchedAircraft(data);
+  };
+
+  const deleteWatchFlight = async (id) => {
+    const { data } = await axios.delete(`/api/watched/aircraft/${id}`);
     setAllWatchedAircraft(data);
   };
 
