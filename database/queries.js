@@ -105,3 +105,14 @@ export const queryWatchedAircraft = async () => {
   });
   return watchedAircraft;
 };
+
+// Deletes a watched aircraft with the given watch ID
+export const deleteWatchedAircraft = async (watchId) => {
+  await WatchedAircraft.destroy({
+    where: {
+      watchId: {
+        [Op.eq]: watchId,
+      },
+    },
+  });
+};
