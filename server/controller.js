@@ -1,4 +1,8 @@
-import { queryAllAircraft, queryWatchedAircraft } from "../database/queries.js";
+import {
+  queryAllAircraft,
+  queryWatchedAircraft,
+  deleteWatchedAircraft,
+} from "../database/queries.js";
 
 import { createWatchedAircraft } from "../database/watchedAircraft.js";
 
@@ -8,7 +12,6 @@ import { createWatchedAircraft } from "../database/watchedAircraft.js";
 const handlerFunctions = {
   getAllAircraft: async (req, res) => {
     const allAircraft = await queryAllAircraft();
-    // console.log(allAircraft);
     res.status(200).send(allAircraft);
   },
 
@@ -18,10 +21,15 @@ const handlerFunctions = {
   },
 
   addWatchedAircraft: async (req, res) => {
-    console.log("req.body:", req.body);
     const watchedAircraft = await createWatchedAircraft(
       req.body.callsign.toUpperCase()
     );
+    res.status(200).send(watchedAircraft);
+  },
+
+  deleteWatchedAircraft: async (req, res) => {
+    await deleteWatchedAircraft(req.params.id);
+    const watchedAircraft = await queryWatchedAircraft();
     res.status(200).send(watchedAircraft);
   },
 };
