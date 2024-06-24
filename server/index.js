@@ -94,16 +94,17 @@ socketIo.on("connection", (socket) => {
 //////////////////////////////////////////////
 //  Scheduled Cron Tasks
 //////////////////////////////////////////////
-// Schedule fetching Opensky aircraft data
-// Schedule tasks using other intervals. Examples:
-// '0 * * * *'        - every hour
-// '0 0 * * *'        - every day at midnight
-// '0 0 * * 0'        - every Sunday at midnight
-// '0 0 1 * *'        - the first day of every month
-// '0 0 1 1 *'        - once a year, on January 1st
-// 20 second polling is a total of 4320 requests a day.
-// 15 second polling is a total of 5760 requests a day.
-// 12 second polling is a total of 7200 requests a day.
+/* Schedule fetching Opensky aircraft data
+ * Schedule tasks using other intervals. Examples:
+ * '0 * * * *'        - every hour
+ * '0 0 * * *'        - every day at midnight
+ * '0 0 * * 0'        - every Sunday at midnight
+ * '0 0 1 * *'        - the first day of every month
+ * '0 0 1 1 *'        - once a year, on January 1st
+ * 20 second polling is a total of 4320 requests a day.
+ * 15 second polling is a total of 5760 requests a day.
+ * 12 second polling is a total of 7200 requests a day.
+ */
 cron.schedule("*/13 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
@@ -168,6 +169,7 @@ cron.schedule("*/5 * * * *", async () => {
 //////////////////////////////////////////////
 //  Config server on port
 //////////////////////////////////////////////
+// TODO: remove later
 // Open door to server with .listen()
 // ViteExpress.listen(app, config.SERVER_PORT, async () =>
 //   console.log(`Server running, view at http://localhost:${config.SERVER_PORT}`)
@@ -180,7 +182,7 @@ server.listen(socketConfig.SOCKET_PORT, () => {
 ViteExpress.bind(app, server);
 
 //
-//
+// TODO: remove later
 // const delaySeconds = 5;
 // setTimeout(async () => {
 //   console.log(`Delayed for ${delaySeconds} seconds.`);
