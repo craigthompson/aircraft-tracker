@@ -171,17 +171,18 @@ const Aircraft = ({
         /**
          *  Calculates a predicted next longitude point in degrees.
          *    - currentPosition.lon is the current longitude of the aircraft.
-         *    - Math.sin(trueTrack * (Math.PI / 180)) gives the sine of the track angle, representing the
-         *      east-west component of the distance.
-         *    - 111320 * Math.cos(currentPosition.lat * (Math.PI / 180)) adjusts the meters per degree of
-         *      longitude, accounting for the latitude. This factor accounts for the fact that the distance
-         *      represented by one degree of longitude varies with latitude.
+         *    - Math.sin(trueTrack * (Math.PI / 180)) gives the sine of the track
+         *      angle, representing the east-west component of the distance.
+         *    - 111320 * Math.cos(currentPosition.lat * (Math.PI / 180)) adjusts
+         *      the meters per degree of longitude, accounting for the latitude.
+         *      This factor accounts for the fact that the distance represented
+         *      by one degree of longitude varies with latitude.
          *        * 111320 is the number of meters per degree of longitude.
          *          I use this value to convert the distance from meters to degrees.
-         *    - The product of distance and Math.sin(trueTrack * (Math.PI / 180)) gives the east-west distance
-         *      component in meters.
-         *        * I convert the product mentioned above to degrees by dividing by 111320 * Math.cos
-         *          (currentPosition.lat * (Math.PI / 180)).
+         *    - The product of distance and Math.sin(trueTrack * (Math.PI / 180))
+         *      gives the east-west distance component in meters.
+         *        * I convert the product mentioned above to degrees by dividing
+         *          by 111320 * Math.cos(currentPosition.lat * (Math.PI / 180)).
          *            ~ 111320 is the number of meters per degree of longitude.
          *    - Adding to currentPosition.lon gives the new longitude.
          */
