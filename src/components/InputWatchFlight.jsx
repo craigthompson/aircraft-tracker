@@ -6,7 +6,7 @@ function InputWatchFlight({
   isAddingFlight,
   setIsAddingFlight,
 }) {
-  const [inputValue, setInputValue] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const [isScrapingFlight, setScrapingFlight] = useState(false);
   const inputRef = useRef(null);
 
@@ -17,8 +17,18 @@ function InputWatchFlight({
   const handleKeyDown = async (event) => {
     try {
       if (event.key === "Enter") {
-        setScrapingFlight(true);
-        await addWatchFlight(inputValue);
+        if (true) {
+          if (inputValue.length <= 8) {
+            setScrapingFlight(true);
+            await addWatchFlight(inputValue);
+          } else {
+            alert(
+              "Invalid flight # or aircraft Registration. " +
+                "Cannot exceed 8 characters long. " +
+                "Please try again."
+            );
+          }
+        }
         setInputValue(""); // Clear the input field after adding the flight
         setIsAddingFlight(false);
         setScrapingFlight(false);

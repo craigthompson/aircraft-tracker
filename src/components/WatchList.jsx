@@ -5,7 +5,6 @@ import InputWatchFlight from "./InputWatchFlight";
 import axios from "axios";
 
 const WatchList = () => {
-  // const [watchListData, setWatchListData] = useState([]);
   const [allWatchedAircraft, setAllWatchedAircraft] = useState([]);
   const [isAddingFlight, setIsAddingFlight] = useState(false);
 
