@@ -21,10 +21,16 @@ const handlerFunctions = {
   },
 
   addWatchedAircraft: async (req, res) => {
-    const watchedAircraft = await createWatchedAircraft(
-      req.body.callsign.toUpperCase()
-    );
-    res.status(200).send(watchedAircraft);
+    try {
+      const callsignWithoutWhitespace = req.body.callsign.replace(/\s/g, "");
+      const callsignUpperCase = callsignWithoutWhitespace.toUpperCase();
+      const watchedAircraft = await createWatchedAircraft(callsignUpperCase);
+      res.status(200).send(watchedAircraft);
+    } catch (error) {
+      console.error("Error in processing request:", error);
+      const watchedAircraft = await queryWatchedAircraft();
+      res.status(200).send(watchedAircraft);
+    }
   },
 
   deleteWatchedAircraft: async (req, res) => {
