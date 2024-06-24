@@ -31,7 +31,7 @@ app.use(cors());
 
 // Get URL for server socket
 const socketUrl = (() => {
-  console.log("Node environment:", process.env.NODE_ENV);
+  console.log("Node environment:", process.env.NODE_ENV); // TODO: remove if not needed anymore
   if (process.env.NODE_ENV === "development") {
     return `${socketConfig.SOCKET_DEV_URL_DOMAIN}:${socketConfig.SOCKET_PORT}`;
   } else {
@@ -70,8 +70,11 @@ app.delete("/api/watched/aircraft/:id", deleteWatchedAircraft);
 //////////////////////////////////////////////
 //  Socket.io
 //////////////////////////////////////////////
-const { emitAllAircraftToSingleSocket, emitAllAircraftForAllSockets } =
-  socketHandlerFunctions;
+const {
+  emitAllAircraftToSingleSocket,
+  emitAllAircraftForAllSockets,
+  emitAllWatchedAircraftForAllSockets,
+} = socketHandlerFunctions;
 
 // Handle WebSocket connections
 socketIo.on("connection", (socket) => {
@@ -113,7 +116,7 @@ cron.schedule("*/13 * * * * *", async () => {
         "Running scheduled task to get aircraft data."
       );
       await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      // await emitAllAircraftForAllSockets();
+      // await emitAllAircraftForAllSockets();  // TODO: Remove if only going to do in cron to get own reported aircraft data
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."
@@ -156,6 +159,7 @@ cron.schedule("*/5 * * * *", async () => {
         chalk.cyanBright(`[Scraper Bot] `),
         "Completed scraping data for watch list."
       );
+      await emitAllWatchedAircraftForAllSockets();
     } else {
       console.log(
         "Skipping scheduled task to scrape data for watch list, since no clients currently connected."

@@ -1,4 +1,4 @@
-import { queryAllAircraft } from "../database/queries.js";
+import { queryAllAircraft, queryWatchedAircraft } from "../database/queries.js";
 import chalk from "chalk";
 import socketIo from "./index.js";
 
@@ -12,9 +12,14 @@ import socketIo from "./index.js";
  * @returns {array} array of socket IDs (strings).
  */
 export const getIdsOfServerSockets = (server) => {
-  const arrIds = [];
-  server.sockets.sockets.forEach((socket) => arrIds.push(socket.id));
-  return arrIds;
+  try {
+    const arrIds = [];
+    server.sockets.sockets.forEach((socket) => arrIds.push(socket.id));
+    return arrIds;
+  } catch (error) {
+    console.error("Error getting ids of server sockets:", error);
+    return null;
+  }
 };
 
 /**
@@ -24,11 +29,16 @@ export const getIdsOfServerSockets = (server) => {
  * @returns {array} array of client IDs (strings).
  */
 export const getIdsOfServerClients = (server) => {
-  const arrIds = [];
-  for (const [key, value] of Object.entries(server.eio.clients)) {
-    arrIds.push(key);
+  try {
+    const arrIds = [];
+    for (const [key, value] of Object.entries(server.eio.clients)) {
+      arrIds.push(key);
+    }
+    return arrIds;
+  } catch (error) {
+    console.error("Error getting ids of server clients:", error);
+    return null;
   }
-  return arrIds;
 };
 
 /**
@@ -62,14 +72,21 @@ const socketHandlerFunctions = {
    * @param {socket} socket - the socket to send the event data on
    */
   emitAllAircraftToSingleSocket: async (socket) => {
-    const allAircraft = await queryAllAircraft();
-    socket.emit("all_aircraft", allAircraft);
-    console.log(
-      chalk.cyan("[Socket Emit]"),
-      `Sent ${allAircraft.length} aircraft data to newly connected socket, socket id:`,
-      socket.id,
-      `\n`
-    );
+    try {
+      const allAircraft = await queryAllAircraft();
+      socket.emit("all_aircraft", allAircraft);
+      console.log(
+        chalk.cyan("[Socket Emit]"),
+        `Sent ${allAircraft.length} aircraft data to newly connected socket, socket id:`,
+        socket.id,
+        `\n`
+      );
+    } catch (error) {
+      console.error(
+        "Error in sending (emit) aircraft to a single given socket:",
+        error
+      );
+    }
   },
 
   /**
@@ -78,19 +95,56 @@ const socketHandlerFunctions = {
    * sockets connected on the server.
    */
   emitAllAircraftForAllSockets: async () => {
-    const allAircraft = await queryAllAircraft();
-    socketIo.emit("all_aircraft", allAircraft);
-    console.log(
-      chalk.blue("[Server Emit]"),
-      `Sent ${allAircraft.length} aircraft data to ${getNumOfClients(
-        socketIo
-      )} clients, on ${getNumOfSockets(socketIo)} sockets:`,
-      `\n\tClients:`,
-      getIdsOfServerClients(socketIo),
-      `\n\tSockets:`,
-      getIdsOfServerSockets(socketIo),
-      `\n`
-    );
+    try {
+      const allAircraft = await queryAllAircraft();
+      socketIo.emit("all_aircraft", allAircraft);
+      console.log(
+        chalk.blue("[Server Emit]"),
+        `Sent ${allAircraft.length} aircraft data to ${getNumOfClients(
+          socketIo
+        )} clients, on ${getNumOfSockets(socketIo)} sockets:`,
+        `\n\tClients:`,
+        getIdsOfServerClients(socketIo),
+        `\n\tSockets:`,
+        getIdsOfServerSockets(socketIo),
+        `\n`
+      );
+    } catch (error) {
+      console.error(
+        "Error in sending (emit) watched aircraft over all sockets:",
+        error
+      );
+    }
+  },
+
+  /**
+   * Queries database for all watched aircraft and then emits (sends)
+   * them over the server as an "all_watched_aircraft" event.
+   * This sends to all sockets connected on the server.
+   */
+  emitAllWatchedAircraftForAllSockets: async () => {
+    try {
+      const watchedAircraft = await queryWatchedAircraft();
+      socketIo.emit("all_watched_aircraft", watchedAircraft);
+      console.log(
+        chalk.blue("[Server Emit]"),
+        `Sent ${
+          watchedAircraft.length
+        } watched aircraft data to ${getNumOfClients(
+          socketIo
+        )} clients, on ${getNumOfSockets(socketIo)} sockets:`,
+        `\n\tClients:`,
+        getIdsOfServerClients(socketIo),
+        `\n\tSockets:`,
+        getIdsOfServerSockets(socketIo),
+        `\n`
+      );
+    } catch (error) {
+      console.error(
+        "Error in sending (emit) watched aircraft over sockets:",
+        error
+      );
+    }
   },
 };
 
