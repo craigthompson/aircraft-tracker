@@ -3,6 +3,7 @@ import WatchedFlight from "./WatchedFlight";
 import AddWatchFlightButton from "./AddWatchFlightButton";
 import InputWatchFlight from "./InputWatchFlight";
 import axios from "axios";
+import { socket } from "../socket.js";
 
 const WatchList = () => {
   const [allWatchedAircraft, setAllWatchedAircraft] = useState([]);
@@ -56,6 +57,17 @@ const WatchList = () => {
 
   useEffect(() => {
     getData();
+  }, []);
+
+  useEffect(() => {
+    socket.on("all_watched_aircraft", (watchedFlights) => {
+      console.log("Message from server for watched flights:", watchedFlights);
+      setAllWatchedAircraft(watchedFlights);
+    });
+
+    return () => {
+      socket.off("all_watched_aircraft");
+    };
   }, []);
 
   return (
