@@ -5,9 +5,10 @@ function InputWatchFlight({
   addWatchFlight,
   isAddingFlight,
   setIsAddingFlight,
+  isScrapingFlight,
+  setIsScrapingFlight,
 }) {
   const [inputValue, setInputValue] = useState("");
-  const [isScrapingFlight, setScrapingFlight] = useState(false);
   const inputRef = useRef(null);
 
   const handleInputChange = (event) => {
@@ -19,7 +20,7 @@ function InputWatchFlight({
       if (event.key === "Enter") {
         if (true) {
           if (inputValue.length <= 8) {
-            setScrapingFlight(true);
+            setIsScrapingFlight(true);
             await addWatchFlight(inputValue);
           } else {
             alert(
@@ -31,7 +32,6 @@ function InputWatchFlight({
         }
         setInputValue(""); // Clear the input field after adding the flight
         setIsAddingFlight(false);
-        setScrapingFlight(false);
       }
     } catch (error) {
       console.error("Error adding watch flight:", error);

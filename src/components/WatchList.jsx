@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import WatchedFlight from "./WatchedFlight";
 import AddWatchFlightButton from "./AddWatchFlightButton";
 import InputWatchFlight from "./InputWatchFlight";
@@ -8,6 +8,8 @@ import { socket } from "../socket.js";
 const WatchList = () => {
   const [allWatchedAircraft, setAllWatchedAircraft] = useState([]);
   const [isAddingFlight, setIsAddingFlight] = useState(false);
+  const [isScrapingFlight, setIsScrapingFlight] = useState(false);
+  const watchlistFooterRef = useRef(null);
 
   const allWatchedAircraftInstances = allWatchedAircraft.map(
     (watchedFlight, index) => (
@@ -37,6 +39,7 @@ const WatchList = () => {
         "/api/watched/aircraft",
         newWatchFlight
       );
+      console.log("Watched flights returned from server:", data);
       setAllWatchedAircraft(data);
       setIsAddingFlight(false);
     } catch (error) {
@@ -55,6 +58,13 @@ const WatchList = () => {
     setAllWatchedAircraft(data);
   };
 
+  const scrollWatchListFooterIntoView = () => {
+    console.log("Current:", watchlistFooterRef.current);
+    watchlistFooterRef.current.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -70,18 +80,35 @@ const WatchList = () => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log("In use effect");
+    console.log("isScrapingFlight:", isScrapingFlight);
+    if (isScrapingFlight) scrollWatchListFooterIntoView();
+    setIsScrapingFlight(false);
+
+    return () => {
+      console.log("Unmounting", isScrapingFlight);
+    };
+  }, [allWatchedAircraft]);
+
+  useEffect(() => {
+    console.log("setIsScrapingFlight");
+  }, [setIsScrapingFlight]);
+
   return (
     <div className="flex flex-col h-screen w-2/12 bg-gray-50 border-l-2 border-gray-300 ">
       <div className="text-xl">Watch List</div>
       <table className="flex flex-col w-full h-full overflow-y-auto">
         <tbody>{allWatchedAircraftInstances}</tbody>
-        <tfoot className="flex flex-col mb-4">
+        <tfoot ref={watchlistFooterRef} className="flex flex-col mb-4 mt-2">
           <tr className="flex">
             {isAddingFlight ? (
               <InputWatchFlight
                 addWatchFlight={addWatchFlight}
                 isAddingFlight={isAddingFlight}
                 setIsAddingFlight={setIsAddingFlight}
+                isScrapingFlight={isScrapingFlight}
+                setIsScrapingFlight={setIsScrapingFlight}
               />
             ) : (
               <AddWatchFlightButton clickedButton={setAddingFlightTrue} />
