@@ -85,15 +85,12 @@ const WatchList = () => {
     console.log("isScrapingFlight:", isScrapingFlight);
     if (isScrapingFlight) scrollWatchListFooterIntoView();
     setIsScrapingFlight(false);
-
-    return () => {
-      console.log("Unmounting", isScrapingFlight);
-    };
   }, [allWatchedAircraft]);
 
   useEffect(() => {
     console.log("setIsScrapingFlight");
-  }, [setIsScrapingFlight]);
+    if (isScrapingFlight) scrollWatchListFooterIntoView();
+  }, [isScrapingFlight]);
 
   return (
     <div className="flex flex-col h-screen w-2/12 bg-gray-50 border-l-2 border-gray-300 ">
