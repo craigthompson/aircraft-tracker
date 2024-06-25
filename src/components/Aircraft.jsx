@@ -278,7 +278,7 @@ const Aircraft = ({
       riseOnHover={true}
       riseOffset={totalAircraft + 1}
     >
-      <Popup>
+      <Popup offset={L.point(0, -10)}>
         <AircraftImage icao24={icao24} />
         <table className="mt-2 table-auto">
           <tbody>
