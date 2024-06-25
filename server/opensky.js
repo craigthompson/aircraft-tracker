@@ -23,26 +23,30 @@ const openskyUrl = "https://opensky-network.org";
  *   OpenSky Network API documentation.
  */
 export const parseAircraftData = (aircraft) => {
-  return {
-    icao24: aircraft[0],
-    callsign: aircraft[1],
-    originCountry: aircraft[2],
-    timePosition: aircraft[3],
-    lastContact: aircraft[4],
-    longitude: aircraft[5],
-    latitude: aircraft[6],
-    baroAltitude: aircraft[7],
-    onGround: aircraft[8],
-    velocity: aircraft[9],
-    trueTrack: aircraft[10],
-    verticalRate: aircraft[11],
-    sensors: aircraft[12],
-    geoAltitude: aircraft[13],
-    squawk: aircraft[14],
-    spi: aircraft[15],
-    positionSource: aircraft[16],
-    vehicleCategory: aircraft[17] || null,
-  };
+  try {
+    return {
+      icao24: aircraft[0],
+      callsign: aircraft[1],
+      originCountry: aircraft[2],
+      timePosition: aircraft[3],
+      lastContact: aircraft[4],
+      longitude: aircraft[5],
+      latitude: aircraft[6],
+      baroAltitude: aircraft[7],
+      onGround: aircraft[8],
+      velocity: aircraft[9],
+      trueTrack: aircraft[10],
+      verticalRate: aircraft[11],
+      sensors: aircraft[12],
+      geoAltitude: aircraft[13],
+      squawk: aircraft[14],
+      spi: aircraft[15],
+      positionSource: aircraft[16],
+      vehicleCategory: aircraft[17] || null,
+    };
+  } catch (error) {
+    console.error("Error in parsing aircraft data:", error);
+  }
 };
 
 /**
@@ -70,32 +74,35 @@ export const parseAircraftData = (aircraft) => {
  *   OpenSky Network API documentation.
  */
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
-  const response = await axios.get(`${openskyUrl}/api/states/all`, {
-    auth: {
-      username: process.env.OPENSKY_USERNAME,
-      password: process.env.OPENSKY_PASSWORD,
-    },
-    params: {
-      lamin: latMin,
-      lomin: lonMin,
-      lamax: latMax,
-      lomax: lonMax,
-    },
-  });
-  debug &&
-    console.log(
-      chalk.magentaBright("[OpenSky] "),
-      "Rate limit remaining:",
-      response.headers["x-rate-limit-remaining"]
-    );
-  // debug && console.log("Response.data:", response.data);
+  try {
+    const response = await axios.get(`${openskyUrl}/api/states/all`, {
+      auth: {
+        username: process.env.OPENSKY_USERNAME,
+        password: process.env.OPENSKY_PASSWORD,
+      },
+      params: {
+        lamin: latMin,
+        lomin: lonMin,
+        lamax: latMax,
+        lomax: lonMax,
+      },
+    });
+    debug &&
+      console.log(
+        chalk.magentaBright("[OpenSky] "),
+        "Rate limit remaining:",
+        response.headers["x-rate-limit-remaining"]
+      );
 
-  const aircraftInDB = await Promise.all(
-    response.data.states.map(async (aircraft) => {
-      const aircraftObj = parseAircraftData(aircraft);
-      return upsertAircraft(aircraftObj);
-    })
-  );
+    const aircraftInDB = await Promise.all(
+      response.data.states.map(async (aircraft) => {
+        const aircraftObj = parseAircraftData(aircraft);
+        return upsertAircraft(aircraftObj);
+      })
+    );
+  } catch (error) {
+    console.error("Error in getAircraft:", error);
+  }
 };
 
 /**
@@ -129,27 +136,32 @@ export const getOwnReportedAircraft = async (
   latMax,
   lonMax
 ) => {
-  const response = await axios.get(`${openskyUrl}/api/states/own`, {
-    auth: {
-      username: process.env.OPENSKY_USERNAME,
-      password: process.env.OPENSKY_PASSWORD,
-    },
-    params: {
-      lamin: latMin,
-      lomin: lonMin,
-      lamax: latMax,
-      lomax: lonMax,
-    },
-  });
+  try {
+    const response = await axios.get(`${openskyUrl}/api/states/own`, {
+      auth: {
+        username: process.env.OPENSKY_USERNAME,
+        password: process.env.OPENSKY_PASSWORD,
+      },
+      params: {
+        lamin: latMin,
+        lomin: lonMin,
+        lamax: latMax,
+        lomax: lonMax,
+      },
+    });
 
-  // debug && console.log("Response.data:", response.data);
+    // debug && console.log("Response.data:", response.data);
 
-  if (response.data.states) {
-    const aircraftInDB = await Promise.all(
-      response.data.states.map(async (aircraft) => {
-        const aircraftObj = parseAircraftData(aircraft);
-        return upsertAircraft(aircraftObj);
-      })
-    );
+    if (response.data.states) {
+      const aircraftInDB = await Promise.all(
+        response.data.states.map(async (aircraft) => {
+          const aircraftObj = parseAircraftData(aircraft);
+          return upsertAircraft(aircraftObj);
+        })
+      );
+    }
+  } catch (error) {
+    console.error("Error in getting own reported aircraft:", error);
+    return null;
   }
 };
