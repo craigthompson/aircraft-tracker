@@ -57,7 +57,7 @@ function InputWatchFlight({
         <input
           ref={inputRef}
           type="text"
-          value={inputValue}
+          value={inputValue.toUpperCase().replace(/\s/g, "")}
           placeholder="Flight #"
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
