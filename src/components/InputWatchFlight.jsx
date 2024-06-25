@@ -58,11 +58,11 @@ function InputWatchFlight({
           ref={inputRef}
           type="text"
           value={inputValue.toUpperCase().replace(/\s/g, "")}
-          placeholder="Flight #"
+          placeholder="Callsign / Flight"
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onBlur={handleInputBlur}
-          className="pl-1 w-full"
+          className="pl-2 w-full shadow-md "
         />
       )}
     </td>
