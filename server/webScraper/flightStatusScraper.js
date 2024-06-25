@@ -33,82 +33,85 @@ async function scrapeFlightData(
   // The airline logo image element selector
   const airlineLogoSelector = "#main > img.AirlineLogo";
 
-  // Navigate to the page and wait for it to finish loading
-  // await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
-  await page.goto(url);
-
   let flightData = {};
 
   try {
-    await page.waitForSelector(airportSelector, { timeout: 15000 });
-    if (debugLog) console.log("Found airport selector, so page has loaded");
+    // Navigate to the page and wait for it to finish loading
+    // await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(url);
 
-    // Extract the departure and arrival airport details
-    flightData = await page.evaluate((selector) => {
-      const airports = document.querySelectorAll(selector);
-      console.log("Airports:", airports);
-      const departureAirport = airports[0]?.textContent.trim() ?? null;
-      console.log("Dep airports:", departureAirport);
-      const arrivalAirport = airports[1]?.textContent.trim() ?? null;
-      console.log("Arr airports:", arrivalAirport);
-      return { departureAirport, arrivalAirport };
-    }, airportSelector);
+    try {
+      await page.waitForSelector(airportSelector, { timeout: 15000 });
+      if (debugLog) console.log("Found airport selector, so page has loaded");
+
+      // Extract the departure and arrival airport details
+      flightData = await page.evaluate((selector) => {
+        const airports = document.querySelectorAll(selector);
+        console.log("Airports:", airports);
+        const departureAirport = airports[0]?.textContent.trim() ?? null;
+        console.log("Dep airports:", departureAirport);
+        const arrivalAirport = airports[1]?.textContent.trim() ?? null;
+        console.log("Arr airports:", arrivalAirport);
+        return { departureAirport, arrivalAirport };
+      }, airportSelector);
+    } catch (error) {
+      flightData = { departureAirport: null, arrivalAirport: null };
+    }
+
+    // Capture a screenshot for debugging
+    if (debugScreenshot) {
+      await page.screenshot({
+        path: "./server/webScraper/screenshots/debug_screenshot.png",
+      });
+    }
+
+    // Get the airline name
+    try {
+      await page.waitForSelector(airlineSelector, { timeout: 15000 });
+      if (debugLog) console.log("Found airline selector");
+
+      // Extract the departure and arrival airport details
+      flightData["airline"] = await page.evaluate((selector) => {
+        const airline = document.querySelector(selector)?.textContent.trim();
+        return airline;
+      }, airlineSelector);
+    } catch {
+      flightData["airline"] = null;
+    }
+
+    // Get the flight status
+    try {
+      await page.waitForSelector(flightStatusSelector, { timeout: 15000 });
+      if (debugLog) console.log("Found flight status selector");
+
+      // Extract the departure and arrival airport details
+      flightData["flightStatus"] = await page.evaluate((selector) => {
+        const status = document.querySelector(selector)?.textContent.trim();
+        return status;
+      }, flightStatusSelector);
+    } catch {
+      flightData["flightStatus"] = null;
+    }
+
+    // Get the flight airline logo
+    try {
+      await page.waitForSelector(airlineLogoSelector, { timeout: 15000 });
+      if (debugLog) console.log("Found flight airline logo selector");
+
+      // Extract the departure and arrival airport details
+      flightData["airlineLogoUrl"] = await page.evaluate((selector) => {
+        const logo = document.querySelector(selector)?.src;
+        return logo;
+      }, airlineLogoSelector);
+    } catch {
+      flightData["airlineLogoUrl"] = null;
+    }
   } catch (error) {
-    flightData = { departureAirport: null, arrivalAirport: null };
+    console.error("Error while scraping for flight details:", error);
+  } finally {
+    // Close the browser
+    await browser.close();
   }
-
-  // Capture a screenshot for debugging
-  if (debugScreenshot) {
-    await page.screenshot({
-      path: "./server/webScraper/screenshots/debug_screenshot.png",
-    });
-  }
-
-  // Get the airline name
-  try {
-    await page.waitForSelector(airlineSelector, { timeout: 15000 });
-    if (debugLog) console.log("Found airline selector");
-
-    // Extract the departure and arrival airport details
-    flightData["airline"] = await page.evaluate((selector) => {
-      const airline = document.querySelector(selector)?.textContent.trim();
-      return airline;
-    }, airlineSelector);
-  } catch {
-    flightData["airline"] = null;
-  }
-
-  // Get the flight status
-  try {
-    await page.waitForSelector(flightStatusSelector, { timeout: 15000 });
-    if (debugLog) console.log("Found flight status selector");
-
-    // Extract the departure and arrival airport details
-    flightData["flightStatus"] = await page.evaluate((selector) => {
-      const status = document.querySelector(selector)?.textContent.trim();
-      return status;
-    }, flightStatusSelector);
-  } catch {
-    flightData["flightStatus"] = null;
-  }
-
-  // Get the flight airline logo
-  try {
-    await page.waitForSelector(airlineLogoSelector, { timeout: 15000 });
-    if (debugLog) console.log("Found flight airline logo selector");
-
-    // Extract the departure and arrival airport details
-    flightData["airlineLogoUrl"] = await page.evaluate((selector) => {
-      const logo = document.querySelector(selector)?.src;
-      return logo;
-    }, airlineLogoSelector);
-  } catch {
-    flightData["airlineLogoUrl"] = null;
-  }
-
-  // Close the browser
-  await browser.close();
-
   return flightData;
 }
 
