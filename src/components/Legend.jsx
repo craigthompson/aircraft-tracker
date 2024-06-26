@@ -12,7 +12,7 @@ const Legend = () => {
     legend.onAdd = function () {
       const div = L.DomUtil.create(
         "div",
-        "info legend bg-white rounded-md shadow-lg"
+        "info legend bg-white rounded-md shadow-[0_4px_6px_5px_rgba(0,0,0,0.1)] border-solid border-2 border-secondary-300"
       );
 
       const grades = [35000, 30000, 25000, 20000, 15000, 10000, 5000, "Ground"];
@@ -104,7 +104,7 @@ const Legend = () => {
       ].join("");
 
       div.innerHTML = `
-        <div class="flex justify-center items-center py-1 rounded-t-md drop-shadow-md bg-secondary-100 text-secondary-600 font-semibold">
+        <div class="flex justify-center items-center py-1 rounded-t-md drop-shadow-md bg-secondary-100 text-secondary-600">
           Altitude (ft)
         </div>
         <div class="px-2 py-1">
