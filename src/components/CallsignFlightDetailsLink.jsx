@@ -10,7 +10,7 @@ function CallsignFlightDetailsLink({ callsign }) {
           <a
             href={`https://www.flightaware.com/live/flight/${callsign.toUpperCase()}`}
             target="_blank"
-            className="inline-flex items-center"
+            className="inline-flex items-center text-primary-600 hover:text-primary-800"
           >
             {`${callsign.toUpperCase()} `}{" "}
             <FaExternalLinkAlt className="ml-1 text-xs" />

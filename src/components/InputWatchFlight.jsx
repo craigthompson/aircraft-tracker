@@ -50,9 +50,9 @@ function InputWatchFlight({
   }, [isAddingFlight]);
 
   return (
-    <td className="w-full px-1 min-h-7">
+    <td className="w-full px-1 min-h-6 flex justify-center items-center">
       {isScrapingFlight ? (
-        <BsFan className="animate-spinFastToFaster text-gray-600 text-4xl" />
+        <BsFan className="animate-spinFastToFaster text-secondary-600 text-4xl" />
       ) : (
         <input
           ref={inputRef}
@@ -62,7 +62,7 @@ function InputWatchFlight({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onBlur={handleInputBlur}
-          className="pl-2 w-full min-h-7 shadow-md ring-inset focus:ring-2 focus:ring-cyan-600 focus:outline-none appearance-none rounded-md"
+          className="pl-2 w-full min-h-7 shadow-md ring-inset focus:ring-1 focus:ring-primary-600 focus:outline-none appearance-none rounded-md text-primary-600"
         />
       )}
     </td>

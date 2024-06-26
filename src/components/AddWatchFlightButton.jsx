@@ -2,9 +2,9 @@ import { MdAddCircleOutline } from "react-icons/md";
 
 function AddWatchFlightButton({ clickedButton }) {
   return (
-    <td className="w-full px-1 text-gray-800">
+    <td className="w-full px-1 text-gray-500">
       <button
-        className="w-full bg-white hover:bg-gray-100 border-2 border-dashed hover:border-solid border-gray-400 hover:border-cyan-600 hover:text-cyan-600 rounded-md shadow-md flex flex-row justify-center items-center"
+        className="w-full min-h-7 bg-white hover:bg-secondary-200 border border-dashed hover:border-solid border-secondary-500 hover:border-primary-600 hover:text-primary-600 rounded-md shadow-md flex flex-row justify-center items-center"
         onClick={clickedButton}
       >
         <MdAddCircleOutline className="mr-1" />
