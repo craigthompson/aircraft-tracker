@@ -59,7 +59,6 @@ const WatchList = () => {
   };
 
   const scrollWatchListFooterIntoView = () => {
-    console.log("Current:", watchlistFooterRef.current);
     watchlistFooterRef.current.scrollIntoView({
       behavior: "smooth",
     });
@@ -81,14 +80,11 @@ const WatchList = () => {
   }, []);
 
   useEffect(() => {
-    console.log("In use effect");
-    console.log("isScrapingFlight:", isScrapingFlight);
     if (isScrapingFlight) scrollWatchListFooterIntoView();
     setIsScrapingFlight(false);
   }, [allWatchedAircraft]);
 
   useEffect(() => {
-    console.log("setIsScrapingFlight");
     if (isScrapingFlight) scrollWatchListFooterIntoView();
   }, [isScrapingFlight]);
 
