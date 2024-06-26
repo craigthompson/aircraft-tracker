@@ -11,8 +11,7 @@ import "leaflet/dist/leaflet.css";
 import Leaflet from "leaflet";
 import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
-import axios from "axios";
-
+import Legend from "./Legend.jsx";
 import { socket } from "../socket.js";
 
 function Map() {
@@ -38,8 +37,6 @@ function Map() {
   ));
 
   useEffect(() => {
-    // getData();
-
     socket.on("all_aircraft", (planes) => {
       console.log("Message from server:", planes);
       setAllAircraft(planes);
@@ -49,11 +46,6 @@ function Map() {
       socket.off("all_aircraft");
     };
   }, []);
-
-  // const getData = async () => {
-  //   const { data } = await axios.get("/api/aircraft/all");
-  //   setAllAircraft(data);
-  // };
 
   const { BaseLayer } = LayersControl;
 
@@ -194,6 +186,7 @@ function Map() {
         <MyLocationMarker />
         {/* <Aircraft lat={40.7909957} lon={-111.9851671} /> */}
         {allAircraftInstances}
+        <Legend />
       </MapContainer>
     </div>
   );
