@@ -93,11 +93,13 @@ const WatchList = () => {
   }, [isScrapingFlight]);
 
   return (
-    <div className="flex flex-col h-screen w-2/12 bg-gray-50 border-l-2 border-gray-300 ">
-      <div className="text-xl">Watch List</div>
+    <div className="flex flex-col h-screen w-2/12 bg-secondary-100 border-l-2 border-secondary-300">
+      <div className="content-center text-xl min-h-11 bg-secondary-100 text-secondary-600 drop-shadow-lg">
+        Watch List
+      </div>
       <table className="flex flex-col w-full h-full overflow-y-auto">
-        <tbody>{allWatchedAircraftInstances}</tbody>
-        <tfoot ref={watchlistFooterRef} className="flex flex-col mb-4 mt-2">
+        <tbody className="mt-3">{allWatchedAircraftInstances}</tbody>
+        <tfoot ref={watchlistFooterRef} className="flex flex-col mb-5 mt-2">
           <tr className="flex">
             {isAddingFlight ? (
               <InputWatchFlight
