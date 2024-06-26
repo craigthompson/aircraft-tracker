@@ -13,9 +13,9 @@ function WatchedFlight({
   const currentlyTracking = icao24 ? "true" : "false"; // TODO: remove if not using again
 
   return (
-    <tr className="flex w-full my-2 text-gray-600">
+    <tr className="flex w-full mb-3 text-secondary-500">
       <td className="px-1 w-full">
-        <div className="w-full px-2 pt-2 pb-1 bg-gray-200 rounded flex flex-row">
+        <div className="w-full px-2 pt-2 pb-1 bg-secondary-0 rounded-md shadow-md flex flex-row">
           <div className="flex flex-col text-left w-11/12">
             <div className="text-md">
               {airlineLogoUrl && (
@@ -33,11 +33,13 @@ function WatchedFlight({
               <div className="ml-1 text-black">{flightStatus}</div>
             </div> */}
             {flightStatus && (
-              <div className="text-[10px] text-gray-600">{flightStatus}</div>
+              <div className="text-[10px] text-secondary-600">
+                {flightStatus}
+              </div>
             )}
-            <div className="text-[10px] text-gray-500 mb-1">
+            <div className="text-[10px] text-secondary-500 mb-1">
               Route:
-              <span className="ml-1 text-gray-600">
+              <span className="ml-1 text-secondary-600">
                 {departureAirport && departureAirport.slice(1, 4)}
                 <MdArrowRightAlt className="inline text-sm" />
                 {arrivalAirport && arrivalAirport.slice(1, 4)}
