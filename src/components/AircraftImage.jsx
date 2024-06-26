@@ -31,7 +31,7 @@ function AircraftImage({ icao24 }) {
 
   if (imgUrl) {
     return (
-      <div className="relative rounded-xl overflow-hidden">
+      <div className="relative rounded-xl overflow-hidden drop-shadow-[0_2px_2px_rgb(0_0_0/0.4)]">
         {/*loading indicator */}
         <a href={planespotterLinkUrl} target="_blank">
           {!isImageLoaded && <div>Loading...</div>}
@@ -44,7 +44,7 @@ function AircraftImage({ icao24 }) {
           {isImageLoaded && (
             <div className="absolute inset-x-0 bottom-0 flex flex-row h-5 bg-gradient-to-r from-slate-900/25 from-70%">
               <span
-                className="ml-2 basis-5/6 text-slate-50 text-xs content-center"
+                className="ml-2 basis-5/6 text-secondary-50 text-xs content-center"
                 style={{
                   filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
                     drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
@@ -55,7 +55,7 @@ function AircraftImage({ icao24 }) {
               </span>
               <div className="basis-1/6 flex justify-end items-center">
                 <FaExternalLinkAlt
-                  className="mr-2 mb-0.5 text-slate-50 text-xs"
+                  className="mr-2 mb-0.5 text-secondary-50 text-xs"
                   style={{
                     filter: `drop-shadow(2px 2px 3px rgb(0 0 0 / 0.2)) 
                       drop-shadow(1px 1px 1px rgb(0 0 0 / 0.4))
