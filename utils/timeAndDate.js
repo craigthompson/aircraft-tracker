@@ -11,15 +11,11 @@ export const unixSecondsToLocal = (unixSec) => {
   const seconds = String(date.getSeconds()).padStart(2, "0");
   const milliseconds = String(date.getMilliseconds()).padStart(3, "0");
 
-  // Get the timezone offset in minutes and convert to hours and minutes
-  const timezoneOffset = -date.getTimezoneOffset(); // getTimezoneOffset() returns the offset in minutes from UTC
-  const offsetSign = timezoneOffset >= 0 ? "+" : "-";
-  const offsetHours = String(
-    Math.floor(Math.abs(timezoneOffset) / 60)
-  ).padStart(2, "0");
-  const offsetMinutes = String(Math.abs(timezoneOffset) % 60).padStart(2, "0");
-  const timezone = `${offsetSign}${offsetHours}:${offsetMinutes}`;
+  // Get the timezone
+  const timezone = Intl.DateTimeFormat()
+    .resolvedOptions()
+    .timeZone.replace(/^[A-z]*\//g, "");
 
   // Construct the formatted date string
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}${timezone}`;
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${timezone}`;
 };
