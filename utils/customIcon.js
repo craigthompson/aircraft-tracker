@@ -4,27 +4,32 @@ import Tailwind from "../tailwind.config.js";
  * Returns an icon Tailwind CSS classnames appropriate for a
  *   given aircraft altitude, in feet.
  *
- * @param {Float} altitudeFeet - the aircraft's current
- *   altitude, in feet.
+ * @param altitudeFeet - the aircraft's current
+ *   altitude, in feet, or null if the aircraft is on the
+ *   ground.
  * @returns {String} Appropriate Tailwind CSS classnames to
  *   style the icon based on given altitude, in feet.
  */
 export const iconColor = (altitudeFeet) => {
   // Is aircraft on the ground
   if (altitudeFeet === null) {
-    return "text-gray-600 drop-shadow-md";
+    return "text-secondary-500 drop-shadow-md";
   } else if (altitudeFeet < 5000) {
-    return `text-sky-900`;
+    return `text-primary-1000`;
   } else if (altitudeFeet < 10000) {
-    return `text-sky-700`;
+    return `text-primary-900`;
   } else if (altitudeFeet < 15000) {
-    return `text-sky-600`;
+    return `text-primary-800`;
   } else if (altitudeFeet < 20000) {
-    return `text-sky-500`;
+    return `text-primary-700`;
   } else if (altitudeFeet < 25000) {
-    return `text-sky-400`;
+    return `text-primary-600`;
+  } else if (altitudeFeet < 30000) {
+    return `text-primary-500`;
+  } else if (altitudeFeet < 35000) {
+    return `text-primary-400`;
   } else {
-    return `text-cyan-400`;
+    return `text-primary-300`;
   }
 };
 
