@@ -7,18 +7,18 @@ const Legend = () => {
   const map = useMap();
 
   useEffect(() => {
-    const legend = L.control({ position: "bottomright" });
+    const legend = L.control({ position: "bottomleft" });
 
     legend.onAdd = function () {
       const div = L.DomUtil.create(
         "div",
-        "info legend bg-white rounded-md shadow-[0_4px_6px_5px_rgba(0,0,0,0.1)] border-solid border-2 border-secondary-300"
+        "info legend bg-white rounded-md shadow-md border-solid border-2 border-secondary-400"
       );
 
       const grades = [35000, 30000, 25000, 20000, 15000, 10000, 5000, "Ground"];
       const labels = [
         `
-          <div class="flex items-center mb-1">
+          <div class="flex items-center mb-1 mt-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
               35000
             )}"></i>
