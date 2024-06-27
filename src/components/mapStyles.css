@@ -19,6 +19,11 @@
   @apply hidden;
 }
 
+.leaflet-control-layers-separator {
+  @apply my-[5px];
+  @apply mx-[-8px];
+}
+
 /* Aircraft popup */
 .leaflet-popup a {
   @apply text-primary-700;
