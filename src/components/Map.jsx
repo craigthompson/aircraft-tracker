@@ -16,8 +16,59 @@ import CustomLayersControl from "./CustomLayersControl.jsx";
 import { socket } from "../socket.js";
 import "./mapStyles.css";
 
+const RADAR_MAPS_URL = "https://api.rainviewer.com/public/weather-maps.json";
+
+// const RadarMapsResponse = {
+//   generated: number,
+//   host: string,
+//   radar: {
+//     past: RadarLayer[],
+//     nowcast: RadarLayer[],
+//   },
+// };
+
+// const RadarLayer = {
+//   time: number,
+//   path: string,
+// };
+
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
+  const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
+
+  const getMostRecentWeatherMap = async () => {
+    const res = await fetch(RADAR_MAPS_URL);
+    const resJson = await res.json();
+    return resJson.radar.nowcast[0].path;
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log("Refreshing weather overlay");
+      (async () => {
+        const path = await getMostRecentWeatherMap();
+        setMostRecentWeatherMap(path);
+      })();
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    console.log("First load of weather overlay");
+    (async () => {
+      const path = await getMostRecentWeatherMap();
+      setMostRecentWeatherMap(path);
+    })();
+  }, []);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     calculatePredictivePosition();
+  //   }, 250); // Update every 250 milliseconds
+
+  //   return () => clearInterval(intervalId);
+  // }, [velocity, trueTrack, verticalRate, lastUpdateTime]);
 
   const allAircraftInstances = allAircraft.map((plane, index) => (
     <Aircraft
@@ -57,7 +108,7 @@ function Map() {
     <div id="map" className="h-lvh w-10/12">
       <MapContainer
         center={[40.7909957, -111.9851671]}
-        zoom={12}
+        zoom={11}
         scrollWheelZoom={true}
         style={{ height: "100vh" }}
       >
@@ -185,9 +236,16 @@ function Map() {
               attribution='&copy; <a href="https://www.openaip.net/">OpenAIP</a>'
             />
           </LayersControl.Overlay>
+          <LayersControl.Overlay name="Weather Radar">
+            <TileLayer
+              attribution="RainViewer.com"
+              url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
+              opacity={0.6}
+              zIndex={2}
+            />
+          </LayersControl.Overlay>
         </CustomLayersControl>
         <MyLocationMarker />
-        {/* <Aircraft lat={40.7909957} lon={-111.9851671} /> */}
         {allAircraftInstances}
         <Legend />
       </MapContainer>
