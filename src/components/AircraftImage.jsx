@@ -42,7 +42,7 @@ function AircraftImage({ icao24 }) {
             onLoad={handleImageLoad}
           />
           {isImageLoaded && (
-            <div className="absolute inset-x-0 bottom-0 flex flex-row h-5 bg-gradient-to-r from-slate-900/25 from-70%">
+            <div className="absolute inset-x-0 bottom-0 flex flex-row h-5 bg-gradient-to-r from-secondary-900/25 from-70%">
               <span
                 className="ml-2 basis-5/6 text-secondary-50 text-xs content-center"
                 style={{
