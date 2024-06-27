@@ -89,7 +89,7 @@ const WatchList = () => {
   }, [isScrapingFlight]);
 
   return (
-    <div className="flex flex-col h-screen w-2/12 bg-secondary-100 border-l-2 border-secondary-300">
+    <div className="flex flex-col h-screen w-2/12 bg-secondary-100 border-l-2 border-secondary-400">
       <div className="content-center text-xl min-h-11 bg-secondary-100 text-secondary-600 drop-shadow-lg">
         Watch List
       </div>
