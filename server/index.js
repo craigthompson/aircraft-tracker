@@ -116,7 +116,7 @@ cron.schedule("*/13 * * * * *", async () => {
         "Running scheduled task to get aircraft data."
       );
       await getAircraft(38.7219, -114.2791, 42.3219, -109.5991); // Optimized for a single credit on the API
-      // await emitAllAircraftForAllSockets();  // TODO: Remove if only going to do in cron to get own reported aircraft data
+      // await emitAllAircraftForAllSockets(); // TODO: Remove if only going to do in cron to get own reported aircraft data
     } else {
       console.log(
         "Skipping scheduled task to get aircraft data, since no clients currently connected."
