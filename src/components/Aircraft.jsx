@@ -255,28 +255,32 @@ const Aircraft = ({
   const aircraftIcon = () =>
     L.divIcon({
       html: ReactDOMServer.renderToString(
-        <>
+        <div className="flex flex-col justify-center items-center">
           <IoMdAirplane
             className={`${iconColor(
               metersToFeet(currentAltitude)
             )} ${iconClassSize}`}
             style={{
               transform: `rotate(${trueTrack}deg)`,
-              filter: `drop-shadow(0 0px 2px ${iconOutline(
-                climbRateFpm
-              )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
+              // filter: `drop-shadow(0 0px 2px ${iconOutline(
+              //   climbRateFpm
+              // )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
+              filter: `drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
             }}
           />
-          <span
-            className="p-0.5 rounded filter-none"
-            style={{
-              backgroundColor: `rgba(255, 255, 255, 0.65)`,
-              boxShadow: `0 0 6px rgba(255, 255, 255, 0.8)`,
-            }}
-          >
-            {callsign}
+          <span className="flex items-center w-fit p-0.5 rounded filter-none text-secondary-600 bg-secondary-0 bg-opacity-65 shadow-[0_0_6px_rgba(255,255,255,0.8)] shadow-secondary-0">
+            <span>
+              {climbRateFpm > 0 && climbRateFpm < 500 && <FaAngleUp />}
+            </span>
+            <span>{climbRateFpm >= 500 && <FaAngleDoubleUp />}</span>
+            <span>
+              {climbRateFpm < 0 && climbRateFpm > -500 && <FaAngleDown />}
+            </span>
+            {climbRateFpm == 0 && <span className="ml-1"></span>}
+            <span>{climbRateFpm <= -500 && <FaAngleDoubleDown />}</span>
+            <span className="pl-1">{callsign}</span>
           </span>
-        </>
+        </div>
       ),
       className: aircraftIconDropShadow(metersToFeet(currentAltitude)),
       iconSize: [iconDivSize, iconDivSize],
