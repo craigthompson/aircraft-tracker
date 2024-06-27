@@ -5,7 +5,6 @@ import "./mapStyles.css"; // Import custom styles
 
 function CustomLayersControl({ children, title }) {
   const [expanded, setExpanded] = useState(false);
-  const [titleState, setTitleState] = useState("");
 
   const customTitle = document.querySelector(
     ".custom-layers-control-title-wrapping-div"
