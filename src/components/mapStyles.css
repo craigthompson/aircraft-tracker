@@ -1,0 +1,37 @@
+/* Map tile layers control */
+.leaflet-control-layers {
+  padding: 0px;
+}
+
+.leaflet-control-layers-list {
+  @apply text-left;
+  @apply text-secondary-600;
+  @apply px-2;
+  @apply py-1;
+  @apply text-[11px];
+}
+
+.leaflet-control-layers-selector {
+  @apply mr-1;
+}
+
+.leaflet-control-attribution {
+  @apply hidden;
+}
+
+/* Aircraft popup */
+.leaflet-popup a {
+  @apply text-primary-700;
+}
+
+.leaflet-popup a:hover {
+  @apply text-primary-500;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply bg-secondary-100;
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+  @apply my-3 mx-5;
+}
