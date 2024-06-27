@@ -12,7 +12,9 @@ import Leaflet from "leaflet";
 import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
 import Legend from "./Legend.jsx";
+import CustomLayersControl from "./CustomLayersControl.jsx";
 import { socket } from "../socket.js";
+import "./mapStyles.css";
 
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
@@ -59,7 +61,10 @@ function Map() {
         scrollWheelZoom={true}
         style={{ height: "100vh" }}
       >
-        <LayersControl>
+        <CustomLayersControl
+          title="Map Layers"
+          className="left-aligned-layers-control"
+        >
           <BaseLayer checked name="ArcGIS Esri Topo">
             <TileLayer
               attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
@@ -174,15 +179,13 @@ function Map() {
               maxNativeZoom={19}
             />
           </BaseLayer>
-          {/* <BaseLayer name="Aeronautical Chart"> */}
           <LayersControl.Overlay checked name="Aeronautical Chart">
             <TileLayer
               url={`https://api.tiles.openaip.net/api/data/openaip/{z}/{x}/{y}.png?apiKey=${openAipClientId}`}
               attribution='&copy; <a href="https://www.openaip.net/">OpenAIP</a>'
             />
-            {/* </BaseLayer> */}
           </LayersControl.Overlay>
-        </LayersControl>
+        </CustomLayersControl>
         <MyLocationMarker />
         {/* <Aircraft lat={40.7909957} lon={-111.9851671} /> */}
         {allAircraftInstances}
