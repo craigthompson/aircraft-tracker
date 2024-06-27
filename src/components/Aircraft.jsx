@@ -278,7 +278,7 @@ const Aircraft = ({
             </span>
             {climbRateFpm == 0 && <span className="ml-1"></span>}
             <span>{climbRateFpm <= -500 && <FaAngleDoubleDown />}</span>
-            <span className="pl-1">{callsign}</span>
+            <span className="px-1">{callsign}</span>
           </span>
         </div>
       ),
