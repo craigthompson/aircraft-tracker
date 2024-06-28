@@ -1,6 +1,6 @@
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //  Imports
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 import express from "express";
 import ViteExpress from "vite-express";
 import config from "../config/config.js";
@@ -18,9 +18,9 @@ import { scrapeWatchedFlightsStatus } from "../database/watchedAircraft.js";
 import http from "http";
 import { Server } from "socket.io";
 
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //  Express instance and Middleware
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 // Create Express instance
 const app = express();
 
@@ -50,9 +50,9 @@ const socketIo = new Server(server, {
 // Set up middleware
 app.use(express.json());
 
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //  Endpoints
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 // TODO: Consider making my API require authorization, to prevent attacks that could max out my allowed rate limits with my external API providers (i.e. OpenSky) or with my hosting provider.
 const {
   getAllAircraft,
@@ -67,9 +67,9 @@ app.get("/api/watched/aircraft", getWatchedAircraft);
 app.post("/api/watched/aircraft", addWatchedAircraft);
 app.delete("/api/watched/aircraft/:id", deleteWatchedAircraft);
 
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //  Socket.io
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 const {
   emitAllAircraftToSingleSocket,
   emitAllAircraftForAllSockets,
@@ -94,9 +94,9 @@ socketIo.on("connection", (socket) => {
   });
 });
 
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //  Scheduled Cron Tasks
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 /* Schedule fetching Opensky aircraft data
  * Schedule tasks using other intervals. Examples:
  * '0 * * * *'        - every hour
@@ -147,7 +147,8 @@ cron.schedule("*/3 * * * * *", async () => {
   }
 });
 
-cron.schedule("*/5 * * * *", async () => {
+// Schedule web scraper to scrape watch list flights details
+cron.schedule("*/10 * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
       console.log(
@@ -170,29 +171,13 @@ cron.schedule("*/5 * * * *", async () => {
   }
 });
 
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //  Config server on port
-//////////////////////////////////////////////
-// TODO: remove later
-// Open door to server with .listen()
-// ViteExpress.listen(app, config.SERVER_PORT, async () =>
-//   console.log(`Server running, view at http://localhost:${config.SERVER_PORT}`)
-// );
-
+/////////////////////////////////////////////////////////////////////////////
 server.listen(socketConfig.SOCKET_PORT, () => {
   console.log(`Server running at`, chalk.blue(socketUrl));
 });
 
 ViteExpress.bind(app, server);
-
-//
-// TODO: remove later
-// const delaySeconds = 5;
-// setTimeout(async () => {
-//   console.log(`Delayed for ${delaySeconds} seconds.`);
-//   // const allAircraft = await queryAllAircraft();
-//   emitAllAircraftForAllSockets();
-//   // socketIo.emit("all_aircraft", allAircraft);
-// }, delaySeconds * 1000);
 
 export default socketIo;
