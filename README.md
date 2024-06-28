@@ -4,6 +4,8 @@
 
 - [Running Locally](#running-locally)
 - [Database Commands](#database-commands)
+- [Technologies Utilized](#technologies-utilized)
+- [Features](#features)
 
 ## Running Locally
 
