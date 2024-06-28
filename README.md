@@ -3,7 +3,7 @@
 ## Getting started
 
 1. Clone repo
-2. Install node packages
+2. Install node packages `npm install`
 3. Make a .env file using the .env.example file as a template
 
    - populate the .env with the correct values

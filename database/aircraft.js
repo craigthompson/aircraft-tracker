@@ -4,8 +4,10 @@ import { Aircraft } from "./model.js";
 /**
  * Takes a given aircraft object and adds it to the database
  *   if it doesn't already exist in the DB. If it already is
- *   in the DB, then it updates the existing row only if the
+ *   in the DB, then it updates the existing entry only if the
  *   new lastContact timestamp is newer than the existing one.
+ *   If the existing aircraft entry has a lastContact value
+ *   that is newer or equal, it does not update.
  *
  * @param {object} aircraft to add or update in the DB.
  * @returns {Aircraft} Aircraft model that was added or updated.
@@ -23,9 +25,6 @@ export const upsertAircraft = async (aircraft) => {
       if (existingAircraft) {
         // If the existing aircraft's lastContact is newer or equal, do not update
         if (existingAircraft.lastContact >= aircraft.lastContact) {
-          // console.log(
-          //   `Aircraft with icao24 ${aircraft.icao24} already exists and is newer or equal.`
-          // );
           return existingAircraft;
         }
 
@@ -54,11 +53,13 @@ export const upsertAircraft = async (aircraft) => {
             where: {
               icao24: aircraft.icao24,
             },
-            returning: true, // Return the updated aircraft model
+            // Return the updated aircraft model
+            returning: true,
           }
         );
 
-        return updatedAircraft[1][0]; // Return the updated aircraft model
+        // Return the updated aircraft model
+        return updatedAircraft[1][0];
       } else {
         // If the aircraft doesn't exist, create a new entry
         const newAircraft = await Aircraft.create({
