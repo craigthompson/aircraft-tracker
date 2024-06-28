@@ -1,50 +1,35 @@
-import {
-  MapContainer,
-  TileLayer,
-  LayersControl,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
 import { useState, useEffect } from "react";
 import "leaflet/dist/leaflet.css";
-import Leaflet from "leaflet";
 import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
 import Legend from "./Legend.jsx";
 import CustomLayersControl from "./CustomLayersControl.jsx";
 import { socket } from "../socket.js";
+import { unixSecondsToLocalTime } from "../../utils/timeAndDate.js";
 import "./mapStyles.css";
+import axios from "axios";
 
 const RADAR_MAPS_URL = "https://api.rainviewer.com/public/weather-maps.json";
-
-// const RadarMapsResponse = {
-//   generated: number,
-//   host: string,
-//   radar: {
-//     past: RadarLayer[],
-//     nowcast: RadarLayer[],
-//   },
-// };
-
-// const RadarLayer = {
-//   time: number,
-//   path: string,
-// };
 
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
   const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
 
   const getMostRecentWeatherMap = async () => {
-    const res = await fetch(RADAR_MAPS_URL);
-    const resJson = await res.json();
-    return resJson.radar.nowcast[0].path;
+    console.log("Checking for updated weather data.");
+    const { data } = await axios.get(RADAR_MAPS_URL);
+    console.log(
+      "Weather data timestamp:",
+      unixSecondsToLocalTime(data.generated)
+    );
+    return data.radar.nowcast[0].path;
   };
 
+  // Radar data changes every 5 minutes.
+  // Fetch new weather radar overlay every 60 seconds.
   useEffect(() => {
     const intervalId = setInterval(() => {
-      console.log("Refreshing weather overlay");
       (async () => {
         const path = await getMostRecentWeatherMap();
         setMostRecentWeatherMap(path);
@@ -54,21 +39,13 @@ function Map() {
     return () => clearInterval(intervalId);
   }, []);
 
+  // Fetch new weather radar overlay on initial render
   useEffect(() => {
-    console.log("First load of weather overlay");
     (async () => {
       const path = await getMostRecentWeatherMap();
       setMostRecentWeatherMap(path);
     })();
   }, []);
-
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     calculatePredictivePosition();
-  //   }, 250); // Update every 250 milliseconds
-
-  //   return () => clearInterval(intervalId);
-  // }, [velocity, trueTrack, verticalRate, lastUpdateTime]);
 
   const allAircraftInstances = allAircraft.map((plane, index) => (
     <Aircraft
@@ -89,6 +66,7 @@ function Map() {
     />
   ));
 
+  // Receive updated aircraft data from socket
   useEffect(() => {
     socket.on("all_aircraft", (planes) => {
       console.log("Message from server:", planes);
