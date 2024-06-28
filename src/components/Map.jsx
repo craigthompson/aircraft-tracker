@@ -17,7 +17,7 @@ function Map() {
   const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
 
   const getMostRecentWeatherMap = async () => {
-    console.log("Checking for updated weather data.");
+    console.log("Getting most recent weather data.");
     const { data } = await axios.get(RADAR_MAPS_URL);
     console.log(
       "Weather data timestamp:",
