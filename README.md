@@ -1,6 +1,8 @@
-# Aircraft Tracker 🛩️
+# Aircraft Tracker (Skydar) 🛩️
 
-## Table Of Content
+![Screenshot of the aircraft tracker app](/public/assets/app-screenshot.jpg)
+
+## Table Of Contents
 
 - [Running Locally](#running-locally)
 - [Database Commands](#database-commands)
