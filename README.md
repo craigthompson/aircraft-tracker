@@ -1,6 +1,6 @@
 # Aircraft Tracker (Skydar) 🛩️
 
-![Screenshot of the aircraft tracker app](/public/assets/app-screenshot.jpg)
+![Screenshot of the aircraft tracker app](./public/assets/app-screenshot.jpg)
 
 ## Table Of Contents
 
