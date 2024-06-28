@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:nodemon": "export NODE_ENV=development && nodemon server/index.js -w server -w src -w database -w config -w utils ",
-    "dev": "vite",
+    "dev": "export NODE_ENV=development && nodemon server/index.js -w server -w src -w database -w config -w utils ",
+    "dev:vite": "vite",
     "build": "vite build",
     "db:create": "createdb aircraft_tracker && npm run db:sync",
     "db:sync": "node database/model.js",
