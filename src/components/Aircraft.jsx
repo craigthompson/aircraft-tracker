@@ -262,13 +262,14 @@ const Aircraft = ({
             )} ${iconClassSize}`}
             style={{
               transform: `rotate(${trueTrack}deg)`,
+              // // Disabling this for now
               // filter: `drop-shadow(0 0px 2px ${iconOutline(
               //   climbRateFpm
               // )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
-              filter: `drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
+              // filter: `drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
             }}
           />
-          <span className="flex items-center w-fit p-0.5 rounded filter-none text-secondary-600 bg-secondary-0 bg-opacity-65 shadow-[0_0_6px_rgba(255,255,255,0.8)] shadow-secondary-0">
+          <span className="flex items-center w-fit p-0.5 rounded filter-none text-secondary-600 bg-secondary-0 bg-opacity-70 shadow-[0_0_6px_rgba(255,255,255,0.6)] shadow-secondary-0">
             <span>
               {climbRateFpm > 0 && climbRateFpm < 500 && <FaAngleUp />}
             </span>
