@@ -15,6 +15,7 @@ const RADAR_MAPS_URL = "https://api.rainviewer.com/public/weather-maps.json";
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
   const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
+  const [mostRecentCloudMap, setMostRecentCloudMap] = useState(null);
 
   const getMostRecentWeatherMap = async () => {
     console.log("Getting most recent weather data.");
@@ -23,7 +24,8 @@ function Map() {
       "Weather data timestamp:",
       unixSecondsToLocalTime(data.generated)
     );
-    return data.radar.nowcast[0].path;
+    console.log("Weather:", data);
+    return data;
   };
 
   // Radar data changes every 5 minutes.
@@ -31,8 +33,10 @@ function Map() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       (async () => {
-        const path = await getMostRecentWeatherMap();
-        setMostRecentWeatherMap(path);
+        const data = await getMostRecentWeatherMap();
+        setMostRecentWeatherMap(data.radar.nowcast[0].path);
+        console.log("infrared:", data.satellite.infrared[0].path);
+        setMostRecentCloudMap(data.satellite.infrared[0].path);
       })();
     }, 60000);
 
@@ -42,8 +46,10 @@ function Map() {
   // Fetch new weather radar overlay on initial render
   useEffect(() => {
     (async () => {
-      const path = await getMostRecentWeatherMap();
-      setMostRecentWeatherMap(path);
+      const data = await getMostRecentWeatherMap();
+      setMostRecentWeatherMap(data.radar.nowcast[0].path);
+      console.log("infrared:", data.satellite.infrared[0].path);
+      setMostRecentCloudMap(data.satellite.infrared[0].path);
     })();
   }, []);
 
@@ -218,6 +224,14 @@ function Map() {
             <TileLayer
               attribution="RainViewer.com"
               url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
+              opacity={0.6}
+              zIndex={40}
+            />
+          </LayersControl.Overlay>
+          <LayersControl.Overlay name="Infrared Clouds">
+            <TileLayer
+              attribution="RainViewer.com"
+              url={`https://tilecache.rainviewer.com${mostRecentCloudMap}/256/{z}/{x}/{y}/0/0_0.png`}
               opacity={0.6}
               zIndex={2}
             />
