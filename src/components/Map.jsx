@@ -225,7 +225,7 @@ function Map() {
               attribution="RainViewer.com"
               url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
               opacity={0.6}
-              zIndex={40}
+              zIndex={50}
             />
           </LayersControl.Overlay>
           <LayersControl.Overlay name="Infrared Clouds">
