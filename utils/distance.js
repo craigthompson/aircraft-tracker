@@ -12,3 +12,14 @@ export const metersToFeet = (meters) => {
     return meters * 3.281;
   }
 };
+
+/**
+ * Converts a given alitude in meters to an aviation flight level
+ *   representing hundreds of feet above sea level.
+ * @param {float} altitudeInMeters
+ * @returns {integer} calculated flight level in hundreds of feet.
+ */
+export const flightLevelFeet = (altitudeInMeters) => {
+  const altitudeInFeet = metersToFeet(altitudeInMeters);
+  return Math.round(altitudeInFeet / 100);
+};
