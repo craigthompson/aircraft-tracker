@@ -10,7 +10,7 @@ import {
   toFeetPerMinute,
   toKnots,
 } from "../../utils/velocity.js";
-import { metersToFeet } from "../../utils/distance.js";
+import { metersToFeet, flightLevelFeet } from "../../utils/distance.js";
 import { IoMdAirplane } from "react-icons/io";
 import {
   iconColor,
@@ -130,7 +130,7 @@ const Aircraft = ({
   }
 
   const map = useMap();
-  const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(2);
+  const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(1);
 
   const [currentPosition, setCurrentPosition] = useState({
     lat: latitude,
@@ -269,17 +269,30 @@ const Aircraft = ({
               // filter: `drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
             }}
           />
-          <span className="flex items-center w-fit p-0.5 rounded filter-none text-secondary-600 bg-secondary-0 bg-opacity-70 shadow-[0_0_6px_rgba(255,255,255,0.6)] shadow-secondary-0">
-            <span>
-              {climbRateFpm > 0 && climbRateFpm < 500 && <FaAngleUp />}
-            </span>
-            <span>{climbRateFpm >= 500 && <FaAngleDoubleUp />}</span>
-            <span>
-              {climbRateFpm < 0 && climbRateFpm > -500 && <FaAngleDown />}
-            </span>
-            {climbRateFpm == 0 && <span className="ml-1"></span>}
-            <span>{climbRateFpm <= -500 && <FaAngleDoubleDown />}</span>
+          <span className="flex flex-col items-center w-fit p-0.5 rounded filter-none text-secondary-600 bg-secondary-0 bg-opacity-70 shadow-[0_0_6px_rgba(255,255,255,0.6)] shadow-secondary-0">
             <span className="px-1">{callsign}</span>
+            {currentAltitude != null && (
+              <span className="flex items-center">
+                {climbRateFpm !== 0 && (
+                  <span className="mr-1">
+                    <span>
+                      {climbRateFpm > 0 && climbRateFpm < 500 && <FaAngleUp />}
+                    </span>
+                    <span>{climbRateFpm >= 500 && <FaAngleDoubleUp />}</span>
+                    <span>
+                      {climbRateFpm < 0 && climbRateFpm > -500 && (
+                        <FaAngleDown />
+                      )}
+                    </span>
+                    <span>{climbRateFpm <= -500 && <FaAngleDoubleDown />}</span>
+                  </span>
+                )}
+                {climbRateFpm === 0 && <span></span>}
+                <span>
+                  {flightLevelFeet(currentAltitude).toString().padStart(3, "0")}
+                </span>
+              </span>
+            )}
           </span>
         </div>
       ),
@@ -316,7 +329,7 @@ const Aircraft = ({
                   <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Altitude:`}</td>
                   <td className="px-2 border-l border-b border-secondary-200">{`${metersToFeet(
                     currentAltitude
-                  ).toFixed(2)} ft`}</td>
+                  ).toFixed(1)} ft`}</td>
                 </tr>
               )}
               {verticalRate != null && (
@@ -350,9 +363,9 @@ const Aircraft = ({
                 <tr>
                   <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Speed:`}</td>
                   <td className="px-2 border-l border-b border-secondary-200">
-                    <span>{`${toMilesPerHour(velocity).toFixed(2)} mph `}</span>
+                    <span>{`${toMilesPerHour(velocity).toFixed(1)} mph `}</span>
                     <span className="text-secondary-500 font-normal">
-                      {`(${toKnots(toMilesPerHour(velocity)).toFixed(2)} kts)`}
+                      {`(${toKnots(toMilesPerHour(velocity)).toFixed(1)} kts)`}
                     </span>
                   </td>
                 </tr>
@@ -361,7 +374,7 @@ const Aircraft = ({
                 <tr>
                   <td className="text-secondary-500 font-normal px-2 pt-1 pb-2 border-r border-secondary-200">{`Track:`}</td>
                   <td className="px-2 pt-1 pb-2 border-l border-secondary-200">{`${trueTrack.toFixed(
-                    2
+                    1
                   )}°`}</td>
                 </tr>
               )}
