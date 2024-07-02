@@ -90,7 +90,7 @@ function Map() {
   const openAipClientId = import.meta.env.VITE_OPENAIP_CLIENT_ID;
 
   return (
-    <div id="map" className="h-lvh w-10/12">
+    <div id="map" className="h-lvh w-full md:w-10/12">
       <MapContainer
         center={[40.7909957, -111.9851671]}
         zoom={11}
