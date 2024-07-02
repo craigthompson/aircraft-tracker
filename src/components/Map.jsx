@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
@@ -7,6 +7,7 @@ import Legend from "./Legend.jsx";
 import CustomLayersControl from "./CustomLayersControl.jsx";
 import { socket } from "../socket.js";
 import { unixSecondsToLocalTime } from "../../utils/timeAndDate.js";
+import WeatherRadarMapOverlay from "./WeatherRadarMapOverlay.jsx";
 import "./mapStyles.css";
 import axios from "axios";
 
@@ -220,14 +221,10 @@ function Map() {
               attribution='&copy; <a href="https://www.openaip.net/">OpenAIP</a>'
             />
           </LayersControl.Overlay>
-          <LayersControl.Overlay name="Weather Radar">
-            <TileLayer
-              attribution="RainViewer.com"
-              url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
-              opacity={0.6}
-              zIndex={50}
-            />
-          </LayersControl.Overlay>
+          <WeatherRadarMapOverlay
+            name="Weather Radar"
+            url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
+          />
           <LayersControl.Overlay name="Infrared Clouds">
             <TileLayer
               attribution="RainViewer.com"
