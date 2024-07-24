@@ -1,13 +1,7 @@
 import React, { useRef } from "react";
 import { TileLayer, LayersControl, useMapEvent } from "react-leaflet";
 
-const WeatherRadarMapOverlay = ({
-  name,
-  url,
-  attribution,
-  opacity,
-  zIndex,
-}) => {
+const WeatherRadarMapOverlay = ({ name, url }) => {
   const tileLayerRef = useRef(null);
 
   // Using a map event to handle bringToFront when the overlay is added.
