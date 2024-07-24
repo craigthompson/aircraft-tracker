@@ -20,6 +20,7 @@ import {
 } from "../../utils/customIcon.js";
 import CallsignFlightDetailsLink from "./CallsignFlightDetailsLink.jsx";
 import AircraftImage from "./AircraftImage.jsx";
+import AircraftDetails from "./AircraftDetails.jsx";
 import {
   FaAngleUp,
   FaAngleDoubleUp,
@@ -142,6 +143,7 @@ const Aircraft = ({
     center: map.getCenter(),
     zoom: map.getZoom(),
   });
+  const [aircraftDetails, setAircraftDetails] = useState(null);
 
   const calculatePredictivePosition = () => {
     const currentTime = new Date().getTime();
@@ -312,6 +314,10 @@ const Aircraft = ({
     >
       <Popup offset={L.point(0, -10)}>
         <AircraftImage icao24={icao24} />
+        <AircraftDetails
+          icao24={icao24}
+          setAircraftDetails={setAircraftDetails}
+        />
         <div className="mt-2 bg-secondary-0 rounded-xl drop-shadow-md">
           <table className="mt-4 table-auto text-secondary-600 font-semibold antialiased text-xs">
             <tbody>
@@ -323,6 +329,16 @@ const Aircraft = ({
                   {icao24.toUpperCase()}
                 </td>
               </tr>
+              {/* {aircraftDetails.registration && (
+                <tr>
+                  <td className="text-secondary-500 font-normal px-2 pt-2 pb-1 border-r border-b border-secondary-200">
+                    Reg:
+                  </td>
+                  <td className="px-2 pt-2 pb-1 border-l border-b border-secondary-200">
+                    {aircraftDetails.registration.toUpperCase()}
+                  </td>
+                </tr>
+              )} */}
               <CallsignFlightDetailsLink callsign={callsign} />
               {currentAltitude != null && (
                 <tr>
