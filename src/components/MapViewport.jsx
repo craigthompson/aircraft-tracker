@@ -10,6 +10,7 @@ function MapViewport({ setMapView }) {
       console.log("Bounds:", map.getBounds());
       setMapView({
         center: map.getCenter(),
+        bounds: map.getBounds(),
         zoom: map.getZoom(),
       });
     },
@@ -18,6 +19,7 @@ function MapViewport({ setMapView }) {
       console.log("Bounds:", map.getBounds());
       setMapView({
         center: map.getCenter(),
+        bounds: map.getBounds(),
         zoom: map.getZoom(),
       });
     },
@@ -28,6 +30,7 @@ function MapViewport({ setMapView }) {
     console.log("Bounds:", map.getBounds());
     setMapView({
       center: map.getCenter(),
+      bounds: map.getBounds(),
       zoom: map.getZoom(),
     });
   }, []);

@@ -20,6 +20,7 @@ function Map() {
   const [mostRecentCloudMap, setMostRecentCloudMap] = useState(null);
   const [mapView, setMapView] = useState({
     center: [40.7909957, -111.9851671],
+    bounds: null,
     zoom: 11,
   });
 
