@@ -1,10 +1,11 @@
-import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
+import { MapContainer, TileLayer, LayersControl, useMap } from "react-leaflet";
 import { useState, useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 import MyLocationMarker from "./MyLocationMarker";
 import Aircraft from "./Aircraft";
 import Legend from "./Legend.jsx";
 import CustomLayersControl from "./CustomLayersControl.jsx";
+import MapViewport from "./MapViewport.jsx";
 import { socket } from "../socket.js";
 import { unixSecondsToLocalTime } from "../../utils/timeAndDate.js";
 import WeatherRadarMapOverlay from "./WeatherRadarMapOverlay.jsx";
@@ -17,6 +18,10 @@ function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
   const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
   const [mostRecentCloudMap, setMostRecentCloudMap] = useState(null);
+  const [mapView, setMapView] = useState({
+    center: [40.7909957, -111.9851671],
+    zoom: 11,
+  });
 
   const getMostRecentWeatherMap = async () => {
     console.log("Getting most recent weather data.");
@@ -92,11 +97,12 @@ function Map() {
   return (
     <div id="map" className="h-lvh w-full md:w-10/12">
       <MapContainer
-        center={[40.7909957, -111.9851671]}
-        zoom={11}
+        center={mapView.center}
+        zoom={mapView.zoom}
         scrollWheelZoom={true}
         style={{ height: "100vh" }}
       >
+        <MapViewport setMapView={setMapView} />
         <CustomLayersControl
           title="Map Layers"
           className="left-aligned-layers-control"
