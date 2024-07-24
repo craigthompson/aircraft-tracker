@@ -215,7 +215,7 @@ function Map() {
               maxNativeZoom={19}
             />
           </BaseLayer>
-          <LayersControl.Overlay checked name="Aeronautical Chart">
+          <LayersControl.Overlay name="Aeronautical Chart">
             <TileLayer
               url={`https://api.tiles.openaip.net/api/data/openaip/{z}/{x}/{y}.png?apiKey=${openAipClientId}`}
               attribution='&copy; <a href="https://www.openaip.net/">OpenAIP</a>'

@@ -18,7 +18,7 @@ const WeatherRadarMapOverlay = ({ name, url }) => {
         ref={tileLayerRef}
         attribution="RainViewer.com"
         url={url}
-        opacity={0.6}
+        opacity={0.7}
       />
     </LayersControl.Overlay>
   );
