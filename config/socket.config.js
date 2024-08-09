@@ -3,7 +3,7 @@ import os from "node:os";
 // const ipAddress = os.networkInterfaces().en0[1].address; // TODO: can remove this later if wanted
 
 const socketConfig = {
-  SOCKET_PORT: 3000,
+  SOCKET_PORT: 3045,
   SOCKET_PROD_URL_DOMAIN: "REPLACE-WITH-DEPLOYED-DOMAIN-URL", // TODO: When deploying, set this to correct value
   SOCKET_DEV_URL_DOMAIN: "http://localhost",
   // SOCKET_DEV_URL_DOMAIN: `http://192.168.10.184`, // At office IP. TODO: can remove this later if wanted
