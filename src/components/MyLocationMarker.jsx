@@ -20,13 +20,13 @@ function MyLocationMarker() {
   const [myPosition, setMyPosition] = useState(null);
 
   const map = useMapEvents({
-    // click() {
-    //   map.locate();
-    // },
-    // locationfound(e) {
-    //   setMyPosition(e.latlng);
-    //   map.flyTo(e.latlng, map.getZoom());
-    // },
+    click() {
+      map.locate();
+    },
+    locationfound(e) {
+      setMyPosition(e.latlng);
+      map.flyTo(e.latlng, map.getZoom());
+    },
   });
 
   return myPosition === null ? null : (

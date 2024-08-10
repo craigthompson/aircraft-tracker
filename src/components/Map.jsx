@@ -234,7 +234,7 @@ function Map() {
             />
           </LayersControl.Overlay>
         </CustomLayersControl>
-        <MyLocationMarker />
+        {/* <MyLocationMarker /> */}
         {allAircraftInstances}
         <Legend />
       </MapContainer>
