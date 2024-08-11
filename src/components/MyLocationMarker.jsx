@@ -25,7 +25,7 @@ function MyLocationMarker() {
     },
     locationfound(e) {
       setMyPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
+      // map.flyTo(e.latlng, map.getZoom());
     },
   });
 
