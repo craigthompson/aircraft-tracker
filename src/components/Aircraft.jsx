@@ -121,9 +121,9 @@ const Aircraft = ({
   allAircraft,
 }) => {
   const currentTime = new Date().getTime() / 1000; // current time in seconds
-  if (currentTime - lastContact > 180) {
-    return null;
-  }
+  // if (currentTime - lastContact > 180) {
+  //   return null;
+  // }
 
   if (!latitude || !longitude) {
     return null;
@@ -143,9 +143,9 @@ const Aircraft = ({
     zoom: map.getZoom(),
   });
 
-  const calculatePredictivePosition = () => {
+  const calculatePredictivePosition = ({lat, lon}, altitude, lastTimestamp) => {
     const currentTime = new Date().getTime();
-    const elapsedTime = (currentTime - lastUpdateTime) / 1000; // Elapsed time in seconds
+    const elapsedTime = (currentTime - lastTimestamp) / 1000; // Elapsed time in seconds
 
     if (elapsedTime > 0) {
       const distancePerStep = velocity * elapsedTime; // Distance to move in meters
@@ -166,7 +166,7 @@ const Aircraft = ({
        *    - Adding to currentPosition.lat gives the new latitude.
        */
       const newLat =
-        currentPosition.lat +
+        lat +
         (distancePerStep * Math.cos(trueTrack * (Math.PI / 180))) / 111320;
 
       /**
@@ -188,14 +188,14 @@ const Aircraft = ({
        *    - Adding to currentPosition.lon gives the new longitude.
        */
       const newLon =
-        currentPosition.lon +
+        lon +
         (distancePerStep * Math.sin(trueTrack * (Math.PI / 180))) /
           (111320 * Math.cos(currentPosition.lat * (Math.PI / 180)));
 
       setCurrentPosition({ lat: newLat, lon: newLon });
-      setCurrentAltitude((prevAltitude) => {
-        if (prevAltitude) {
-          return prevAltitude + altitudeChangePerStep;
+      setCurrentAltitude(() => {
+        if (altitude) {
+          return altitude + altitudeChangePerStep;
         }
         return null;
       });
@@ -205,24 +205,24 @@ const Aircraft = ({
 
   // Update aircraft's position when data updates from server
   useEffect(() => {
-    setCurrentPosition({ lat: latitude, lon: longitude });
-    setCurrentAltitude(baroAltitude);
-    setLastUpdateTime(lastContact * 1000); // convert to millisecond unix time
+    // setCurrentPosition({ lat: latitude, lon: longitude });
+    // setCurrentAltitude(baroAltitude);
+    // setLastUpdateTime(lastContact * 1000); // convert to millisecond unix time
     /*
      *   Data from server is often a couple seconds behind actual, so
      *   we need to calculate the position as of now from that time.
      */
-    calculatePredictivePosition();
-  }, [latitude, longitude, baroAltitude]);
+    calculatePredictivePosition( {lat: latitude, lon: longitude}, baroAltitude, lastContact * 1000);
+  }, [latitude, longitude, baroAltitude, verticalRate, trueTrack, velocity]);
 
   // Regular cadence of predictive positioning aircraft
   useEffect(() => {
     const intervalId = setInterval(() => {
-      calculatePredictivePosition();
-    }, 250); // Update every 250 milliseconds
+      calculatePredictivePosition(currentPosition, currentAltitude, lastUpdateTime);
+    }, 50); // Update every 250 milliseconds
 
     return () => clearInterval(intervalId);
-  }, [velocity, trueTrack, verticalRate, lastUpdateTime]);
+  }, [lastUpdateTime]);
 
   useMapEvents({
     moveend: () => {
