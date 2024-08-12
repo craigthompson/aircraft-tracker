@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 import { Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import {
@@ -26,6 +26,7 @@ import {
   FaAngleDown,
   FaAngleDoubleDown,
 } from "react-icons/fa";
+import AircraftMarkerLabel from "./AircraftMarkerLabel.jsx";
 
 /**
  * Aircraft map marker at the given geographical coordinates
@@ -132,6 +133,7 @@ const Aircraft = ({
   const map = useMap();
   const climbRateFpm = toFeetPerMinute(verticalRate).toFixed(1);
 
+  const [popupOpen, setPopupOpen] = useState(false);
   const [currentPosition, setCurrentPosition] = useState({
     lat: latitude,
     lon: longitude,
@@ -219,7 +221,7 @@ const Aircraft = ({
   useEffect(() => {
     const intervalId = setInterval(() => {
       calculatePredictivePosition(currentPosition, currentAltitude, lastUpdateTime);
-    }, 50); // Update every 250 milliseconds
+    }, 250); // Update every 250 milliseconds
 
     return () => clearInterval(intervalId);
   }, [lastUpdateTime]);
@@ -239,165 +241,131 @@ const Aircraft = ({
     },
   });
 
-  let markerLayerPoint;
-  const [adjustedZOffset, setAdjustedZOffset] = useState(0);
-
-  useEffect(() => {
-    markerLayerPoint = map.latLngToLayerPoint([
-      currentPosition.lat,
-      currentPosition.lon,
-    ]);
-    setAdjustedZOffset(zIndex - markerLayerPoint.y);
-  }, [currentPosition, mapView, allAircraft]);
+  const markerLayerPoint = map.latLngToLayerPoint([currentPosition.lat, currentPosition.lon]);
+  const adjustedZOffset = useMemo(() => zIndex - markerLayerPoint.y, [markerLayerPoint, zIndex]);
 
   const iconDivSize = iconSize(map.getZoom()).pixelSize;
   const iconClassSize = iconSize(map.getZoom()).cssSize;
-  const aircraftIcon = () =>
+  const aircraftIcon = useMemo(() => (
     L.divIcon({
       html: ReactDOMServer.renderToString(
         <div className="flex flex-col justify-center items-center">
           <IoMdAirplane
-            className={`${iconColor(
-              metersToFeet(currentAltitude)
-            )} ${iconClassSize}`}
-            style={{
-              transform: `rotate(${trueTrack}deg)`,
-              // // Disabling this for now
-              // filter: `drop-shadow(0 0px 2px ${iconOutline(
-              //   climbRateFpm
-              // )}) drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
-              // filter: `drop-shadow(0 0 1px rgba(255, 255, 255, 1))`,
-            }}
+            className={`${iconColor(metersToFeet(currentAltitude))} ${iconClassSize}`}
+            style={{ transform: `rotate(${trueTrack}deg)` }}
           />
-          <span className="flex flex-col items-center w-fit p-0.5 rounded filter-none text-secondary-600 bg-secondary-0 bg-opacity-70 shadow-[0_0_6px_rgba(255,255,255,0.6)] shadow-secondary-0">
-            <span className="px-1">{callsign}</span>
-            {currentAltitude != null && (
-              <span className="flex items-center">
-                {climbRateFpm !== 0 && (
-                  <span className="mr-1">
-                    <span>
-                      {climbRateFpm > 0 && climbRateFpm < 500 && <FaAngleUp />}
-                    </span>
-                    <span>{climbRateFpm >= 500 && <FaAngleDoubleUp />}</span>
-                    <span>
-                      {climbRateFpm < 0 && climbRateFpm > -500 && (
-                        <FaAngleDown />
-                      )}
-                    </span>
-                    <span>{climbRateFpm <= -500 && <FaAngleDoubleDown />}</span>
-                  </span>
-                )}
-                {climbRateFpm === 0 && <span></span>}
-                <span>
-                  {flightLevelFeet(currentAltitude).toString().padStart(3, "0")}
-                </span>
-              </span>
-            )}
-          </span>
+          <AircraftMarkerLabel callsign={callsign} threeDigitAltitude={flightLevelFeet(currentAltitude).toString().padStart(3, "0")} climbRateFpm={climbRateFpm}/>
         </div>
       ),
       className: aircraftIconDropShadow(metersToFeet(currentAltitude)),
       iconSize: [iconDivSize, iconDivSize],
       iconAnchor: [iconDivSize / 2, iconDivSize / 2],
-    });
+    })
+  ), [currentAltitude, trueTrack, iconClassSize, callsign]);
 
   return (
     <Marker
       position={[currentPosition.lat, currentPosition.lon]}
-      icon={aircraftIcon()}
+      icon={aircraftIcon}
       zIndexOffset={adjustedZOffset}
       title={callsign ? callsign.trim() : ""}
       riseOnHover={true}
       riseOffset={totalAircraft + 1}
+      eventHandlers={{
+        click: () => {
+          setPopupOpen(true);
+        },
+      }}
     >
-      <Popup offset={L.point(0, -10)}>
-        <AircraftImage icao24={icao24} />
-        <div className="mt-2 bg-secondary-0 rounded-xl drop-shadow-md">
-          <table className="mt-4 table-auto text-secondary-600 font-semibold antialiased text-xs">
+      {popupOpen && (
+        <Popup offset={L.point(0, -15)}>
+          <AircraftImage icao24={icao24} />
+          <div className="mt-2 bg-secondary-0 rounded-xl drop-shadow-md">
+            <table className="mt-4 table-auto text-secondary-600 font-semibold antialiased text-xs">
+              <tbody>
+                <tr>
+                  <td className="text-secondary-500 font-normal px-2 pt-2 pb-1 border-r border-b border-secondary-200">
+                    ICAO24:
+                  </td>
+                  <td className="px-2 pt-2 pb-1 border-l border-b border-secondary-200">
+                    {icao24.toUpperCase()}
+                  </td>
+                </tr>
+                <CallsignFlightDetailsLink callsign={callsign} />
+                {currentAltitude != null && (
+                  <tr>
+                    <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Altitude:`}</td>
+                    <td className="px-2 border-l border-b border-secondary-200">{`${metersToFeet(
+                      currentAltitude
+                    ).toFixed(1)} ft`}</td>
+                  </tr>
+                )}
+                {verticalRate != null && (
+                  <tr>
+                    <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Vertical speed:`}</td>
+                    <td className="pl-1 pr-2 border-l border-b border-secondary-200">
+                      <span className="flex items-center">
+                        <span>
+                          {climbRateFpm > 0 && climbRateFpm < 500 && (
+                            <FaAngleUp />
+                          )}
+                        </span>
+                        <span>{climbRateFpm >= 500 && <FaAngleDoubleUp />}</span>
+                        <span>
+                          {climbRateFpm < 0 && climbRateFpm > -500 && (
+                            <FaAngleDown />
+                          )}
+                        </span>
+                        {/* {climbRateFpm == 0 && <span className="ml-1"></span>} */}
+                        <span>
+                          {climbRateFpm <= -500 && <FaAngleDoubleDown />}
+                        </span>
+                        <span className="ml-1">{`${Math.abs(
+                          climbRateFpm
+                        )} fpm`}</span>
+                      </span>
+                    </td>
+                  </tr>
+                )}
+                {velocity != null && (
+                  <tr>
+                    <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Speed:`}</td>
+                    <td className="px-2 border-l border-b border-secondary-200">
+                      <span>{`${toMilesPerHour(velocity).toFixed(1)} mph `}</span>
+                      <span className="text-secondary-500 font-normal">
+                        {`(${toKnots(toMilesPerHour(velocity)).toFixed(1)} kts)`}
+                      </span>
+                    </td>
+                  </tr>
+                )}
+                {trueTrack != null && (
+                  <tr>
+                    <td className="text-secondary-500 font-normal px-2 pt-1 pb-2 border-r border-secondary-200">{`Track:`}</td>
+                    <td className="px-2 pt-1 pb-2 border-l border-secondary-200">{`${trueTrack.toFixed(
+                      1
+                    )}°`}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <table className="mt-2 table-auto text-gray-400 text-xs w-full">
             <tbody>
-              <tr>
-                <td className="text-secondary-500 font-normal px-2 pt-2 pb-1 border-r border-b border-secondary-200">
-                  ICAO24:
-                </td>
-                <td className="px-2 pt-2 pb-1 border-l border-b border-secondary-200">
-                  {icao24.toUpperCase()}
+              <tr className="text-center">
+                <td>Last Contact:</td>
+                <td className="text-secondary-500">
+                  {unixSecondsToLocalTime(lastContact)}
                 </td>
               </tr>
-              <CallsignFlightDetailsLink callsign={callsign} />
-              {currentAltitude != null && (
-                <tr>
-                  <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Altitude:`}</td>
-                  <td className="px-2 border-l border-b border-secondary-200">{`${metersToFeet(
-                    currentAltitude
-                  ).toFixed(1)} ft`}</td>
-                </tr>
-              )}
-              {verticalRate != null && (
-                <tr>
-                  <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Vertical speed:`}</td>
-                  <td className="pl-1 pr-2 border-l border-b border-secondary-200">
-                    <span className="flex items-center">
-                      <span>
-                        {climbRateFpm > 0 && climbRateFpm < 500 && (
-                          <FaAngleUp />
-                        )}
-                      </span>
-                      <span>{climbRateFpm >= 500 && <FaAngleDoubleUp />}</span>
-                      <span>
-                        {climbRateFpm < 0 && climbRateFpm > -500 && (
-                          <FaAngleDown />
-                        )}
-                      </span>
-                      {/* {climbRateFpm == 0 && <span className="ml-1"></span>} */}
-                      <span>
-                        {climbRateFpm <= -500 && <FaAngleDoubleDown />}
-                      </span>
-                      <span className="ml-1">{`${Math.abs(
-                        climbRateFpm
-                      )} fpm`}</span>
-                    </span>
-                  </td>
-                </tr>
-              )}
-              {velocity != null && (
-                <tr>
-                  <td className="text-secondary-500 font-normal px-2 py-1 border-r border-b border-secondary-200">{`Speed:`}</td>
-                  <td className="px-2 border-l border-b border-secondary-200">
-                    <span>{`${toMilesPerHour(velocity).toFixed(1)} mph `}</span>
-                    <span className="text-secondary-500 font-normal">
-                      {`(${toKnots(toMilesPerHour(velocity)).toFixed(1)} kts)`}
-                    </span>
-                  </td>
-                </tr>
-              )}
-              {trueTrack != null && (
-                <tr>
-                  <td className="text-secondary-500 font-normal px-2 pt-1 pb-2 border-r border-secondary-200">{`Track:`}</td>
-                  <td className="px-2 pt-1 pb-2 border-l border-secondary-200">{`${trueTrack.toFixed(
-                    1
-                  )}°`}</td>
-                </tr>
-              )}
+              <tr className="text-center">
+                <td>Current Time:</td>
+                <td className="text-secondary-500">{currentLocalTime()}</td>
+              </tr>
             </tbody>
           </table>
-        </div>
-        <table className="mt-2 table-auto text-gray-400 text-xs w-full">
-          <tbody>
-            <tr className="text-center">
-              <td>Last Contact:</td>
-              <td className="text-secondary-500">
-                {unixSecondsToLocalTime(lastContact)}
-              </td>
-            </tr>
-            <tr className="text-center">
-              <td>Current Time:</td>
-              <td className="text-secondary-500">{currentLocalTime()}</td>
-            </tr>
-          </tbody>
-        </table>
-      </Popup>
+        </Popup>)}
     </Marker>
   );
 };
 
-export default Aircraft;
+export default React.memo(Aircraft);
