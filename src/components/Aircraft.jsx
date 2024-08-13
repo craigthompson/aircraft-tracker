@@ -254,7 +254,7 @@ const Aircraft = ({
             className={`${iconColor(metersToFeet(currentAltitude))} ${iconClassSize}`}
             style={{ transform: `rotate(${trueTrack}deg)` }}
           />
-          <AircraftMarkerLabel callsign={callsign} threeDigitAltitude={flightLevelFeet(currentAltitude).toString().padStart(3, "0")} climbRateFpm={climbRateFpm}/>
+          <AircraftMarkerLabel callsign={callsign} onGround={onGround} threeDigitAltitude={flightLevelFeet(currentAltitude).toString().padStart(3, "0")} climbRateFpm={climbRateFpm}/>
         </div>
       ),
       className: aircraftIconDropShadow(metersToFeet(currentAltitude)),

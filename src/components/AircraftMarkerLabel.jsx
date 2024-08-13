@@ -9,6 +9,7 @@ import {
 
 const AircraftMarkerLabel = ({
   callsign,
+  onGround,
   threeDigitAltitude,
   climbRateFpm
 }) => {
@@ -33,9 +34,11 @@ const AircraftMarkerLabel = ({
                     <span>{climbRateFpm <= -500 && <FaAngleDoubleDown />}</span>
                   </span>
                 )}
-                <span>
-                  {threeDigitAltitude}
-                </span>
+                {onGround !== true && (
+                  <span>
+                    {threeDigitAltitude}
+                  </span>
+                )}
               </span>
             )}
           </span>
