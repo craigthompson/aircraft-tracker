@@ -22,6 +22,8 @@
 5. Make a .env file using the .env.example file as a template `cp .env.example .env`
 
    - populate the .env with the correct values including your PostgreSQL username and password.
+   - You can run the app for a while whithout having am `OPENSKY_USERNAME` and `OPENSKY_PASSWORD` since they allow up to 400 requests calls. If you want to run longer (4000 requests) you can create a free OpenSky Network account.
+   - You can run without a `VITE_OPENAIP_CLIENT_ID`, but you won't be able to turn on the aeronautical chart map overlay. You can optain a free account at openaip.net to get a client ID if you want to enable this feature.
 
 6. Create database by running: `npm run db:create`
 

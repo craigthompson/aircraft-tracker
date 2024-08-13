@@ -75,18 +75,30 @@ export const parseAircraftData = (aircraft) => {
  */
 export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
   try {
-    const response = await axios.get(`${openskyUrl}/api/states/all`, {
-      auth: {
-        username: process.env.OPENSKY_USERNAME,
-        password: process.env.OPENSKY_PASSWORD,
-      },
-      params: {
-        lamin: latMin,
-        lomin: lonMin,
-        lamax: latMax,
-        lomax: lonMax,
-      },
-    });
+    let response;
+    if (process.env.OPENSKY_USERNAME && process.env.OPENSKY_PASSWORD) {
+      response = await axios.get(`${openskyUrl}/api/states/all`, {
+        auth: {
+          username: process.env.OPENSKY_USERNAME,
+          password: process.env.OPENSKY_PASSWORD,
+        },
+        params: {
+          lamin: latMin,
+          lomin: lonMin,
+          lamax: latMax,
+          lomax: lonMax,
+        },
+      });
+    } else {
+      response = await axios.get(`${openskyUrl}/api/states/all`, {
+        params: {
+          lamin: latMin,
+          lomin: lonMin,
+          lamax: latMax,
+          lomax: lonMax,
+        },
+      });
+    }
     debug &&
       console.log(
         chalk.magentaBright("[OpenSky] "),
@@ -137,28 +149,30 @@ export const getOwnReportedAircraft = async (
   lonMax
 ) => {
   try {
-    const response = await axios.get(`${openskyUrl}/api/states/own`, {
-      auth: {
-        username: process.env.OPENSKY_USERNAME,
-        password: process.env.OPENSKY_PASSWORD,
-      },
-      params: {
-        lamin: latMin,
-        lomin: lonMin,
-        lamax: latMax,
-        lomax: lonMax,
-      },
-    });
+    if (process.env.OPENSKY_USERNAME && process.env.OPENSKY_PASSWORD) {
+      const response = await axios.get(`${openskyUrl}/api/states/own`, {
+        auth: {
+          username: process.env.OPENSKY_USERNAME,
+          password: process.env.OPENSKY_PASSWORD,
+        },
+        params: {
+          lamin: latMin,
+          lomin: lonMin,
+          lamax: latMax,
+          lomax: lonMax,
+        },
+      });
 
-    // debug && console.log("Response.data:", response.data);
+      // debug && console.log("Response.data:", response.data);
 
-    if (response.data.states) {
-      const aircraftInDB = await Promise.all(
-        response.data.states.map(async (aircraft) => {
-          const aircraftObj = parseAircraftData(aircraft);
-          return upsertAircraft(aircraftObj);
-        })
-      );
+      if (response.data.states) {
+        const aircraftInDB = await Promise.all(
+          response.data.states.map(async (aircraft) => {
+            const aircraftObj = parseAircraftData(aircraft);
+            return upsertAircraft(aircraftObj);
+          })
+        );
+      }
     }
   } catch (error) {
     console.error("Error in getting own reported aircraft:", error);
