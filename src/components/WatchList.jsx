@@ -90,7 +90,7 @@ const WatchList = () => {
 
   return (
     <div className="flex flex-col h-screen w-0 md:w-2/12 bg-secondary-100 border-l-2 border-secondary-400">
-      <div className="content-center text-xl min-h-11 bg-secondary-100 text-secondary-600 drop-shadow-lg">
+      <div className="content-center text-xl text-center min-h-11 bg-secondary-100 text-secondary-600 drop-shadow-lg">
         Watch List
       </div>
       <table className="flex flex-col w-full h-full overflow-y-auto">
