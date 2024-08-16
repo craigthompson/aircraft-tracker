@@ -59,6 +59,7 @@
 - Vite + Express
 - PostgreSQL with Sequelize
 - ADS-B Receiver
+    <img src="./public/assets/ads-b-receiver.jpeg" alt="drawing" width="500" alt="Screenshot of the ADS-B receiver" style="border-radius: 0.375rem;"/>
   - Feeding data to external data sources
     - OpenSky API
     - Flightradar24
@@ -66,6 +67,8 @@
   - Raspberry Pi for the computer
   - SDR digital radio receiver
   - Bandpass filter for ADS-B specific frequencies
+  - Antenna
+    <img src="./public/assets/ads-b-receiver-antenna.jpeg" alt="drawing" width="300" alt="Screenshot of the ADS-B receiver antenna" style="border-radius: 0.375rem;"/>
 - Leaflet and React-Leaflet for the map
 - Node-Cron — for scheduled tasks
   - External API calls
@@ -89,6 +92,7 @@
   - Reduces frequency of data updates from server, since client can predict aircraft positions since last data update.
   - Creates appealing smooth movement of aircraft on map.
   - Predictively calculates altitude based on most recent data's altitude, vertical speed, and data's capture timestamp.
+  <!-- ![GIF of predictive positioning of aircraft](./public/assets/predictive-positioning.gif) -->
 - Altitude indicating colors
   - See which planes are airborne vs on the ground.
 - Vertical rate indicating arrows, including indication of magnitude.
