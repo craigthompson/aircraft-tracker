@@ -1,7 +1,10 @@
-# Aircraft Tracker (Skydar) 🛩️
+<p align="center">
+ <p>Aircraft Tracker (Skydar) 🛩️</p>
+</p>
 
 ![Screenshot of the aircraft tracker app](./public/assets/app-screenshot.png)
 
+---
 ## Table Of Contents
 
 - [Running Locally](#running-locally)
@@ -9,6 +12,7 @@
 - [Technologies Utilized](#technologies-utilized)
 - [Features](#features)
 
+---
 ## Running Locally
 
 1. Clone repo
@@ -32,6 +36,7 @@
 
 7. Run the app `npm run dev`
 
+---
 ## Database Commands
 
 | Command             | Description                                |
@@ -41,6 +46,7 @@
 | `npm run db:sync`   | Sync the DB                                |
 | `npm run db:drop`   | Drop the DB (includes confirmation prompt) |
 
+---
 ## Technologies Utilized
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -58,17 +64,17 @@
 - React
 - Vite + Express
 - PostgreSQL with Sequelize
-- ADS-B Receiver
-    <img src="./public/assets/ads-b-receiver.jpeg" alt="drawing" width="500" alt="Screenshot of the ADS-B receiver" style="border-radius: 0.375rem;"/>
+- ADS-B Receiver  
+    <img src="./public/assets/ads-b-receiver.jpeg" alt="drawing" width="500" alt="Screenshot of the ADS-B receiver"/>
   - Feeding data to external data sources
-    - OpenSky API
-    - Flightradar24
     - FlightAware
+    - Flightradar24
+    - OpenSky Network
   - Raspberry Pi for the computer
   - SDR digital radio receiver
   - Bandpass filter for ADS-B specific frequencies
-  - Antenna
-    <img src="./public/assets/ads-b-receiver-antenna.jpeg" alt="drawing" width="300" alt="Screenshot of the ADS-B receiver antenna" style="border-radius: 0.375rem;"/>
+  - Antenna  
+    <img src="./public/assets/ads-b-receiver-antenna.jpeg" alt="drawing" width="300" alt="Screenshot of the ADS-B receiver antenna"/>
 - Leaflet and React-Leaflet for the map
 - Node-Cron — for scheduled tasks
   - External API calls
@@ -85,6 +91,7 @@
 - Chalk — for colorizing my structured log outputs.
   - Enables easier and quicker visual parsing of logs.
 
+---
 ## Features
 
 - Predictive position and altitude for aircraft on map
@@ -117,5 +124,4 @@
 - Ordering aircraft icons on top of others based on altitude
 
 ---
-
 :star: Star me on GitHub — it does motivate me
