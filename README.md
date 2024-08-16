@@ -1,8 +1,10 @@
-<p align="center">
- <p>Aircraft Tracker (Skydar) 🛩️</p>
-</p>
+<h1 align="center">Aircraft Tracker (Skydar) 🛩️</h1>
+<div align="center">Live air traffic map app utilizing community and self reported aircraft tracking data</div>
+</br>
 
-![Screenshot of the aircraft tracker app](./public/assets/app-screenshot.png)
+<kbd>
+  <img src="./public/assets/app-screenshot.png" alt="drawing" alt="Screenshot of the ADS-B receiver"/>
+</kbd>
 
 ---
 ## Table Of Contents
@@ -65,7 +67,9 @@
 - Vite + Express
 - PostgreSQL with Sequelize
 - ADS-B Receiver  
-    <img src="./public/assets/ads-b-receiver.jpeg" alt="drawing" width="500" alt="Screenshot of the ADS-B receiver"/>
+    <kbd>
+      <img src="./public/assets/ads-b-receiver.jpeg" alt="drawing" width="500" alt="Screenshot of the ADS-B receiver"/>
+    </kbd>
   - Feeding data to external data sources
     - FlightAware
     - Flightradar24
@@ -74,7 +78,9 @@
   - SDR digital radio receiver
   - Bandpass filter for ADS-B specific frequencies
   - Antenna  
-    <img src="./public/assets/ads-b-receiver-antenna.jpeg" alt="drawing" width="300" alt="Screenshot of the ADS-B receiver antenna"/>
+    <kbd>
+      <img src="./public/assets/ads-b-receiver-antenna.jpeg" alt="drawing" width="300" alt="Screenshot of the ADS-B receiver antenna"/>
+    </kbd>
 - Leaflet and React-Leaflet for the map
 - Node-Cron — for scheduled tasks
   - External API calls
@@ -94,12 +100,14 @@
 ---
 ## Features
 
-- Predictive position and altitude for aircraft on map
-  - Implemented trigonometry to calculate next position coordinates on map using the most recent data coordinates, velocity, and true tracking direction along with the data's capture timestamp.
+- Predictive positioning and altitude for aircraft on map  
+  <kbd>
+    <img src="./public/assets/predictive-positioning.gif" alt="drawing" alt="Screenshot of the ADS-B receiver antenna"/>
+  </kbd>
+  - Implemented trigonometry to calculate next position coordinates on map using the most recently received data coordinates, velocity, and true tracking direction along with the data's capture timestamp.
   - Reduces frequency of data updates from server, since client can predict aircraft positions since last data update.
   - Creates appealing smooth movement of aircraft on map.
-  - Predictively calculates altitude based on most recent data's altitude, vertical speed, and data's capture timestamp.
-  <!-- ![GIF of predictive positioning of aircraft](./public/assets/predictive-positioning.gif) -->
+  - Predictively calculates altitude based on most recent data's altitude, vertical speed, and data's capture timestamp.  
 - Altitude indicating colors
   - See which planes are airborne vs on the ground.
 - Vertical rate indicating arrows, including indication of magnitude.
