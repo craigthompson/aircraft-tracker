@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 import { TileLayer, LayersControl, useMapEvent } from "react-leaflet";
 
 const WeatherRadarMapOverlay = ({ name, url }) => {
-  const tileLayerRef = useRef(null);
+  const tileLayerRef = useRef();
 
-  // Using a map event to handle bringToFront when the overlay is added.
-  //  bringToFront will bring the layer to the top of all overlays.
+  // Using map event to handle bringToFront when the overlay is added or another map event occurs.
+  //    bringToFront will bring the layer to the top of all overlays.
   useMapEvent("overlayadd", (e) => {
-    if (e.name === name && tileLayerRef.current) {
+    if (tileLayerRef.current) {
       tileLayerRef.current.bringToFront();
     }
   });
