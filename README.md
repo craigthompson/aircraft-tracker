@@ -37,6 +37,10 @@
      - Note: Seed data has old enough lastContact timestamps that the database cleanup cron job will remove the seed data when it runs.
 
 7. Run the app `npm run dev`
+   - After running `npm run dev` you can find the URL to enter into your web browser's address bar.
+    <kbd>
+      <img src="./public/assets/Running-app-url.png" alt="drawing" alt="Screenshot of terminal output from npm run dev"/>
+    </kbd>
 
 ---
 ## Database Commands
