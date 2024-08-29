@@ -1,5 +1,10 @@
 import { parseAircraftData } from "../server/opensky.js";
 import { Aircraft } from "./model.js";
+import axios from "axios";
+import chalk from "chalk";
+
+const openskyMetadataAircraftUrl =
+  "https://opensky-network.org/api/metadata/aircraft/icao";
 
 /**
  * Takes a given aircraft object and adds it to the database
@@ -62,6 +67,20 @@ export const upsertAircraft = async (aircraft) => {
         return updatedAircraft[1][0];
       } else {
         // If the aircraft doesn't exist, create a new entry
+        // try {
+        //   const response = await axios.get(
+        //     `${openskyMetadataAircraftUrl}/${aircraft.icao24}`
+        //   );
+        //   console.log(
+        //     chalk.blueBright("[OpenSky Metadata] "),
+        //     "Aircraft metadata:",
+        //     response.data
+        //   );
+        //   // await new Promise((resolve) => setTimeout(resolve, 1000));
+        // } catch (error) {
+        //   console.error("Error in getting aircraft metadata:", error);
+        // }
+
         const newAircraft = await Aircraft.create({
           icao24: aircraft.icao24,
           callsign: aircraft.callsign,

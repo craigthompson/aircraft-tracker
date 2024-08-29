@@ -112,6 +112,17 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
         return upsertAircraft(aircraftObj);
       })
     );
+
+    // const aircraftInDB = await Promise.all(
+    //   response.data.states.forEach(async (aircraft, i) => {
+    //     setTimeout(async () => {
+    //       console.log("Iteration:", i);
+    //       const aircraftObj = parseAircraftData(aircraft);
+    //       upsertAircraft(aircraftObj);
+    //       // return upsertAircraft(aircraftObj);
+    //     }, i * 100);
+    //   })
+    // );
   } catch (error) {
     console.error("Error in getAircraft:", error);
   }
