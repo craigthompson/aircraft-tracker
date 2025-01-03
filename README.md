@@ -83,7 +83,7 @@
   - Bandpass filter for ADS-B specific frequencies
   - Antenna  
     <kbd>
-      <img src="./public/assets/ads-b-receiver-antenna.jpeg" alt="drawing" width="300" alt="Screenshot of the ADS-B receiver antenna"/>
+      <img src="./public/assets/ads-b-receiver-antenna.jpeg" width="300" alt="Screenshot of the ADS-B receiver antenna"/>
     </kbd>
 - Leaflet and React-Leaflet for the map
 - Node-Cron — for scheduled tasks
