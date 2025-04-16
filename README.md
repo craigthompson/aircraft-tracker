@@ -133,7 +133,7 @@
   - Ground speed
   - True tracking direction
 - Callsign next to aircraft marker
-- Ordering aircraft icons on top of others based on altitude
+- Ordering aircraft icons on top of others based on altitude.
 
 ---
-:star: Star me on GitHub — it does motivate me
+:star: Star me on GitHub — it is motivating.
