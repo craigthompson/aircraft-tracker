@@ -1,5 +1,5 @@
 <h1 align="center">Aircraft Tracker (Skydar) 🛩️</h1>
-<div align="center">Live air traffic map app utilizing community and self reported aircraft tracking data</div>
+<div align="center">A live air traffic map app that combines data from community-sourced and self-hosted aircraft tracking receivers</div>
 </br>
 
 <kbd>
