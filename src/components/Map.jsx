@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
+import { MapContainer, TileLayer, LayersControl, useMapEvent } from "react-leaflet";
 import { useState, useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 import MyLocationMarker from "./MyLocationMarker";
