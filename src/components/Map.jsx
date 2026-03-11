@@ -13,6 +13,13 @@ import axios from "axios";
 
 const RADAR_MAPS_URL = "https://api.rainviewer.com/public/weather-maps.json";
 
+function ZoomLogger() {
+  useMapEvent("zoomend", (e) => {
+    console.log("[Map] Zoom level:", e.target.getZoom());
+  });
+  return null;
+}
+
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
   const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
@@ -35,9 +42,11 @@ function Map() {
     const intervalId = setInterval(() => {
       (async () => {
         const data = await getMostRecentWeatherMap();
-        setMostRecentWeatherMap(data.radar.nowcast[0].path);
-        console.log("infrared:", data.satellite.infrared[0].path);
-        setMostRecentCloudMap(data.satellite.infrared[0].path);
+        const radarPath = data.radar.past?.at(-1)?.path ?? null;
+        const infraredPath = data.satellite.infrared?.at(-1)?.path ?? null;
+        setMostRecentWeatherMap(radarPath);
+        setMostRecentCloudMap(infraredPath);
+        console.log("radar:", radarPath, "infrared:", infraredPath);
       })();
     }, 60000);
 
@@ -48,9 +57,11 @@ function Map() {
   useEffect(() => {
     (async () => {
       const data = await getMostRecentWeatherMap();
-      setMostRecentWeatherMap(data.radar.nowcast[0].path);
-      console.log("infrared:", data.satellite.infrared[0].path);
-      setMostRecentCloudMap(data.satellite.infrared[0].path);
+      const radarPath = data.radar.past?.at(-1)?.path ?? null;
+      const infraredPath = data.satellite.infrared?.at(-1)?.path ?? null;
+      setMostRecentWeatherMap(radarPath);
+      setMostRecentCloudMap(infraredPath);
+      console.log("radar:", radarPath, "infrared:", infraredPath);
     })();
   }, []);
 
@@ -90,13 +101,14 @@ function Map() {
   const openAipClientId = import.meta.env.VITE_OPENAIP_CLIENT_ID;
 
   return (
-    <div id="map" className="h-lvh w-full md:w-10/12">
+    <div id="map" className="h-lvh w-full">
       <MapContainer
         center={[40.7909957, -111.9851671]}
         zoom={11}
         scrollWheelZoom={true}
         style={{ height: "100vh" }}
       >
+        <ZoomLogger />
         <CustomLayersControl
           title="Map Layers"
           className="left-aligned-layers-control"
@@ -221,17 +233,22 @@ function Map() {
               attribution='&copy; <a href="https://www.openaip.net/">OpenAIP</a>'
             />
           </LayersControl.Overlay>
-          <WeatherRadarMapOverlay
-            name="Weather Radar"
-            url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
-          />
-          <LayersControl.Overlay name="Infrared Clouds">
-            <TileLayer
-              attribution="RainViewer.com"
-              url={`https://tilecache.rainviewer.com${mostRecentCloudMap}/256/{z}/{x}/{y}/0/0_0.png`}
-              opacity={0.6}
-              zIndex={2}
+          {mostRecentWeatherMap && (
+            <WeatherRadarMapOverlay
+              name="Weather Radar"
+              url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
             />
+          )}
+          <LayersControl.Overlay name="Infrared Clouds">
+            {mostRecentCloudMap && (
+              <TileLayer
+                attribution="RainViewer.com"
+                url={`https://tilecache.rainviewer.com${mostRecentCloudMap}/256/{z}/{x}/{y}/0/0_0.png`}
+                opacity={0.6}
+                zIndex={2}
+                maxNativeZoom={7}
+              />
+            )}
           </LayersControl.Overlay>
         </CustomLayersControl>
         <MyLocationMarker />
