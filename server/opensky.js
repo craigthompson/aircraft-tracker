@@ -136,6 +136,11 @@ export const getAircraft = async (latMin, lonMin, latMax, lonMax) => {
         response.headers["x-rate-limit-remaining"]
       );
 
+    if (!response.data.states) {
+      console.log(chalk.magentaBright("[OpenSky] "), "No states returned — unauthenticated or rate limited");
+      return;
+    }
+
     const aircraftInDB = await Promise.all(
       response.data.states.map(async (aircraft) => {
         const aircraftObj = parseAircraftData(aircraft);

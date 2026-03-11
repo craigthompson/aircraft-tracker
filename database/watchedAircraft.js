@@ -96,16 +96,11 @@ export const createWatchedAircraft = async (callsign) => {
       arrivalAirport: null,
       airlineLogoUrl: null,
     };
-    const newWatchedAircraft = await scrapeGivenWatchedFlightStatus(
-      watchedAircraft
-    );
-    // const watchedAircraft = await WatchedAircraft.findAll({});
+    // Scraper disabled (Cloudflare blocks airnavradar.com scraping)
+    const newWatchedAircraft = await upsertWatchedAircraft(watchedAircraft);
     console.log("New watched aircraft:", newWatchedAircraft);
   } catch (error) {
-    console.error(
-      "Error while trying to scrape and add watched flight.",
-      error
-    );
+    console.error("Error while trying to add watched flight.", error);
   }
   const watchedFlights = await queryWatchedAircraft();
   return watchedFlights;

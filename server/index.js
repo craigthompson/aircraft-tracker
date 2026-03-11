@@ -147,29 +147,17 @@ cron.schedule("*/3 * * * * *", async () => {
   }
 });
 
-// Schedule web scraper to scrape watch list flights details
-cron.schedule("*/10 * * * *", async () => {
-  try {
-    if (getNumOfClients(socketIo) > 0) {
-      console.log(
-        chalk.cyanBright(`[Scraper Bot] `),
-        "Running scraper to get data for watch list."
-      );
-      await scrapeWatchedFlightsStatus();
-      console.log(
-        chalk.cyanBright(`[Scraper Bot] `),
-        "Completed scraping data for watch list."
-      );
-      await emitAllWatchedAircraftForAllSockets();
-    } else {
-      console.log(
-        "Skipping scheduled task to scrape data for watch list, since no clients currently connected."
-      );
-    }
-  } catch (error) {
-    console.error("Error scraping data:", error);
-  }
-});
+// Scraper bot disabled (Cloudflare blocks airnavradar.com scraping)
+// cron.schedule("*/10 * * * *", async () => {
+//   try {
+//     if (getNumOfClients(socketIo) > 0) {
+//       await scrapeWatchedFlightsStatus();
+//       await emitAllWatchedAircraftForAllSockets();
+//     }
+//   } catch (error) {
+//     console.error("Error scraping data:", error);
+//   }
+// });
 
 /////////////////////////////////////////////////////////////////////////////
 //  Config server on port
