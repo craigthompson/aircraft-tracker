@@ -23,7 +23,6 @@ function ZoomLogger() {
 function Map() {
   const [allAircraft, setAllAircraft] = useState([]);
   const [mostRecentWeatherMap, setMostRecentWeatherMap] = useState(null);
-  const [mostRecentCloudMap, setMostRecentCloudMap] = useState(null);
 
   const getMostRecentWeatherMap = async () => {
     console.log("Getting most recent weather data.");
@@ -32,7 +31,6 @@ function Map() {
       "Weather data timestamp:",
       unixSecondsToLocalTime(data.generated)
     );
-    console.log("Weather:", data);
     return data;
   };
 
@@ -43,10 +41,8 @@ function Map() {
       (async () => {
         const data = await getMostRecentWeatherMap();
         const radarPath = data.radar.past?.at(-1)?.path ?? null;
-        const infraredPath = data.satellite.infrared?.at(-1)?.path ?? null;
         setMostRecentWeatherMap(radarPath);
-        setMostRecentCloudMap(infraredPath);
-        console.log("radar:", radarPath, "infrared:", infraredPath);
+        console.log("radar:", radarPath);
       })();
     }, 60000);
 
@@ -58,10 +54,8 @@ function Map() {
     (async () => {
       const data = await getMostRecentWeatherMap();
       const radarPath = data.radar.past?.at(-1)?.path ?? null;
-      const infraredPath = data.satellite.infrared?.at(-1)?.path ?? null;
       setMostRecentWeatherMap(radarPath);
-      setMostRecentCloudMap(infraredPath);
-      console.log("radar:", radarPath, "infrared:", infraredPath);
+      console.log("radar:", radarPath);
     })();
   }, []);
 
@@ -99,6 +93,7 @@ function Map() {
   const { BaseLayer } = LayersControl;
 
   const openAipClientId = import.meta.env.VITE_OPENAIP_CLIENT_ID;
+  const openWeatherMapApiKey = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
 
   return (
     <div id="map" className="h-lvh w-full">
@@ -239,16 +234,13 @@ function Map() {
               url={`https://tilecache.rainviewer.com${mostRecentWeatherMap}/256/{z}/{x}/{y}/2/1_1.png`}
             />
           )}
-          <LayersControl.Overlay name="Infrared Clouds">
-            {mostRecentCloudMap && (
-              <TileLayer
-                attribution="RainViewer.com"
-                url={`https://tilecache.rainviewer.com${mostRecentCloudMap}/256/{z}/{x}/{y}/0/0_0.png`}
-                opacity={0.6}
-                zIndex={2}
-                maxNativeZoom={7}
-              />
-            )}
+          <LayersControl.Overlay name="Cloud Cover">
+            <TileLayer
+              attribution='&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>'
+              url={`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${openWeatherMapApiKey}`}
+              opacity={0.9}
+              zIndex={2}
+            />
           </LayersControl.Overlay>
         </CustomLayersControl>
         <MyLocationMarker />
