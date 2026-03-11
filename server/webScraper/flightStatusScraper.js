@@ -1,14 +1,91 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
+
+puppeteer.use(StealthPlugin());
+
+/**
+ * Checks if Cloudflare's challenge page is present and attempts to click
+ * the verification checkbox if found.
+ *
+ * @param {import('puppeteer').Page} page
+ */
+async function checkCloudflare(page) {
+  try {
+    // Wait for the Cloudflare challenge widget to fully render
+    console.log("[Scraper] Waiting 5s for Cloudflare widget to render...");
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    // The iframe is in a closed shadow root so JS DOM APIs can't find it.
+    // Use CDP directly: Page.getFrameTree to find the Cloudflare frame ID,
+    // then DOM.getFrameOwner to get its element, then DOM.getBoxModel for position.
+    const cdpSession = await page.createCDPSession();
+
+    const { frameTree } = await cdpSession.send("Page.getFrameTree");
+    function findFrameId(node) {
+      if (
+        node.frame.url &&
+        node.frame.url.includes("challenges.cloudflare.com")
+      ) {
+        return node.frame.id;
+      }
+      for (const child of node.childFrames ?? []) {
+        const found = findFrameId(child);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    const cfFrameId = findFrameId(frameTree);
+    if (!cfFrameId) {
+      console.log("[Scraper] Cloudflare frame ID not found via CDP");
+      return;
+    }
+    console.log("[Scraper] Cloudflare frame ID:", cfFrameId);
+
+    const { backendNodeId } = await cdpSession.send("DOM.getFrameOwner", {
+      frameId: cfFrameId,
+    });
+    const { model } = await cdpSession.send("DOM.getBoxModel", {
+      backendNodeId,
+    });
+
+    // model.content is a flat quad [x1,y1, x2,y1, x2,y2, x1,y2]
+    const iframeLeft = model.content[0];
+    const iframeTop = model.content[1];
+    const iframeBottom = model.content[5];
+    const clickX = iframeLeft + 20;
+    const clickY = (iframeTop + iframeBottom) / 2;
+    console.log(
+      `[Scraper] Cloudflare iframe box: left=${iframeLeft} top=${iframeTop} bottom=${iframeBottom}`,
+    );
+    console.log(`[Scraper] Clicking checkbox at (${clickX}, ${clickY})`);
+
+    await page.mouse.click(clickX, clickY);
+    console.log("[Scraper] Clicked, waiting for challenge to pass...");
+
+    await page
+      .waitForNavigation({ waitUntil: "domcontentloaded", timeout: 15000 })
+      .catch(() => {
+        console.log(
+          "[Scraper] No navigation after checkbox click (challenge may still be processing)",
+        );
+      });
+    await cdpSession.detach();
+  } catch {
+    // No Cloudflare challenge present, continue normally
+    console.log("[Scraper] No Cloudflare challenge detected");
+  }
+}
 
 async function scrapeFlightData(
   flightNumber,
   debugLog = false,
-  debugScreenshot = false
+  debugScreenshot = true,
 ) {
-  const url = `https://www.radarbox.com/data/flights/${flightNumber}`;
+  const url = `https://www.airnavradar.com/data/flights/${flightNumber}`;
 
   // Launch the browser
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: "true" });
   const page = await browser.newPage();
 
   // Set a viewport to emulate typical browser behavior
@@ -16,7 +93,7 @@ async function scrapeFlightData(
 
   // Optionally set user-agent to mimic a real browser
   await page.setUserAgent(
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
   );
 
   // Set additional headers
@@ -36,9 +113,8 @@ async function scrapeFlightData(
   let flightData = {};
 
   try {
-    // Navigate to the page and wait for it to finish loading
-    // await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
-    await page.goto(url);
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await checkCloudflare(page);
 
     try {
       await page.waitForSelector(airportSelector, { timeout: 15000 });
