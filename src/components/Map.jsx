@@ -108,7 +108,7 @@ function Map() {
           title="Map Layers"
           className="left-aligned-layers-control"
         >
-          <BaseLayer checked name="ArcGIS Esri Topo">
+          <BaseLayer name="ArcGIS Esri Topo">
             <TileLayer
               attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community"
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
@@ -206,7 +206,7 @@ function Map() {
               maxNativeZoom={19}
             />
           </BaseLayer>
-          <BaseLayer name="USGS Imagery">
+          <BaseLayer checked name="USGS Imagery">
             <TileLayer
               attribution="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"
               url="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"

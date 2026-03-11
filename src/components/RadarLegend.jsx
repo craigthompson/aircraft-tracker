@@ -30,6 +30,9 @@ const RadarLegend = () => {
         "div",
         "info legend bg-white rounded-md shadow-md border-solid border-2 border-secondary-400",
       );
+      L.DomEvent.disableClickPropagation(div);
+
+      const isMobile = window.innerWidth < 768;
 
       const rainRows = RAIN_LEVELS.map(
         ({ label, color }) => `
@@ -50,16 +53,38 @@ const RadarLegend = () => {
       ).join("");
 
       div.innerHTML = `
-        <div class="flex justify-center items-center py-1 rounded-t-md drop-shadow-md bg-secondary-100 text-secondary-600">
-          Weather Radar
+        <div class="legend-header flex justify-between items-center py-1 px-2 rounded-t-md drop-shadow-md bg-secondary-100 text-secondary-600 cursor-pointer select-none">
+          <span>Weather Radar</span>
+          <span class="legend-chevron ml-2">${isMobile ? "▸" : "▾"}</span>
         </div>
-        <div class="px-2 pt-2 pb-1">
-          ${rainRows}
-        </div>
-        <div class="px-2 pt-2 pb-1 border-t border-secondary-300">
-          ${snowRows}
+        <div class="legend-body" style="display: ${isMobile ? "none" : "block"}">
+          <div class="px-2 pt-2 pb-1">
+            ${rainRows}
+          </div>
+          <div class="px-2 pt-2 pb-1 border-t border-secondary-300">
+            ${snowRows}
+          </div>
         </div>
       `;
+
+      const header = div.querySelector(".legend-header");
+      const body = div.querySelector(".legend-body");
+      const chevron = div.querySelector(".legend-chevron");
+
+      header.addEventListener("click", () => {
+        const collapsed = body.style.display === "none";
+        body.style.display = collapsed ? "block" : "none";
+        chevron.textContent = collapsed ? "▾" : "▸";
+      });
+
+      const collapse = (e) => {
+        if (!div.contains(e.target) && body.style.display !== "none") {
+          body.style.display = "none";
+          chevron.textContent = "▸";
+        }
+      };
+      document.addEventListener("click", collapse);
+      legend.onRemove = () => document.removeEventListener("click", collapse);
 
       return div;
     };

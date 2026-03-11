@@ -12,15 +12,18 @@ const Legend = () => {
     legend.onAdd = function () {
       const div = L.DomUtil.create(
         "div",
-        "info legend bg-white rounded-md shadow-md border-solid border-2 border-secondary-400"
+        "info legend bg-white rounded-md shadow-md border-solid border-2 border-secondary-400",
       );
+      L.DomEvent.disableClickPropagation(div);
+
+      const isMobile = window.innerWidth < 768;
 
       const grades = [35000, 30000, 25000, 20000, 15000, 10000, 5000, "Ground"];
       const labels = [
         `
           <div class="flex items-center mb-1 mt-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              35000
+              35000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${35000 / 1000}k+</span>
           </div>
@@ -28,67 +31,67 @@ const Legend = () => {
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              30000
+              30000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${30000 / 1000}k - ${
-          35000 / 1000
-        }k</span>
+              35000 / 1000
+            }k</span>
           </div>
         `,
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              25000
+              25000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${25000 / 1000}k - ${
-          30000 / 1000
-        }k</span>
+              30000 / 1000
+            }k</span>
           </div>
         `,
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              20000
+              20000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${20000 / 1000}k - ${
-          25000 / 1000
-        }k</span>
+              25000 / 1000
+            }k</span>
           </div>
         `,
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              15000
+              15000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${15000 / 1000}k - ${
-          20000 / 1000
-        }k</span>
+              20000 / 1000
+            }k</span>
           </div>
         `,
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              10000
+              10000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${10000 / 1000}k - ${
-          15000 / 1000
-        }k</span>
+              15000 / 1000
+            }k</span>
           </div>
         `,
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              5000
+              5000,
             )}"></i>
             <span class="ml-2 text-secondary-600">${5000 / 1000}k - ${
-          10000 / 1000
-        }k</span>
+              10000 / 1000
+            }k</span>
           </div>
         `,
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              0
+              0,
             )}"></i>
             <span class="ml-2 text-secondary-600">0 - ${5000 / 1000}k</span>
           </div>
@@ -96,7 +99,7 @@ const Legend = () => {
         `
           <div class="flex items-center mb-1">
             <i class="w-4 h-4 inline-block rounded-md drop-shadow-md" style="background:${getColor(
-              "Ground"
+              "Ground",
             )}"></i>
             <span class="ml-2 text-secondary-600">Ground</span>
           </div>
@@ -104,13 +107,33 @@ const Legend = () => {
       ].join("");
 
       div.innerHTML = `
-        <div class="flex justify-center items-center py-1 rounded-t-md drop-shadow-md bg-secondary-100 text-secondary-600">
-          Altitude (ft)
+        <div class="legend-header flex justify-between items-center py-1 px-2 rounded-t-md drop-shadow-md bg-secondary-100 text-secondary-600 cursor-pointer select-none">
+          <span>Aircraft Altitude (ft)</span>
+          <span class="legend-chevron ml-2">${isMobile ? "▸" : "▾"}</span>
         </div>
-        <div class="px-2 py-1">
+        <div class="legend-body px-2 py-1" style="display: ${isMobile ? "none" : "block"}">
           ${labels}
         </div>
       `;
+
+      const header = div.querySelector(".legend-header");
+      const body = div.querySelector(".legend-body");
+      const chevron = div.querySelector(".legend-chevron");
+
+      header.addEventListener("click", () => {
+        const collapsed = body.style.display === "none";
+        body.style.display = collapsed ? "block" : "none";
+        chevron.textContent = collapsed ? "▾" : "▸";
+      });
+
+      const collapse = (e) => {
+        if (!div.contains(e.target) && body.style.display !== "none") {
+          body.style.display = "none";
+          chevron.textContent = "▸";
+        }
+      };
+      document.addEventListener("click", collapse);
+      legend.onRemove = () => document.removeEventListener("click", collapse);
 
       return div;
     };
@@ -126,20 +149,20 @@ const Legend = () => {
     return d >= 35000
       ? "#93c5fd"
       : d >= 30000
-      ? "#60a5fa"
-      : d >= 25000
-      ? "#3b82f6"
-      : d >= 20000
-      ? "#2563eb"
-      : d >= 15000
-      ? "#1d4ed8"
-      : d >= 10000
-      ? "#1e40af"
-      : d >= 5000
-      ? "#1e3a8a"
-      : d !== "Ground"
-      ? "#172554"
-      : "#6B7280";
+        ? "#60a5fa"
+        : d >= 25000
+          ? "#3b82f6"
+          : d >= 20000
+            ? "#2563eb"
+            : d >= 15000
+              ? "#1d4ed8"
+              : d >= 10000
+                ? "#1e40af"
+                : d >= 5000
+                  ? "#1e3a8a"
+                  : d !== "Ground"
+                    ? "#172554"
+                    : "#6B7280";
   }
 
   return null;
