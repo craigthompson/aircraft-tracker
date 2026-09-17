@@ -108,7 +108,7 @@ socketIo.on("connection", (socket) => {
  * 15 second polling is a total of 5760 requests a day.
  * 12 second polling is a total of 7200 requests a day.
  */
-cron.schedule("*/13 * * * * *", async () => {
+cron.schedule("*/11 * * * * *", async () => {
   try {
     if (getNumOfClients(socketIo) > 0) {
       console.log(
